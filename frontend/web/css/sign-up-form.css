@@ -1,0 +1,45 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jan 3, 2017, 9:17:50 PM
+    Author     : swabomba
+*/
+
+.site-signup {
+    padding-right: 20px;
+    padding-left: 20px;
+    margin-top: 85px;
+    min-width: 20px;
+    height: 75%
+}
+
+.site-signup > .row {
+    float: right;
+    width: 25%;
+    height: 100%
+}
+
+.site-signup > .row > .hd-sctn {
+    background-color: #000;
+    padding: 5px;
+    color: #fff;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    height: 9%
+}
+
+.site-signup > .row > .bd-sctn {
+    padding: 15px;
+    background-color: #ccc;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    height: 91%
+}
+
+.site-signup .form-group {
+    padding-top: 7.5px;
+    padding-bottom: 7.5px
+}

@@ -1,0 +1,59 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jan 3, 2017, 2:23:15 PM
+    Author     : swabomba
+*/
+
+/* beginning of custom menu css */
+.custom-menu {
+    display: none;
+    z-index: 10000;
+    position: absolute;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    white-space: nowrap;
+    font-family: sans-serif;
+    background: #fff;
+    color: #333;
+    border-radius: 5px;
+    padding: 0;
+}
+
+.custom-menu li {
+    padding: 8px 12px;
+    cursor: pointer;
+    list-style-type: none;
+    transition: all .3s ease;
+}
+
+.custom-menu li:hover {
+    background-color: #def;
+}
+
+.custom-menu > .custom-sub-menu-title, .custom-menu > .vrsn-dtl {
+    background-color: #131722;
+    cursor: default;
+    color: #fff;
+}
+
+.custom-menu > .custom-sub-menu-title:hover, .custom-menu > .vrsn-dtl:hover {
+    background-color: #131722;
+}
+
+.custom-sub-menu {
+    text-align: justify;
+    font-style: italic;
+}
+
+.custom-menu > .divider {
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #000;
+    overflow: hidden;
+}
+/* end of custom menu css */

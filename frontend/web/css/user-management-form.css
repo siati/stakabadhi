@@ -1,0 +1,84 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jan 3, 2017, 9:17:50 PM
+    Author     : swabomba
+*/
+
+.site-users {
+    padding-right: 20px;
+    min-width: 20px;
+    height: 100%;
+}
+
+.site-users > .site-users-list {
+    float: left;
+    height: 100%;
+    width: 55%
+}
+
+.site-users > .site-sep-pane {
+    float: left;
+    width: 1.25%
+}
+
+.site-users > .site-prfls-list {
+    float: left;
+    width: 17.5%;
+    height: 100%
+}
+
+.site-users > .row {
+    float: right;
+    width: 25%;
+    height: 100%
+}
+
+.site-users > .row > .hd-sctn, .site-users > .site-users-list > .hd-sctn, .site-users > .site-prfls-list > .hd-sctn {
+    background-color: #000;
+    padding: 5px;
+    color: #fff;
+    height: 6%;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.site-users > .row > .bd-sctn {
+    padding: 15px;
+    background-color: #ccc;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    height: 94%
+}
+
+.site-users > .site-users-list > .bd-sctn {
+    background-color: #ccc;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    height: 94%
+}
+
+.site-users > .site-prfls-list > .bd-sctn {
+    background-color: #ccc;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    height: 94%
+}
+
+.site-users > .site-users-list > .bd-sctn th, .site-users > .site-prfls-list > .bd-sctn th {
+    color: #fff;
+}
+
+.site-users .form-group {
+    padding-top: 7.5px;
+    padding-bottom: 7.5px
+}
+
+.hd-sctn > .input-group {
+    width: 30%;
+    float: right;
+    margin-top: 2px
+}

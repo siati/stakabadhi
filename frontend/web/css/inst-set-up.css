@@ -1,0 +1,896 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jan 3, 2017, 9:17:50 PM
+    Author     : swabomba
+*/
+
+.institution-default-index {
+    margin: 0 -15px -15px -15px; /* padding for .wrap > .container  in web/css/site.css*/
+    padding: 0;
+    min-width: 20px;
+    height: 100%;
+}
+
+.inst-nvgtn {
+    width: 17.5%;
+    height: 100%;
+    overflow: hidden;
+    float: left;
+}
+
+.inst-nvgtn-pn {
+    width: 100%;
+    height: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    overflow-x: hidden;
+    border-right: 3px solid #000;
+}
+
+.inst-ctnt {
+    width: 65%;
+    height: 100%;
+    overflow: hidden;
+    float: left;
+}
+
+.inst-ctnt-pn {
+    width: 100%;
+    height: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+}
+
+.inst-ctnt-pn-dr {
+    width: 30%;
+    height: 100%;
+    float: left;
+    overflow: hidden;
+}
+
+.inst-ctnt-pn-dr-pn {
+    width: 100%;
+    height: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-right: 1px solid #000;
+    overflow-x: hidden;
+}
+
+.inst-ctnt-pn-fl {
+    width: 70%;
+    height: 100%;
+    float: right;
+    overflow: hidden;
+}
+
+.inst-ctnt-pn-fl-pn {
+    width: 100%;
+    height: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    overflow-x: hidden;
+}
+
+.fldr-in-ctnt-pn, .file-in-ctnt-pn {
+    height: 12.5%;
+    padding: 5px;
+    float: left;
+    text-align: center;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+.is-slctd {
+    background-color: #e4b9b9;
+    border-radius: 100%;
+}
+
+.is-hgltd {
+    background-color: #eee;
+    border-radius: 6px;
+}
+
+.fldr-in-ctnt-pn:hover, .file-in-ctnt-pn:hover {
+    background-color: #ccc;
+}
+
+.fldr-in-ctnt-pn-icn, .file-in-ctnt-pn-icn {
+    width: 100%;
+    height: 60px;
+    font-size: 50px;
+    cursor: pointer;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.fldr-in-ctnt-pn-ttl, .file-in-ctnt-pn-ttl {
+    width: 100%;
+    /*height: 25%;*/
+    padding: 2px 0;
+}
+
+.is-dir {
+    color: #f8d486;
+}
+
+.inst-prpt {
+    width: 17.5%;
+    height: 100%;
+    overflow: hidden;
+    float: right;
+}
+
+.inst-prpt-pn {
+    width: 100%;
+    height: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    overflow: auto;
+    border-left: 3px solid #000;
+}
+
+.inst-prpt-pn-adrs {
+    width: 100%;
+    display: table;
+    overflow: hidden;
+    text-align: center;
+}
+
+.inst-prpt-pn-adrs-pn {
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    font-size: 9px;
+    border-bottom: 1px solid #000;
+}
+
+.inst-prpt-pn-sub {
+    width: 100%;
+    overflow: hidden;
+}
+
+.inst-prpt-pn-sub-pn {
+    width: 100%;
+    height: 100%;
+    border-bottom: 1px solid #000;
+    overflow: hidden;
+}
+
+.inst-prpt-pn-sub-pn-scrl {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.inst-prpt-pn-sub-pn-top {
+    border-top: 1px solid #000;
+}
+
+.inst-prpt-pn-sub-pn-file-name-pr {
+    width: 100%;
+    overflow: hidden
+}
+
+.inst-prpt-pn-sub-pn-file-name {
+    padding: 5px 0;
+    border-bottom: 1px solid #000;
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+    display: table;
+    overflow: hidden;
+}
+
+.doc-prvlgs-btn {
+    width: 100%;
+    height: 100%;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.file-name-field {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border: none;
+    border-radius: 6px;
+    padding: 1px;
+    font-weight: bold;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    background-color: #fff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space:normal
+}
+
+.nvgtn-fldr-ctnr {
+    width: 100%;
+    height:24px;
+    cursor: pointer;
+    clear: both; 
+}
+
+.nvgtn-fldr-ctnr:hover {
+    background-color: #ccc;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.u-ia {
+    background-color: #f8bb86;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.nvgtn-fldr-ctnr-glyph-lft {
+    width: 10%;
+    padding-top: 3px;
+    font-size: 18px;
+    float: left;
+}
+
+.nvgtn-fldr-ctnr-nm-txt {
+    height: 24px;
+    width: 85%;
+    padding-top: 5px;
+    padding-left: 2.5px;
+    padding-right: 2.5px;
+    font-size: 14px;
+    font-weight: bold;
+    overflow: hidden;
+    float: left;
+}
+
+.nvgtn-fldr-ctnr-glyph-rgt {
+    width: 5%;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-right: 2px;
+    text-align: right;
+    float: right;
+}
+
+.prvlgs-ctnr {
+    width: 100%;
+    padding-bottom: 7.5px;
+    background-color: #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.prvlgs-ctnr-usr {
+    width: 35%;
+    height: 100%;
+    border-left: 1px solid #000;
+    overflow: hidden;
+    float: right
+}
+
+.prvlgs-ctnr-dr {
+    width: 65%;
+    height: 65%;
+    overflow: hidden;
+    float: left
+}
+
+.prvlgs-ctnr-ttl {
+    width: 100%;
+    text-align: center;
+    font-weight: bold
+}
+
+.prvlgs-ctnr-lst {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    overflow-x: hidden;
+    padding-left: 5px;
+    padding-right: 2px
+}
+
+.prvlgs-ctnr-fl-hdn {
+    width: 100%;
+    height: 100%;
+    overflow: hidden
+}
+
+.prvlgs-ctnr-dr-chld1 {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    float: left
+}
+
+.prvlgs-ctnr-dr-chld1-ctnr {
+    width: 100%;
+    height: 100%;
+    overflow: hidden
+}
+
+.prvlgs-ctnr-fm {
+    width: 65%;
+    height: 35%;
+    border-top: 1px solid #000;
+    border-radius: 6px;
+    overflow: hidden;
+    float: left;
+    padding-left: 5px;
+}
+
+.fm-hdr {
+    width: 100%;
+    height: 8%;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: bold
+}
+
+.fm-btn {
+    margin-top: 0.5%;
+    margin-right: 20px;
+    height: 90%;
+    margin-bottom: 0.5%
+}
+
+.fm-bdy {
+    width: 100%;
+    height: 72%;
+    border-bottom: 1px solid #000;
+    border-radius: 6px;
+    overflow: hidden
+}
+
+.fm-bdy-pn {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    padding-right: 5px
+}
+
+.fm-bdy-pn > .form-group-sm {
+    margin-bottom: 3px !important
+}
+
+.fm-bdy-pn > .form-group-sm > .help-block {
+    font-size: 11px
+}
+
+.sctn-dscrptn {
+    width: 100%;
+    height: 20%;
+    overflow: hidden
+}
+
+.sctn-dscrptn-pn {
+    width: 100%;
+    height: 100%;
+    text-align: justify;
+    overflow: hidden;
+}
+
+.sctn-dscrptn-pn-scrl {
+    height: 100%;
+    width: 100%;
+    vertical-align: middle;
+    padding-right: 2.5px;
+    overflow-x: hidden;
+    display: inline-block;
+}
+
+.dcmts-lst-td, .sctns-lst-td, .usrs-lst-td {
+    font-size: 13px;
+    text-align: justify;
+    padding-left: 2px;
+    border-radius: 3px;
+    cursor: pointer;
+    border-bottom: 1px solid #fff;
+}
+
+.usrs-lst-td {
+    border-bottom: 1px dashed #fff;
+}
+
+.sctns-lst-td-tck {
+    background-color: #1b6d85;
+    color: #fff;
+}
+
+.sctns-lst-td-crs {
+    background-color: #1a1a1a;
+    color: #ddd;
+    opacity: 0.2;
+}
+
+.doc-hr, .sct-hr, .usr-hr {
+    font-weight: lighter;
+    font-style: italic;
+}
+
+.admin, .alter {
+    background-color: #ff0066;
+    color: #fff
+}
+
+.sub_admin, .write {
+    background: #77c184;
+    color: #fff
+}
+
+.other_user, .read {
+    background: #7ecff4;
+    color: #fff
+}
+
+.remove_user, .deny {
+    background: inherit;
+    color: #333
+}
+
+.no-axn {
+    width: 100%;
+    height: 100%;
+    display: table;
+}
+
+.no-axn-txt {
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center
+}
+
+.inst-prpt-pn-sub-pn-scrl > .carousel, .carousel-inner, .carousel-inner > .item, .carousel-inner > .active {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.snd-doc-mdl-cntnts {
+    width: 29.5%;
+    height: 100%;
+    padding-right: 5px;
+    border-right: 1px solid #ddd;
+    overflow: hidden
+}
+
+.snd-doc-mdl-cntnts-lst {
+    width: 100%;
+    height: 70%;
+    overflow: hidden
+}
+
+.snd-doc-mdl-cntnts-fm {
+    width: 100%;
+    height: 30%;
+    overflow: hidden
+}
+
+.snd-doc-mdl-cntnts-fm-pn {
+    width: 100%;
+    height: 100%;
+    border-top: 1px solid #ddd;
+    border-radius: 6px;
+    overflow-x: hidden
+}
+
+.snd-doc-mdl-cntnts-lst-pn {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden
+}
+
+.snd-doc-mdl-snd {
+    width: 70%;
+    height: 100%;
+    overflow: hidden
+}
+
+.snd-doc-mdl-snd-btns {
+    width: 100%;
+    height: 5%;
+    padding-top: 3px
+}
+
+.snd-doc-mdl-snd-fm {
+    width: 100%;
+    height: 100%;
+    overflow: hidden
+}
+
+.snd-doc-mdl-snd-fm-pn {
+    width: 100%;
+    height: 95%;
+    overflow-x: hidden
+}
+
+.ctnct-id-td {
+    padding-left: 15px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer
+}
+
+.ctnct-add {
+    background-color: #fff;
+    color: #f8d486;
+    border-radius: 100%
+}
+
+.ctnct-new {
+    background-color: #fff;
+    color: #0097cf;
+    border-radius: 100%
+}
+
+.ctnct-drp {
+    background-color: #fff;
+    color: #f00;
+    border-radius: 100%
+}
+
+.dok-unlck {
+    padding-left: 2.5px;
+    padding-right: 2.5px;
+    color: #f00;
+    cursor: pointer
+}
+
+.dok-dwnld {
+    padding-left: 2.5px;
+    padding-right: 2.5px;
+    color: #2e6da4;
+    cursor: pointer
+}
+
+.dok-updt {
+    padding-left: 2.5px;
+    padding-right: 2.5px;
+    color: #4cae4c;
+    cursor: pointer
+}
+
+.prmsn-pn-eda {
+    width: 100%;
+    height: 15%;
+    text-align: center;
+    font-weight: bold;
+    overflow: hidden;
+}
+
+.prmsn-pn-bdy {
+    width: 100%;
+    height: 85%;
+    overflow: hidden
+}
+
+.prmsn-pn-bdy-pn {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden
+}
+
+.sld-img-2-clk {
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+    overflow: hidden;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+    margin: 0;
+}
+
+.sld-imgs-ldd-img {
+    width: 100%;
+    height: 35%;
+    border-top: 1px solid #ddd;
+    padding-top: 3px;
+    overflow: hidden
+}
+
+.sld-imgs-ldd-img-img {
+    width: 35%;
+    height: 100%;
+    float: left;
+    overflow: hidden
+}
+
+.sld-imgs-ldd-img-img-img {
+    width: 80%;
+    height: 85%;
+    overflow-x: hidden
+}
+
+.sld-imgs-ldd-img-img-img-tbl {
+    width: 100%;
+    height: 99%;
+    display: table
+}
+
+.sld-imgs-ldd-img-img-sprt {
+    width: 80%;
+    height: 5%
+}
+
+.sld-imgs-ldd-img-img-btns {
+    width: 80%;
+    height: 10%;
+    overflow-x: hidden
+}
+
+.sld-imgs-ldd-img-fm {
+    width: 65%;
+    height: 100%;
+    float: right;
+    overflow: hidden
+}
+
+.sld-imgs-ldd-img-fm-fm {
+    width: 100%;
+    height: 88%;
+    overflow: hidden
+}
+
+.sld-imgs-ldd-img-fm-fm-pn {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden
+}
+
+.sld-imgs-vw {
+    width: 100%;
+    height: 65%;
+    overflow: hidden
+}
+
+.sld-imgs-vw-pn {
+    width: 100%;
+    height: 100%;
+    float: left;
+    overflow: hidden
+}
+
+.sld-imgs-vw-pn-hdr {
+    width: 100%;
+    height: 5%;
+    overflow: hidden
+}
+
+.sld-imgs-vw-pn-bdy {
+    width: 100%;
+    height: 95%;
+    overflow: hidden
+}
+
+.sld-imgs-vw-pn-bdy-pn {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden
+}
+
+.sld-imgs-mdl {
+    width: 100%;
+    height: 100%;
+    overflow: hidden
+}
+
+.brnd-ctnt-tbl {
+    width:100%;
+    height: 100%;
+    display: table;
+    cursor: pointer;
+}
+
+.brnd-ctnt-tbl-pn {
+    width:100%;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.img-hd {
+    width: 25%;
+    height: 30%;
+    float: left;
+    padding: 3px;
+    border-radius: 10px;
+    overflow: hidden
+}
+
+.vrsn-hd {
+    width: 12.5%;
+    height: 25%;
+    float: left;
+    padding: 3px;
+    border-radius: 10px;
+    overflow: hidden
+}
+
+.img-hd-pn {
+    width: 100%;
+    height: 85%;
+    cursor: pointer;
+    overflow: hidden
+}
+
+.vrsn-hd-pn {
+    width: 100%;
+    height: 95%;
+    border-radius: 10px;
+    cursor: pointer;
+    display: table;
+    overflow: hidden
+}
+
+.img-hd-pn:hover, .vrsn-hd-pn:hover {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.img-hd-pn-img {
+    width: 100%;
+    height: 85%;
+    border-radius: 10px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.img-hd-pn-nm {
+    width: 100%;
+    height: 15%;
+    text-align: center
+}
+
+.vrsn-hd-pn-img {
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+    vertical-align: bottom;
+    text-align: center;
+    border-radius: 10px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.crnt-vrsn {
+    background-color: #e2e5e8
+}
+
+/* begin css for float menu */
+#slider-float-doc-div {
+    position:absolute;
+}
+
+#header-float-doc-div {
+    position:absolute;
+    right:0;
+    border:1px solid #d8d8d8;
+    border-radius:6px;
+    box-shadow:0 0 8px gray;
+}
+
+#header-float-doc-div > div {
+    margin-top: 3px;
+    margin-bottom: 3px
+}
+
+#sidebar-float-doc-div {
+    position:absolute;
+    border-radius: 200%;
+    box-shadow:0 0 8px gray;
+    opacity: 0.15
+}
+/* end css for float menu */
+
+/* begin css for float menu */
+#slider-float-srch-div {
+    position:absolute;
+    z-index: 900;
+}
+
+#header-float-srch-div {
+    position:absolute;
+    right: 0;
+    border:1px solid #d8d8d8;
+    border-radius:6px;
+    box-shadow:0 0 8px gray;
+    background-color: #122b40;
+}
+/* end css for float menu */
+
+.srch-ttl {
+    width: 100%;
+    height: 5%
+}
+
+.srch-hdg {
+    width: 100%;
+    font-size: 24px;
+}
+
+.srch-bdy {
+    width: 100%;
+    height: 92.5%;
+    overflow: hidden
+}
+
+.srch-bdy-pn {
+    width: 100%;
+    height: 100%;
+    padding: 3px;
+    overflow-x: hidden
+}
+
+.srch-ftr {
+    width: 100%;
+    height: 2.5%;
+    text-align: center;
+    background-color: #204d74;
+    border-radius: 6px;
+}
+
+.srch-cls {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: inherit;
+    color: #fff;
+    bottom: 0;
+}
+
+.srch-cls:hover {
+    background-color: inherit;
+    color: #fff;
+}
+
+.doc-srch-td-ttl {
+    margin-top: 5px;
+    border-bottom: 1px solid #fff;
+    font-weight: bold;
+    font-size: 16px;
+    color: #fff
+}
+
+.doc-srch-td-ttl:hover {
+    background-color: inherit;
+    color: #985f0d;
+}
+
+.doc-srch-td {
+    text-align: left;
+    cursor: pointer;
+    color: #985f0d;
+    font-weight: bold;
+}
+
+.srch-bdy-pn-prgrs {
+    width: 100%;
+    height: 100%;
+    display: none;
+    text-align: center;
+    color: #e57373;
+}
+
+.srch-bdy-pn-prgrs-pn {
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle
+}
