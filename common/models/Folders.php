@@ -105,10 +105,11 @@ class Folders extends \yii\db\ActiveRecord {
      * @param integer $drawer drawer id
      * @param integer $batch batch id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return Folders models
      */
-    public static function searchFolders($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $whereStringAMust) {
-        return static::find()->searchFolders($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $whereStringAMust);
+    public static function searchFolders($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $whereStringAMust, $oneOrAll) {
+        return static::find()->searchFolders($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $whereStringAMust, $oneOrAll);
     }
 
     /**
@@ -191,7 +192,7 @@ class Folders extends \yii\db\ActiveRecord {
      * @return boolean true - folders moved
      */
     public static function foldersToMove($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch) {
-        foreach (static::searchFolders(null, null, null, null, null, null, $batch, true) as $folder)
+        foreach (static::searchFolders(null, null, null, null, null, null, $batch, true, StoreLevels::all) as $folder)
             if (!$folder->moveFolder($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch))
                 return false;
 
@@ -238,6 +239,22 @@ class Folders extends \yii\db\ActiveRecord {
         }
 
         empty($transaction) ? '' : $transaction->rollback();
+    }
+    
+    /**
+     * 
+     * @return boolean true - folder is deletable
+     */
+    public function isDeletable() {
+        return !is_object(Files::searchFiles(null, null, null, null, null, null, null, $this->id, true, StoreLevels::one));
+    }
+    
+    /**
+     * 
+     * @return boolean true - folder deleted
+     */
+    public function deleteFolder() {
+        return $this->isDeletable() && $this->delete();
     }
 
 }

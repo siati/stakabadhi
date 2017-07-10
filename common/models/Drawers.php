@@ -99,10 +99,11 @@ class Drawers extends \yii\db\ActiveRecord {
      * @param integer $subsubcompartment sub-sub-compartment id
      * @param integer $shelf shelf id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return Drawers models
      */
-    public static function searchDrawers($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $whereStringAMust) {
-        return static::find()->searchDrawers($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $whereStringAMust);
+    public static function searchDrawers($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $whereStringAMust, $oneOrAll) {
+        return static::find()->searchDrawers($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $whereStringAMust, $oneOrAll);
     }
 
     /**
@@ -175,7 +176,7 @@ class Drawers extends \yii\db\ActiveRecord {
      * @return boolean true - drawers moved
      */
     public static function drawersToMove($store, $compartment, $subcompartment, $subsubcompartment, $shelf) {
-        foreach (static::searchDrawers(null, null, null, null, $shelf, true) as $drawer)
+        foreach (static::searchDrawers(null, null, null, null, $shelf, true, StoreLevels::all) as $drawer)
             if (!$drawer->moveDrawer($store, $compartment, $subcompartment, $subsubcompartment, $shelf))
                 return false;
 
@@ -216,6 +217,22 @@ class Drawers extends \yii\db\ActiveRecord {
         }
 
         empty($transaction) ? '' : $transaction->rollback();
+    }
+    
+    /**
+     * 
+     * @return boolean true - drawer is deletable
+     */
+    public function isDeletable() {
+        return !is_object(Batches::searchBatches(null, null, null, null, null, $this->id, true, StoreLevels::one));
+    }
+    
+    /**
+     * 
+     * @return boolean true - drawer deleted
+     */
+    public function deleteDrawer() {
+        return $this->isDeletable() && $this->delete();
     }
 
 }

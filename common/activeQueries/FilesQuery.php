@@ -49,9 +49,10 @@ class FilesQuery extends \yii\db\ActiveQuery {
      * @param integer $batch batch id
      * @param integer $folder folder id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return \common\models\Files ActiveRecord
      */
-    public function searchFiles($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $folder, $whereStringAMust) {
+    public function searchFiles($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $folder, $whereStringAMust, $oneOrAll) {
         return $this->where(
                         (empty($store) ? '' : $where = "store='$store'")
                         . (empty($compartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "compartment='$compartment'"))
@@ -61,7 +62,7 @@ class FilesQuery extends \yii\db\ActiveQuery {
                         . (empty($drawer) ? ('') : $where = ((empty($where) ? '' : ' && ') . "drawer='$drawer'"))
                         . (empty($batch) ? ('') : $where = ((empty($where) ? '' : ' && ') . "batch='$batch'"))
                         . (empty($folder) ? ('') : (empty($where) ? '' : ' && ')) . ($whereStringAMust || !empty($folder) ? "folder='$folder'" : '')
-                )->orderBy('name asc')->all();
+                )->orderBy('name asc')->$oneOrAll();
     }
 
     /**

@@ -96,10 +96,11 @@ class Shelves extends \yii\db\ActiveRecord {
      * @param integer $subcompartment sub-compartment id
      * @param integer $subsubcompartment sub-sub-compartment id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return Shelves models
      */
-    public static function searchShelves($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust) {
-        return static::find()->searchShelves($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust);
+    public static function searchShelves($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust, $oneOrAll) {
+        return static::find()->searchShelves($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust, $oneOrAll);
     }
 
     /**
@@ -167,7 +168,7 @@ class Shelves extends \yii\db\ActiveRecord {
      * @return boolean true - shelves moved
      */
     public static function shelvesToMove($store, $compartment, $subcompartment, $subsubcompartment) {
-        foreach (static::searchShelves(null, null, null, $subsubcompartment, true) as $shelf)
+        foreach (static::searchShelves(null, null, null, $subsubcompartment, true, StoreLevels::all) as $shelf)
             if (!$shelf->moveShelf($store, $compartment, $subcompartment, $subsubcompartment))
                 return false;
 
@@ -205,6 +206,22 @@ class Shelves extends \yii\db\ActiveRecord {
         }
 
         empty($transaction) ? '' : $transaction->rollback();
+    }
+    
+    /**
+     * 
+     * @return boolean true - shelf is deletable
+     */
+    public function isDeletable() {
+        return !is_object(Drawers::searchDrawers(null, null, null, null, $this->id, true, StoreLevels::one));
+    }
+    
+    /**
+     * 
+     * @return boolean true - shelf deleted
+     */
+    public function deleteShelf() {
+        return $this->isDeletable() && $this->delete();
     }
 
 }

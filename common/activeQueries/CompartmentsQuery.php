@@ -41,10 +41,11 @@ class CompartmentsQuery extends \yii\db\ActiveQuery {
     /**
      * @param integer $store store id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return \common\models\Compartments ActiveRecords
      */
-    public function compartmentsForStore($store, $whereStringAMust) {
-        return $this->where($whereStringAMust || !empty($store) ? "store='$store'" : '')->orderBy('name asc')->all();
+    public function compartmentsForStore($store, $whereStringAMust, $oneOrAll) {
+        return $this->where($whereStringAMust || !empty($store) ? "store='$store'" : '')->orderBy('name asc')->$oneOrAll();
     }
 
     /**

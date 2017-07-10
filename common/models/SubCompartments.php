@@ -90,10 +90,11 @@ class SubCompartments extends \yii\db\ActiveRecord {
      * @param integer $store store id
      * @param integer $compartment compartment id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return SubCompartments models
      */
-    public static function searchSubcompartments($store, $compartment, $whereStringAMust) {
-        return static::find()->searchSubcompartments($store, $compartment, $whereStringAMust);
+    public static function searchSubcompartments($store, $compartment, $whereStringAMust, $oneOrAll) {
+        return static::find()->searchSubcompartments($store, $compartment, $whereStringAMust, $oneOrAll);
     }
 
     /**
@@ -151,7 +152,7 @@ class SubCompartments extends \yii\db\ActiveRecord {
      * @return boolean true - sub-compartments moved
      */
     public static function subcompartmentsToMove($store, $compartment) {
-        foreach (static::searchSubcompartments(null, $compartment, true) as $subcompartment)
+        foreach (static::searchSubcompartments(null, $compartment, true, StoreLevels::all) as $subcompartment)
             if (!$subcompartment->moveSubcompartment($store, $compartment))
                 return false;
 
@@ -183,6 +184,22 @@ class SubCompartments extends \yii\db\ActiveRecord {
         }
 
         empty($transaction) ? '' : $transaction->rollback();
+    }
+    
+    /**
+     * 
+     * @return boolean true - sub-compartment is deletable
+     */
+    public function isDeletable() {
+        return !is_object(SubSubCompartments::searchSubsubcompartments(null, null, $this->id, true, StoreLevels::one));
+    }
+    
+    /**
+     * 
+     * @return boolean true - sub-compartment deleted
+     */
+    public function deleteSubcompartment() {
+        return $this->isDeletable() && $this->delete();
     }
 
 }

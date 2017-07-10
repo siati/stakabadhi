@@ -34,6 +34,8 @@ class StoreLevels extends \yii\db\ActiveRecord {
     const batches = 7;
     const folders = 8;
     const files = 9;
+    const one = 'one';
+    const all = 'all';
 
     /**
      * @inheritdoc
@@ -239,28 +241,28 @@ class StoreLevels extends \yii\db\ActiveRecord {
     public static function defaultStoragesToLoad($level, $id, $whereStringAMust) {
 
         if ($level == self::files)
-            return Files::searchFiles(null, null, null, null, null, null, null, $id, $whereStringAMust);
+            return Files::searchFiles(null, null, null, null, null, null, null, $id, $whereStringAMust, self::all);
 
         if ($level == self::folders)
-            return Folders::searchFolders(null, null, null, null, null, null, $id, $whereStringAMust);
+            return Folders::searchFolders(null, null, null, null, null, null, $id, $whereStringAMust, self::all);
 
         if ($level == self::batches)
-            return Batches::searchBatches(null, null, null, null, null, $id, $whereStringAMust);
+            return Batches::searchBatches(null, null, null, null, null, $id, $whereStringAMust, self::all);
 
         if ($level == self::drawers)
-            return Drawers::searchDrawers(null, null, null, null, $id, $whereStringAMust);
+            return Drawers::searchDrawers(null, null, null, null, $id, $whereStringAMust, self::all);
 
         if ($level == self::shelves)
-            return Shelves::searchShelves(null, null, null, $id, $whereStringAMust);
+            return Shelves::searchShelves(null, null, null, $id, $whereStringAMust, self::all);
 
         if ($level == self::subsubcompartments)
-            return SubSubCompartments::searchSubsubcompartments(null, null, $id, $whereStringAMust);
+            return SubSubCompartments::searchSubsubcompartments(null, null, $id, $whereStringAMust, self::all);
 
         if ($level == self::subcompartments)
-            return SubCompartments::searchSubcompartments(null, $id, $whereStringAMust);
+            return SubCompartments::searchSubcompartments(null, $id, $whereStringAMust, self::all);
 
         if ($level == self::compartments)
-            return Compartments::compartmentsForStore($id, $whereStringAMust);
+            return Compartments::compartmentsForStore($id, $whereStringAMust, self::all);
 
         return Stores::allStores();
     }

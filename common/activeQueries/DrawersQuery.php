@@ -46,16 +46,17 @@ class DrawersQuery extends \yii\db\ActiveQuery {
      * @param integer $subsubcompartment sub-sub-compartment id
      * @param integer $shelf shelf id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return \common\models\Drawers ActiveRecord
      */
-    public function searchDrawers($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $whereStringAMust) {
+    public function searchDrawers($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $whereStringAMust, $oneOrAll) {
         return $this->where(
                         (empty($store) ? '' : $where = "store='$store'")
                         . (empty($compartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "compartment='$compartment'"))
                         . (empty($subcompartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "sub_compartment='$subcompartment'"))
                         . (empty($subsubcompartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "sub_sub_compartment='$subsubcompartment'"))
                         . (empty($shelf) ? ('') : (empty($where) ? '' : ' && ')) . ($whereStringAMust || !empty($shelf) ? "shelf='$shelf'" : '')
-                )->orderBy('name asc')->all();
+                )->orderBy('name asc')->$oneOrAll();
     }
 
     /**

@@ -87,10 +87,11 @@ class Compartments extends \yii\db\ActiveRecord {
      * 
      * @param integer $store store id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return Compartments models
      */
-    public static function compartmentsForStore($store, $whereStringAMust) {
-        return static::find()->compartmentsForStore($store, $whereStringAMust);
+    public static function compartmentsForStore($store, $whereStringAMust, $oneOrAll) {
+        return static::find()->compartmentsForStore($store, $whereStringAMust, $oneOrAll);
     }
 
     /**
@@ -122,7 +123,7 @@ class Compartments extends \yii\db\ActiveRecord {
      * @param integer $store store id
      * @return Compartments model
      */
-    public static function CompartmentToLoad($id, $store) {
+    public static function compartmentToLoad($id, $store) {
         return is_object($model = static::returnCompartment($id)) ? $model : static::newCompartment($store);
     }
 
@@ -160,6 +161,22 @@ class Compartments extends \yii\db\ActiveRecord {
         }
 
         empty($transaction) ? '' : $transaction->rollback();
+    }
+    
+    /**
+     * 
+     * @return boolean true - compartment is deletable
+     */
+    public function isDeletable() {
+        return !is_object(SubCompartments::searchSubcompartments(null, $this->id, true, StoreLevels::one));
+    }
+    
+    /**
+     * 
+     * @return boolean true - compartment deleted
+     */
+    public function deleteCompartment() {
+        return $this->isDeletable() && $this->delete();
     }
 
 }

@@ -34,13 +34,15 @@ class FilesController extends Controller {
                 'class' => AccessControl::className(),
                 'only' => [
                     'section-name', 'dynamic-storages', 'the-files', 'stores', 'compartments', 'sections', 'subsections', 'shelves', 'drawers', 'batches', 'folders', 'files',
-                    'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission', 'create', 'update', 'index', 'delete', 'view'
+                    'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission',
+                    'delete-stores', 'delete-compartments', 'delete-sections', 'delete-subsections', 'delete-shelves', 'delete-drawers', 'delete-batches', 'delete-folders', 'delete-files', 'create', 'update', 'index', 'delete', 'view'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'section-name', 'dynamic-storages', 'the-files', 'stores', 'compartments', 'sections', 'subsections', 'shelves', 'drawers', 'batches', 'folders', 'files',
-                            'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission'
+                            'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission',
+                            'delete-stores', 'delete-compartments', 'delete-sections', 'delete-subsections', 'delete-shelves', 'delete-drawers', 'delete-batches', 'delete-folders', 'delete-files'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -83,7 +85,7 @@ class FilesController extends Controller {
      * load files onto view
      */
     public function actionTheFiles() {
-        return $this->renderPartial('the-files', ['files' => Files::searchFiles(null, null, null, null, null, null, null, $_POST['folder'], true)]);
+        return $this->renderPartial('the-files', ['files' => Files::searchFiles(null, null, null, null, null, null, null, $_POST['folder'], true, StoreLevels::all)]);
     }
 
     /**

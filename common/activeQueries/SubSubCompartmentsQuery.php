@@ -44,14 +44,15 @@ class SubSubCompartmentsQuery extends \yii\db\ActiveQuery {
      * @param integer $compartment compartment id
      * @param integer $subcompartment sub-compartment id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return \common\models\SubSubCompartments ActiveRecord
      */
-    public function searchSubsubcompartments($store, $compartment, $subcompartment, $whereStringAMust) {
+    public function searchSubsubcompartments($store, $compartment, $subcompartment, $whereStringAMust, $oneOrAll) {
         return $this->where(
                         (empty($store) ? '' : $where = "store='$store'")
                         . (empty($compartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "compartment='$compartment'"))
                         . (empty($subcompartment) ? ('') : (empty($where) ? '' : ' && ')) . ($whereStringAMust || !empty($subcompartment) ? "sub_compartment='$subcompartment'" : '')
-                )->orderBy('name asc')->all();
+                )->orderBy('name asc')->$oneOrAll();
     }
 
     /**

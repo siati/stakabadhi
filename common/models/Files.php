@@ -108,10 +108,11 @@ class Files extends \yii\db\ActiveRecord {
      * @param integer $batch batch id
      * @param integer $folder folder id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return Files models
      */
-    public static function searchFiles($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $folder, $whereStringAMust) {
-        return static::find()->searchFiles($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $folder, $whereStringAMust);
+    public static function searchFiles($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $folder, $whereStringAMust, $oneOrAll) {
+        return static::find()->searchFiles($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $folder, $whereStringAMust, $oneOrAll);
     }
 
     /**
@@ -236,6 +237,14 @@ class Files extends \yii\db\ActiveRecord {
         $this->folder = $folder;
         
         return $this->modelSave();
+    }
+    
+    /**
+     * 
+     * @return boolean true - file deleted
+     */
+    public function deleteFile() {
+        return $this->delete();
     }
 
 }

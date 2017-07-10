@@ -101,7 +101,7 @@ foreach ($levels as $level => $detail)
     <li class="custom-sub-menu strg-unts-rfsh" onclick="refreshFiles()">Refresh</li>
     <li class="custom-sub-menu strg-unts-slct">Select</li>
     <li class="custom-sub-menu strg-unts-prpt">Properties</li>
-    <li class="custom-sub-menu strg-unts-dlt">Delete</li>
+    <li class="custom-sub-menu strg-unts-dlt" onclick="deleteStorage($(this).parent().attr('lvl'), $(this).parent().attr('str-id'), $(this).parent().attr('dlt-actn'))">Delete</li>
 </ul>
 <!-- custom context menu for storage units -->
 
@@ -187,7 +187,7 @@ $this->registerJs(
             }
             
             function selectedListId(elmnt) {
-                $('.custom-menu-strg-unts').attr('lvl', lvl = $('.files-ctnt-pn-lst').attr('lvl')).attr('str-id', elmnt.attr('str-id')).attr('mv-actn', 'move-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn'));
+                $('.custom-menu-strg-unts').attr('lvl', lvl = $('.files-ctnt-pn-lst').attr('lvl')).attr('str-id', elmnt.attr('str-id')).attr('mv-actn', 'move-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn')).attr('dlt-actn', 'delete-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn'));
             }
             
             function highlightStorageOnList(lvl, val) {
@@ -270,6 +270,39 @@ $this->registerJs(
                         $('#storelevel-' + lvl).change();
                     }
                 );
+            }
+            
+            function deleteStorage(lvl, id, actn) {
+
+                swal(
+                        {
+                            title: 'Delete This Item?',
+                            text: '<h3>Items that have content will not be deleted</h3>',
+                            type: 'warning',
+                            html: true,
+                            showCancelButton: true,
+                            confirmButtonColor: '#dd6b55',
+                            confirmButtonText: 'Proceed',
+                            cancelButtonText: 'Cancel',
+                            closeOnConfirm: false,
+                            closeOnCancel: false,
+                            allowEscapeKey: true,
+                            allowOutsideClick: true
+                        },
+                        function (ok) {
+                            ok ?
+                                $.post('files/' + actn, updateStoragePostItems(lvl, id),
+                                    function (dltd) {
+                                        if (dltd) {
+                                            customErrorSwal('Completed', '<h3>Item Deleted Successfully</h3>', 2000, 'success');
+                                            dynamicStorages(lvl * 1 - 1, $('#storelevel-' + (lvl * 1 - 1)).length ?  $('#storelevel-' + (lvl * 1 - 1)).val() : '', $('#storelevel-' + lvl).val());
+                                        } else
+                                            customErrorSwal('Not Done', '<h3>Item could not be deleted!</h3>', 2000, 'error');
+                                    }
+                                ):
+                                swal.close();
+                        }
+                );            
             }
             
             function filePermission(hdg, lvl, lvl_id) {

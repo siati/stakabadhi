@@ -102,10 +102,11 @@ class Batches extends \yii\db\ActiveRecord {
      * @param integer $shelf shelf id
      * @param integer $drawer drawer id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return Batches models
      */
-    public static function searchBatches($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $whereStringAMust) {
-        return static::find()->searchBatches($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $whereStringAMust);
+    public static function searchBatches($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $whereStringAMust, $oneOrAll) {
+        return static::find()->searchBatches($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $whereStringAMust, $oneOrAll);
     }
 
     /**
@@ -183,7 +184,7 @@ class Batches extends \yii\db\ActiveRecord {
      * @return boolean true - batches moved
      */
     public static function batchesToMove($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer) {
-        foreach (static::searchBatches(null, null, null, null, null, $drawer, true) as $batch)
+        foreach (static::searchBatches(null, null, null, null, null, $drawer, true, StoreLevels::all) as $batch)
             if (!$batch->moveBatch($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer))
                 return false;
 
@@ -227,6 +228,22 @@ class Batches extends \yii\db\ActiveRecord {
         }
 
         empty($transaction) ? '' : $transaction->rollback();
+    }
+    
+    /**
+     * 
+     * @return boolean true - batch is deletable
+     */
+    public function isDeletable() {
+        return !is_object(Folders::searchFolders(null, null, null, null, null, null, $this->id, true, StoreLevels::one));
+    }
+    
+    /**
+     * 
+     * @return boolean true - batch deleted
+     */
+    public function deleteBatch() {
+        return $this->isDeletable() && $this->delete();
     }
 
 }

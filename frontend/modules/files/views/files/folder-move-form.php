@@ -37,17 +37,17 @@ use common\models\Batches;
     
     <?= $form->field($model, 'store')->dropDownList(StaticMethods::modelsToArray(Stores::allStores(), 'id', 'name'), ['onchange' => "dynamicStorages2('$compartmentLevel', $(this).val(), $('#folders-compartment').val(), null, 'folders-compartment', true)"]) ?>
     
-    <?= $form->field($model, 'compartment')->dropDownList(StaticMethods::modelsToArray(Compartments::compartmentsForStore($model->store, true), 'id', 'name'), ['onchange' => "dynamicStorages2('$subcompartmentLevel', $(this).val(), $('#folders-sub_compartment').val(), null, 'folders-sub_compartment', true)"]) ?>
+    <?= $form->field($model, 'compartment')->dropDownList(StaticMethods::modelsToArray(Compartments::compartmentsForStore($model->store, true, StoreLevels::all), 'id', 'name'), ['onchange' => "dynamicStorages2('$subcompartmentLevel', $(this).val(), $('#folders-sub_compartment').val(), null, 'folders-sub_compartment', true)"]) ?>
     
-    <?= $form->field($model, 'sub_compartment')->dropDownList(StaticMethods::modelsToArray(SubCompartments::searchSubcompartments(null, $model->compartment, true), 'id', 'name'), ['onchange' => "dynamicStorages2('$subsubcompartmentLevel', $(this).val(), $('#folders-sub_sub_compartment').val(), null, 'folders-sub_sub_compartment', true)"]) ?>
+    <?= $form->field($model, 'sub_compartment')->dropDownList(StaticMethods::modelsToArray(SubCompartments::searchSubcompartments(null, $model->compartment, true, StoreLevels::all), 'id', 'name'), ['onchange' => "dynamicStorages2('$subsubcompartmentLevel', $(this).val(), $('#folders-sub_sub_compartment').val(), null, 'folders-sub_sub_compartment', true)"]) ?>
     
-    <?= $form->field($model, 'sub_sub_compartment')->dropDownList(StaticMethods::modelsToArray(SubSubCompartments::searchSubsubcompartments(null, null, $model->sub_compartment, true), 'id', 'name'), ['onchange' => "dynamicStorages2('$shelfLevel', $(this).val(), $('#folders-shelf').val(), null, 'folders-shelf', true)"]) ?>
+    <?= $form->field($model, 'sub_sub_compartment')->dropDownList(StaticMethods::modelsToArray(SubSubCompartments::searchSubsubcompartments(null, null, $model->sub_compartment, true, StoreLevels::all), 'id', 'name'), ['onchange' => "dynamicStorages2('$shelfLevel', $(this).val(), $('#folders-shelf').val(), null, 'folders-shelf', true)"]) ?>
     
-    <?= $form->field($model, 'shelf')->dropDownList(StaticMethods::modelsToArray(Shelves::searchShelves(null, null, null, $model->sub_sub_compartment, true), 'id', 'name'), ['onchange' => "dynamicStorages2('$drawerLevel', $(this).val(), $('#folders-drawer').val(), null, 'folders-drawer', true)"]) ?>
+    <?= $form->field($model, 'shelf')->dropDownList(StaticMethods::modelsToArray(Shelves::searchShelves(null, null, null, $model->sub_sub_compartment, true, StoreLevels::all), 'id', 'name'), ['onchange' => "dynamicStorages2('$drawerLevel', $(this).val(), $('#folders-drawer').val(), null, 'folders-drawer', true)"]) ?>
     
-    <?= $form->field($model, 'drawer')->dropDownList(StaticMethods::modelsToArray(Drawers::searchDrawers(null, null, null, null, $model->shelf, true), 'id', 'name'), ['onchange' => "dynamicStorages2('$batchLevel', $(this).val(), $('#folders-batch').val(), null, 'folders-batch', true)"]) ?>
+    <?= $form->field($model, 'drawer')->dropDownList(StaticMethods::modelsToArray(Drawers::searchDrawers(null, null, null, null, $model->shelf, true, StoreLevels::all), 'id', 'name'), ['onchange' => "dynamicStorages2('$batchLevel', $(this).val(), $('#folders-batch').val(), null, 'folders-batch', true)"]) ?>
     
-    <?= $form->field($model, 'batch')->dropDownList(StaticMethods::modelsToArray(Batches::searchBatches(null, null, null, null, null, $model->drawer, true), 'id', 'name'), []) ?>
+    <?= $form->field($model, 'batch')->dropDownList(StaticMethods::modelsToArray(Batches::searchBatches(null, null, null, null, null, $model->drawer, true, StoreLevels::all), 'id', 'name'), []) ?>
 
     <?php ActiveForm::end(); ?>
 

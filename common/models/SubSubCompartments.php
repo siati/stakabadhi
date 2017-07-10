@@ -93,10 +93,11 @@ class SubSubCompartments extends \yii\db\ActiveRecord {
      * @param integer $compartment compartment id
      * @param integer $subcompartment sub-compartment id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return SubSubCompartments models
      */
-    public static function searchSubsubcompartments($store, $compartment, $subcompartment, $whereStringAMust) {
-        return static::find()->searchSubsubcompartments($store, $compartment, $subcompartment, $whereStringAMust);
+    public static function searchSubsubcompartments($store, $compartment, $subcompartment, $whereStringAMust, $oneOrAll) {
+        return static::find()->searchSubsubcompartments($store, $compartment, $subcompartment, $whereStringAMust, $oneOrAll);
     }
 
     /**
@@ -159,7 +160,7 @@ class SubSubCompartments extends \yii\db\ActiveRecord {
      * @return boolean true - sub-sub-compartments moved
      */
     public static function subsubcompartmentsToMove($store, $compartment, $subcompartment) {
-        foreach (static::searchSubsubcompartments(null, null, $subcompartment, true) as $subsubcompartment)
+        foreach (static::searchSubsubcompartments(null, null, $subcompartment, true, StoreLevels::all) as $subsubcompartment)
             if (!$subsubcompartment->moveSubsubcompartment($store, $compartment, $subcompartment))
                 return false;
 
@@ -194,6 +195,22 @@ class SubSubCompartments extends \yii\db\ActiveRecord {
         }
 
         empty($transaction) ? '' : $transaction->rollback();
+    }
+    
+    /**
+     * 
+     * @return boolean true - sub-sub-compartment is deletable
+     */
+    public function isDeletable() {
+        return !is_object(Shelves::searchShelves(null, null, null, $this->id, true, StoreLevels::one));
+    }
+    
+    /**
+     * 
+     * @return boolean true - sub-sub-compartment deleted
+     */
+    public function deleteSubsubcompartment() {
+        return $this->isDeletable() && $this->delete();
     }
 
 }

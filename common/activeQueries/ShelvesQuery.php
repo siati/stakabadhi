@@ -44,15 +44,16 @@ class ShelvesQuery extends \yii\db\ActiveQuery {
      * @param integer $subcompartment sub-compartment id
      * @param integer $subsubcompartment sub-sub-compartment id
      * @param boolean $whereStringAMust force where clause
+     * @param string $oneOrAll one or all
      * @return \common\models\Shelves ActiveRecord
      */
-    public function searchShelves($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust) {
+    public function searchShelves($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust, $oneOrAll) {
         return $this->where(
                         (empty($store) ? '' : $where = "store='$store'")
                         . (empty($compartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "compartment='$compartment'"))
                         . (empty($subcompartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "sub_compartment='$subcompartment'"))
                         . (empty($subsubcompartment) ? ('') : (empty($where) ? '' : ' && ')) . ($whereStringAMust || !empty($subsubcompartment) ? "sub_sub_compartment='$subsubcompartment'" : '')
-                )->orderBy('name asc')->all();
+                )->orderBy('name asc')->$oneOrAll();
     }
 
     /**

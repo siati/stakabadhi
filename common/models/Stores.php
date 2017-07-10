@@ -121,5 +121,21 @@ class Stores extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
+    
+    /**
+     * 
+     * @return boolean true - store is deletable
+     */
+    public function isDeletable() {
+        return !is_object(Compartments::compartmentsForStore($this->id, true, StoreLevels::one));
+    }
+    
+    /**
+     * 
+     * @return boolean true - store deleted
+     */
+    public function deleteStore() {
+        return $this->isDeletable() && $this->delete();
+    }
 
 }

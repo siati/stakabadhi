@@ -29,9 +29,9 @@ use common\models\SubCompartments;
     
     <?= $form->field($model, 'store')->dropDownList(StaticMethods::modelsToArray(Stores::allStores(), 'id', 'name'), ['onchange' => "dynamicStorages2('$compartmentLevel', $(this).val(), $('#subsubcompartments-compartment').val(), null, 'subsubcompartments-compartment', true)"]) ?>
     
-    <?= $form->field($model, 'compartment')->dropDownList(StaticMethods::modelsToArray(Compartments::compartmentsForStore($model->store, true), 'id', 'name'), ['onchange' => "dynamicStorages2('$subcompartmentLevel', $(this).val(), $('#subsubcompartments-sub_compartment').val(), null, 'subsubcompartments-sub_compartment', true)"]) ?>
+    <?= $form->field($model, 'compartment')->dropDownList(StaticMethods::modelsToArray(Compartments::compartmentsForStore($model->store, true, StoreLevels::all), 'id', 'name'), ['onchange' => "dynamicStorages2('$subcompartmentLevel', $(this).val(), $('#subsubcompartments-sub_compartment').val(), null, 'subsubcompartments-sub_compartment', true)"]) ?>
     
-    <?= $form->field($model, 'sub_compartment')->dropDownList(StaticMethods::modelsToArray(SubCompartments::searchSubcompartments(null, $model->compartment, true), 'id', 'name'), []) ?>
+    <?= $form->field($model, 'sub_compartment')->dropDownList(StaticMethods::modelsToArray(SubCompartments::searchSubcompartments(null, $model->compartment, true, StoreLevels::all), 'id', 'name'), []) ?>
 
     <?php ActiveForm::end(); ?>
 
