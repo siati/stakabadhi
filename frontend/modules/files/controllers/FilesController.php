@@ -443,6 +443,78 @@ class FilesController extends Controller {
     }
 
     /**
+     * 
+     * delete stores
+     */
+    public function actionDeleteStores() {
+        echo Stores::returnStore($_POST['Stores']['id'])->deleteStore();
+    }
+
+    /**
+     * 
+     * delete compartments
+     */
+    public function actionDeleteCompartments() {
+        echo Compartments::returnCompartment($_POST['Compartments']['id'])->deleteCompartment();
+    }
+
+    /**
+     * 
+     * delete sub-compartments
+     */
+    public function actionDeleteSections() {
+        echo SubCompartments::returnSubcompartment($_POST['SubCompartments']['id'])->deleteSubcompartment();
+    }
+
+    /**
+     * 
+     * delete sub-sub-compartments
+     */
+    public function actionDeleteSubsections() {
+        echo SubSubCompartments::returnSubsubcompartment($_POST['SubSubCompartments']['id'])->deleteSubsubcompartment();
+    }
+
+    /**
+     * 
+     * delete shelves
+     */
+    public function actionDeleteShelves() {
+        echo Shelves::returnShelf($_POST['Shelves']['id'])->deleteShelf();
+    }
+
+    /**
+     * 
+     * delete drawers
+     */
+    public function actionDeleteDrawers() {
+        echo Drawers::returnDrawer($_POST['Drawers']['id'])->deleteDrawer();
+    }
+
+    /**
+     * 
+     * delete batches
+     */
+    public function actionDeleteBatches() {
+        echo Batches::returnBatch($_POST['Batches']['id'])->deleteBatch();
+    }
+
+    /**
+     * 
+     * delete folders
+     */
+    public function actionDeleteFolders() {
+        echo Folders::returnFolder($_POST['Folders']['id'])->deleteFolder();
+    }
+
+    /**
+     * 
+     * delete files
+     */
+    public function actionDeleteFiles() {
+        echo Files::returnFile($_POST['Files']['id'])->deleteFile();
+    }
+
+    /**
      * Lists all Files models.
      * @return mixed
      */
