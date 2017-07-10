@@ -273,7 +273,6 @@ $this->registerJs(
             }
             
             function deleteStorage(lvl, id, actn) {
-
                 swal(
                         {
                             title: 'Delete This Item?',
