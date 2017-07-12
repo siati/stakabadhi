@@ -37,6 +37,15 @@ class CompartmentsQuery extends \yii\db\ActiveQuery {
     public function allCompartments() {
         return $this->orderBy('name asc')->all();
     }
+
+    /**
+     * @param integer $store store id
+     * @param boolean $whereStringAMust force where clause
+     * @return string where clause
+     */
+    public static function buildWhere($store, $whereStringAMust) {
+        return $whereStringAMust || !empty($store) ? "store='$store'" : '';
+    }
     
     /**
      * @param integer $store store id
@@ -45,7 +54,20 @@ class CompartmentsQuery extends \yii\db\ActiveQuery {
      * @return \common\models\Compartments ActiveRecords
      */
     public function compartmentsForStore($store, $whereStringAMust, $oneOrAll) {
-        return $this->where($whereStringAMust || !empty($store) ? "store='$store'" : '')->orderBy('name asc')->$oneOrAll();
+        return $this->where(static::buildWhere($store, $whereStringAMust))->orderBy('name asc')->$oneOrAll();
+    }
+
+    /**
+     * @param integer $store store id
+     * @param boolean $whereStringAMust force where clause
+     * @return \common\models\Compartments ActiveRecord
+     */
+    public function countCompartments($store, $whereStringAMust) {
+        $table = Compartments::tableName();
+        
+        $where = static::buildWhere($store, $whereStringAMust);
+        
+        return Compartments::findBySql("select count(id) as id from $table where $where")->all();
     }
 
     /**

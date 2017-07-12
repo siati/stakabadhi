@@ -196,7 +196,7 @@ class StoreLevels extends \yii\db\ActiveRecord {
             self::files => ['Files', Files::tableName()]
         ];
     }
-    
+
     /**
      * 
      * @param integer $level storage level
@@ -265,6 +265,45 @@ class StoreLevels extends \yii\db\ActiveRecord {
             return Compartments::compartmentsForStore($id, $whereStringAMust, self::all);
 
         return Stores::allStores();
+    }
+
+    /**
+     * 
+     * @param integer $level storage level
+     * @param integer $id storage id
+     * @param boolean $whereStringAMust force where clause
+     * @return array no. of storage units
+     */
+    public static function countStorages($level, $id, $whereStringAMust) {
+
+        if ($level < ($str = self::stores))
+            $storages[$str] = [static::returnLevel($str)->name, Stores::countStores()];
+
+        if ($level < ($cpr = self::compartments))
+            $storages[$cpr] = [static::returnLevel($cpr)->name, Compartments::countCompartments($level == $str ? $id : '', $whereStringAMust)];
+
+        if ($level < ($sbc = self::subcompartments))
+            $storages[$sbc] = [static::returnLevel($sbc)->name, SubCompartments::countSubcompartments($level == $str ? $id : '', $level == $cpr ? $id : '', $whereStringAMust)];
+
+        if ($level < ($sbs = self::subsubcompartments))
+            $storages[$sbs] = [static::returnLevel($sbs)->name, SubSubCompartments::countSubsubcompartments($level == $str ? $id : '', $level == $cpr ? $id : '', $level == $sbc ? $id : '', $whereStringAMust)];
+
+        if ($level < ($slf = self::shelves))
+            $storages[$slf] = [static::returnLevel($slf)->name, Shelves::countShelves($level == $str ? $id : '', $level == $cpr ? $id : '', $level == $sbc ? $id : '', $level == $sbs ? $id : '', $whereStringAMust)];
+
+        if ($level < ($drw = self::drawers))
+            $storages[$drw] = [static::returnLevel($drw)->name, Drawers::countDrawers($level == $str ? $id : '', $level == $cpr ? $id : '', $level == $sbc ? $id : '', $level == $sbs ? $id : '', $level == $slf ? $id : '', $whereStringAMust)];
+
+        if ($level < ($btc = self::batches))
+            $storages[$btc] = [static::returnLevel($btc)->name, Batches::countBatches($level == $str ? $id : '', $level == $cpr ? $id : '', $level == $sbc ? $id : '', $level == $sbs ? $id : '', $level == $slf ? $id : '', $level == $drw ? $id : '', $whereStringAMust)];
+
+        if ($level < ($fld = self::folders))
+            $storages[$fld] = [static::returnLevel($fld)->name, Folders::countFolders($level == $str ? $id : '', $level == $cpr ? $id : '', $level == $sbc ? $id : '', $level == $sbs ? $id : '', $level == $slf ? $id : '', $level == $drw ? $id : '', $level == $btc ? $id : '', $whereStringAMust)];
+
+        if ($level < ($fls = self::files))
+            $storages[$fls] = [static::returnLevel($fls)->name, Files::countFiles($level == $str ? $id : '', $level == $cpr ? $id : '', $level == $sbc ? $id : '', $level == $sbs ? $id : '', $level == $slf ? $id : '', $level == $drw ? $id : '', $level == $btc ? $id : '', $level == $fld ? $id : '', $whereStringAMust)];
+
+        return $storages;
     }
 
 }

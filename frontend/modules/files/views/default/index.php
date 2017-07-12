@@ -63,9 +63,15 @@ foreach ($levels as $level => $detail)
 
     <div class="files-right-pn">
         <div class="files-right-pn-pn">
-            <div class="inst-prpt-pn-sub" style="height: 40%"></div>
-            <div class="inst-prpt-pn-sub" style="height: 15%"></div>
-            <div class="inst-prpt-pn-sub" style="height: 15%"></div>
+            <div class="files-prpt-pn-sub" style="height: 40%">
+                <div class="files-right-pn-pn-sub-1"></div>
+            </div>
+            <div class="files-prpt-pn-sub" style="height: 15%">
+                <div class="files-right-pn-pn-sub-2"></div>
+            </div>
+            <div class="files-prpt-pn-sub" style="height: 15%">
+                <div class="files-right-pn-pn-sub-3"></div>
+            </div>
             <?= $branding ?>
         </div>
     </div>
@@ -105,6 +111,7 @@ foreach ($levels as $level => $detail)
 </ul>
 <!-- custom context menu for storage units -->
 
+<!-- custom context menu for new storage units -->
 <ul class="custom-menu custom-menu-auto-hide custom-menu-new-strg-unts">
     <li class="custom-sub-menu new-strg-unts-str" lvl="<?= $storeLevel = StoreLevels::stores ?>"><?= StoreLevels::returnLevel($storeLevel)->name ?></li>
     <li class="custom-sub-menu new-strg-unts-cprtmt" lvl="<?= $compartmentLevel = StoreLevels::compartments ?>"><?= StoreLevels::returnLevel($compartmentLevel)->name ?></li>
@@ -116,6 +123,7 @@ foreach ($levels as $level => $detail)
     <li class="custom-sub-menu new-strg-unts-fldr" lvl="<?= $folderLevel = StoreLevels::folders ?>"><?= StoreLevels::returnLevel($folderLevel)->name ?></li>
     <li class="custom-sub-menu new-strg-unts-fl" lvl="<?= $fileLevel = StoreLevels::files ?>"><?= StoreLevels::returnLevel($fileLevel)->name ?></li>
 </ul>
+<!-- custom context menu for new storage units -->
 
 <?php $read_rights = FilePermissions::read_rights ?>
 <?php $write_rights = FilePermissions::write_rights; ?>
@@ -182,6 +190,8 @@ $this->registerJs(
                     function () {
                         $(this).attr('onclick', 'selectedListId($(this))').attr('cstm-mn', '.custom-menu-strg-unts')
                         .addClass($(this).attr('str-id') * 1 === $('#storelevel-' + $('.files-ctnt-pn-lst').attr('lvl')).val() * 1 ? 'lst-slctd' : '');
+                        
+                        $(this).hasClass('lst-slctd') ? storageProperties(elmnt.attr('lvl'), $(this).attr('str-id')) : '';
                     }
                 );
             }
@@ -199,6 +209,7 @@ $this->registerJs(
             
             function openStorage(lvl, id) {
                 $('#storelevel-' + lvl).val(id).change();
+                storageProperties(lvl, id);
             }
             
             function refreshFiles() {
@@ -339,6 +350,14 @@ $this->registerJs(
                         rotatePermissionButton(btn, false, false);
                         prpts = permissionButton(prmsn[1]);
                         btn.parents('tr').find('td span').removeClass('btn-success').removeClass('btn-info').removeClass('btn-default').addClass('btn-' + prpts[1]);
+                    }
+                );
+            }
+            
+            function storageProperties(lvl, id) {
+                $.post('files/file-properties', {'level': lvl, 'id': id},
+                    function (prpts) {
+                        $('.files-right-pn-pn-sub-1').html(prpts);
                     }
                 );
             }

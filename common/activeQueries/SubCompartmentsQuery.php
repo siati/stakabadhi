@@ -38,6 +38,16 @@ class SubCompartmentsQuery extends \yii\db\ActiveQuery {
     public function allSubcompartments() {
         return $this->orderBy('name asc')->all();
     }
+
+    /**
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param boolean $whereStringAMust force where clause
+     * @return string where clause
+     */
+    public static function buildWhere($store, $compartment, $whereStringAMust) {
+        return (empty($store) ? '' : $where = "store='$store'") . (empty($compartment) ? ('') : (empty($where) ? '' : ' && ')) . (($whereStringAMust && empty($where)) || !empty($compartment) ? "compartment='$compartment'" : '');
+    }
     
     /**
      * @param integer $store store id
@@ -47,9 +57,21 @@ class SubCompartmentsQuery extends \yii\db\ActiveQuery {
      * @return \common\models\SubCompartments ActiveRecord
      */
     public function searchSubcompartments($store, $compartment, $whereStringAMust, $oneOrAll) {
-        return $this->where(
-                (empty($store) ? '' : $where = "store='$store'") . (empty($compartment) ? ('') : (empty($where) ? '' : ' && ')) . ($whereStringAMust || !empty($compartment) ? "compartment='$compartment'" : '')
-                )->orderBy('name asc')->$oneOrAll();
+        return $this->where(static::buildWhere($store, $compartment, $whereStringAMust))->orderBy('name asc')->$oneOrAll();
+    }
+
+    /**
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param boolean $whereStringAMust force where clause
+     * @return \common\models\SubCompartments ActiveRecord
+     */
+    public function countSubcompartments($store, $compartment, $whereStringAMust) {
+        $table = SubCompartments::tableName();
+        
+        $where = static::buildWhere($store, $compartment, $whereStringAMust);
+        
+        return SubCompartments::findBySql("select count(id) as id from $table where $where")->all();
     }
 
     /**

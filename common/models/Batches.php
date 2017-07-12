@@ -111,6 +111,22 @@ class Batches extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param integer $subcompartment sub-compartment id
+     * @param integer $subsubcompartment sub-sub-compartment id
+     * @param integer $shelf shelf id
+     * @param integer $drawer drawer id
+     * @param boolean $whereStringAMust force where clause
+     * @return integer no. of batches
+     */
+    public static function countBatches($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $whereStringAMust) {
+        foreach (static::find()->countBatches($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $whereStringAMust) as $batch)
+            return $batch->id;
+    }
+
+    /**
+     * 
      * @param string $reference_no reference no
      * @return Batches model
      */

@@ -96,6 +96,17 @@ class Compartments extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param integer $store store id
+     * @param boolean $whereStringAMust force where clause
+     * @return integer no. of compartments
+     */
+    public static function countCompartments($store, $whereStringAMust) {
+        foreach (static::find()->countCompartments($store, $whereStringAMust) as $compartment)
+            return $compartment->id;
+    }
+
+    /**
+     * 
      * @param string $reference_no reference no
      * @return Compartments model
      */

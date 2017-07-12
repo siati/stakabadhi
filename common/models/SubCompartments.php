@@ -99,6 +99,18 @@ class SubCompartments extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param boolean $whereStringAMust force where clause
+     * @return integer no. of sub-compartments
+     */
+    public static function countSubcompartments($store, $compartment, $whereStringAMust) {
+        foreach (static::find()->countSubcompartments($store, $compartment, $whereStringAMust) as $subcompartment)
+            return $subcompartment->id;
+    }
+
+    /**
+     * 
      * @param string $reference_no reference no
      * @return SubCompartments model
      */

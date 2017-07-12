@@ -1,6 +1,7 @@
 <?php
 
 namespace common\activeQueries;
+
 use common\models\Shelves;
 
 /**
@@ -44,16 +45,44 @@ class ShelvesQuery extends \yii\db\ActiveQuery {
      * @param integer $subcompartment sub-compartment id
      * @param integer $subsubcompartment sub-sub-compartment id
      * @param boolean $whereStringAMust force where clause
+     * @return string where clause
+     */
+    public static function buildWhere($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust) {
+        return (empty($store) ? '' : $where = "store='$store'")
+                . (empty($compartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "compartment='$compartment'"))
+                . (empty($subcompartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "sub_compartment='$subcompartment'"))
+                . (empty($subsubcompartment) ? ('') : (empty($where) ? '' : ' && ')) . (($whereStringAMust && empty($where)) || !empty($subsubcompartment) ? "sub_sub_compartment='$subsubcompartment'" : '');
+    }
+
+    /**
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param integer $subcompartment sub-compartment id
+     * @param integer $subsubcompartment sub-sub-compartment id
+     * @param boolean $whereStringAMust force where clause
      * @param string $oneOrAll one or all
      * @return \common\models\Shelves ActiveRecord
      */
     public function searchShelves($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust, $oneOrAll) {
         return $this->where(
-                        (empty($store) ? '' : $where = "store='$store'")
-                        . (empty($compartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "compartment='$compartment'"))
-                        . (empty($subcompartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "sub_compartment='$subcompartment'"))
-                        . (empty($subsubcompartment) ? ('') : (empty($where) ? '' : ' && ')) . ($whereStringAMust || !empty($subsubcompartment) ? "sub_sub_compartment='$subsubcompartment'" : '')
+                        static::buildWhere($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust)
                 )->orderBy('name asc')->$oneOrAll();
+    }
+
+    /**
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param integer $subcompartment sub-compartment id
+     * @param integer $subsubcompartment sub-sub-compartment id
+     * @param boolean $whereStringAMust force where clause
+     * @return \common\models\Shelves ActiveRecord
+     */
+    public function countShelves($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust) {
+        $table = Shelves::tableName();
+        
+        $where = static::buildWhere($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust);
+        
+        return Shelves::findBySql("select count(id) as id from $table where $where")->all();
     }
 
     /**

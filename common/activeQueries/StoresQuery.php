@@ -37,6 +37,12 @@ class StoresQuery extends \yii\db\ActiveQuery {
     public function allStores() {
         return $this->orderBy('name asc')->all();
     }
+    
+     public function countStores() {
+        $table = Stores::tableName();
+        
+        return Stores::findBySql("select count(id) as id from $table")->all();
+    }
 
     /**
      * 

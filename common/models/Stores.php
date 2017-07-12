@@ -83,6 +83,15 @@ class Stores extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @return integer no. of stores
+     */
+    public static function countStores() {
+        foreach (static::find()->countStores() as $store)
+            return $store->id;
+    }
+
+    /**
+     * 
      * @param string $reference_no reference no
      * @return Stores model
      */
@@ -121,7 +130,7 @@ class Stores extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
-    
+
     /**
      * 
      * @return boolean true - store is deletable
@@ -129,7 +138,7 @@ class Stores extends \yii\db\ActiveRecord {
     public function isDeletable() {
         return !is_object(Compartments::compartmentsForStore($this->id, true, StoreLevels::one));
     }
-    
+
     /**
      * 
      * @return boolean true - store deleted

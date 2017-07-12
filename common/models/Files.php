@@ -117,6 +117,24 @@ class Files extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param integer $subcompartment sub-compartment id
+     * @param integer $subsubcompartment sub-sub-compartment id
+     * @param integer $shelf shelf id
+     * @param integer $drawer drawer id
+     * @param integer $batch batch id
+     * @param integer $folder folder id
+     * @param boolean $whereStringAMust force where clause
+     * @return integer no. of files
+     */
+    public static function countFiles($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $folder, $whereStringAMust) {
+        foreach (static::find()->countFiles($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $folder, $whereStringAMust) as $file)
+            return $file->id;
+    }
+
+    /**
+     * 
      * @param string $reference_no reference no
      * @return Files model
      */
@@ -151,7 +169,7 @@ class Files extends \yii\db\ActiveRecord {
         $model->drawer = $drawer;
 
         $model->batch = $batch;
-        
+
         $model->folder = $folder;
 
         $model->created_by = Yii::$app->user->identity->id;
@@ -206,7 +224,7 @@ class Files extends \yii\db\ActiveRecord {
 
         return true;
     }
-    
+
     /**
      * 
      * @param integer $store store id
@@ -233,12 +251,12 @@ class Files extends \yii\db\ActiveRecord {
         $this->drawer = $drawer;
 
         $this->batch = $batch;
-        
+
         $this->folder = $folder;
-        
+
         return $this->modelSave();
     }
-    
+
     /**
      * 
      * @return boolean true - file deleted

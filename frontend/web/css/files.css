@@ -165,6 +165,18 @@ and open the template in the editor.
     border-left: 3px solid #000;
 }
 
+.files-prpt-pn-sub {
+    width: 100%;
+    overflow: hidden;
+}
+
+.files-right-pn-pn-sub-1, .files-right-pn-pn-sub-2, .files-right-pn-pn-sub-3 {
+    width: 100%;
+    height: 100%;
+    border-bottom: 1px solid #000;
+    overflow-x: hidden;
+}
+
 .files-default-index .form-group {
     margin-bottom: 0;
 }

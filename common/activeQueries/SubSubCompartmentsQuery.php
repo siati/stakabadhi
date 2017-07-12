@@ -44,15 +44,41 @@ class SubSubCompartmentsQuery extends \yii\db\ActiveQuery {
      * @param integer $compartment compartment id
      * @param integer $subcompartment sub-compartment id
      * @param boolean $whereStringAMust force where clause
+     * @return string where clause
+     */
+    public static function buildWhere($store, $compartment, $subcompartment, $whereStringAMust) {
+        return (empty($store) ? '' : $where = "store='$store'")
+                . (empty($compartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "compartment='$compartment'"))
+                . (empty($subcompartment) ? ('') : (empty($where) ? '' : ' && ')) . (($whereStringAMust && empty($where)) || !empty($subcompartment) ? "sub_compartment='$subcompartment'" : '');
+    }
+
+    /**
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param integer $subcompartment sub-compartment id
+     * @param boolean $whereStringAMust force where clause
      * @param string $oneOrAll one or all
      * @return \common\models\SubSubCompartments ActiveRecord
      */
     public function searchSubsubcompartments($store, $compartment, $subcompartment, $whereStringAMust, $oneOrAll) {
         return $this->where(
-                        (empty($store) ? '' : $where = "store='$store'")
-                        . (empty($compartment) ? ('') : $where = ((empty($where) ? '' : ' && ') . "compartment='$compartment'"))
-                        . (empty($subcompartment) ? ('') : (empty($where) ? '' : ' && ')) . ($whereStringAMust || !empty($subcompartment) ? "sub_compartment='$subcompartment'" : '')
+                        static::buildWhere($store, $compartment, $subcompartment, $whereStringAMust)
                 )->orderBy('name asc')->$oneOrAll();
+    }
+
+    /**
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param integer $subcompartment sub-compartment id
+     * @param boolean $whereStringAMust force where clause
+     * @return \common\models\SubSubCompartments ActiveRecord
+     */
+    public function countSubsubcompartments($store, $compartment, $subcompartment,$whereStringAMust) {
+        $table = SubSubCompartments::tableName();
+        
+        $where = static::buildWhere($store, $compartment, $subcompartment, $whereStringAMust);
+        
+        return SubSubCompartments::findBySql("select count(id) as id from $table where $where")->all();
     }
 
     /**

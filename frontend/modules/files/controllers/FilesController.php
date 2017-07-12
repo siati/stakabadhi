@@ -34,14 +34,14 @@ class FilesController extends Controller {
                 'class' => AccessControl::className(),
                 'only' => [
                     'section-name', 'dynamic-storages', 'the-files', 'stores', 'compartments', 'sections', 'subsections', 'shelves', 'drawers', 'batches', 'folders', 'files',
-                    'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission',
+                    'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission', 'file-properties',
                     'delete-stores', 'delete-compartments', 'delete-sections', 'delete-subsections', 'delete-shelves', 'delete-drawers', 'delete-batches', 'delete-folders', 'delete-files', 'create', 'update', 'index', 'delete', 'view'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'section-name', 'dynamic-storages', 'the-files', 'stores', 'compartments', 'sections', 'subsections', 'shelves', 'drawers', 'batches', 'folders', 'files',
-                            'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission',
+                            'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission', 'file-properties',
                             'delete-stores', 'delete-compartments', 'delete-sections', 'delete-subsections', 'delete-shelves', 'delete-drawers', 'delete-batches', 'delete-folders', 'delete-files'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
@@ -429,15 +429,28 @@ class FilesController extends Controller {
         if (isset($_POST['user']) && isset($_POST['attribute']) && $model->load(Yii::$app->request->post())) {
 
             $model->theRightsTransaction($attribute = $_POST['attribute'], $user = $_POST['user']);
-            
+
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            
+
             return [$model->userRight($user), $model->userSubjectiveRight($user)];
         }
 
         return $this->renderPartial('file-permissions-form', [
                     'model' => $model,
                     'users' => \common\models\User::activeUsers()
+                        ]
+        );
+    }
+
+    /**
+     * 
+     * load file details onto view
+     */
+    public function actionFileProperties() {
+        return $this->renderPartial('file-properties', [
+                    'levelName' => StoreLevels::returnLevel($_POST['level'])->name,
+                    'storage' => StoreLevels::storageByID($_POST['level'], $_POST['id']),
+                    'permissions' => StoreLevels::countStorages($_POST['level'], $_POST['id'], true)
                         ]
         );
     }

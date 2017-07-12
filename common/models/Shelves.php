@@ -105,6 +105,20 @@ class Shelves extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param integer $subcompartment sub-compartment id
+     * @param integer $subsubcompartment sub-sub-compartment id
+     * @param boolean $whereStringAMust force where clause
+     * @return integer no. of shelves
+     */
+    public static function countShelves($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust) {
+        foreach (static::find()->countShelves($store, $compartment, $subcompartment, $subsubcompartment, $whereStringAMust) as $shelf)
+            return $shelf->id;
+    }
+
+    /**
+     * 
      * @param string $reference_no reference no
      * @return Shelves model
      */

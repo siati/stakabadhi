@@ -114,6 +114,23 @@ class Folders extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param integer $subcompartment sub-compartment id
+     * @param integer $subsubcompartment sub-sub-compartment id
+     * @param integer $shelf shelf id
+     * @param integer $drawer drawer id
+     * @param integer $batch batch id
+     * @param boolean $whereStringAMust force where clause
+     * @return integer no. of folders
+     */
+    public static function countFolders($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $whereStringAMust) {
+        foreach (static::find()->countFolders($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $whereStringAMust) as $folder)
+            return $folder->id;
+    }
+
+    /**
+     * 
      * @param string $reference_no reference no
      * @return Folders model
      */

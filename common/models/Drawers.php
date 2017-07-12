@@ -108,6 +108,21 @@ class Drawers extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param integer $store store id
+     * @param integer $compartment compartment id
+     * @param integer $subcompartment sub-compartment id
+     * @param integer $subsubcompartment sub-sub-compartment id
+     * @param integer $shelf shelf id
+     * @param boolean $whereStringAMust force where clause
+     * @return integer no. of drawers
+     */
+    public static function countDrawers($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $whereStringAMust) {
+        foreach (static::find()->countDrawers($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $whereStringAMust) as $drawer)
+            return $drawer->id;
+    }
+
+    /**
+     * 
      * @param string $reference_no reference no
      * @return Drawers model
      */
