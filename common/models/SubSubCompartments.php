@@ -17,6 +17,8 @@ use Yii;
  * @property string $description
  * @property integer $created_by
  * @property string $created_at
+ * @property integer $updated_by
+ * @property string $updated_at
  */
 class SubSubCompartments extends \yii\db\ActiveRecord {
 
@@ -32,10 +34,10 @@ class SubSubCompartments extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['store', 'compartment', 'sub_compartment', 'created_by'], 'integer'],
+            [['store', 'compartment', 'sub_compartment', 'created_by', 'updated_by'], 'integer'],
             [['store', 'compartment', 'sub_compartment', 'name', 'reference_no', 'location', 'created_by'], 'required'],
             [['description'], 'string'],
-            [['created_at'], 'safe'],
+            [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'min' => 5, 'max' => 40],
             [['name', 'location', 'description'], 'notNumerical'],
             [['reference_no'], 'string', 'min' => 5, 'max' => 15],
@@ -59,6 +61,8 @@ class SubSubCompartments extends \yii\db\ActiveRecord {
             'description' => Yii::t('app', 'Description'),
             'created_by' => Yii::t('app', 'Created By'),
             'created_at' => Yii::t('app', 'Created At'),
+            'updated_by' => Yii::t('app', 'Updated By'),
+            'updated_at' => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -161,6 +165,10 @@ class SubSubCompartments extends \yii\db\ActiveRecord {
     public function modelSave() {
         if ($this->isNewRecord)
             $this->created_at = StaticMethods::now();
+        else {
+            $this->updated_by = Yii::$app->user->identity->id;
+            $this->updated_at = StaticMethods::now();
+        }
 
         return $this->save();
     }

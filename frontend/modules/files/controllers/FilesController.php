@@ -448,7 +448,7 @@ class FilesController extends Controller {
      */
     public function actionFileProperties() {
         return $this->renderPartial('file-properties', [
-                    'levelName' => StoreLevels::returnLevel($_POST['level'])->name,
+                    'levelName' => is_object($level = StoreLevels::returnLevel($_POST['level'])) ? $level->name : '',
                     'storage' => StoreLevels::storageByID($_POST['level'], $_POST['id']),
                     'permissions' => StoreLevels::countStorages($_POST['level'], $_POST['id'], true)
                         ]

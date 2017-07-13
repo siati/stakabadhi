@@ -145,7 +145,6 @@ $this->registerJs(
             }
             
             function dynamicStorages(lvl, id, val) {
-            
                 if (lvl * 1 < $folderLevel * 1) {
                     $.post('files/dynamic-storages', {'level': lvl = lvl * 1 + 1, 'id': id, 'value': val, 'prompt': 1},
                         function (optns) {
@@ -590,8 +589,8 @@ $this->registerJs(
             
             /* trigger store level population */
                 $('.files-left-pn-pn-lvls select').change(
-                    function () {
-                        dynamicStorages(lvl = $(this).attr('lvl'), $(this).val(), $('#storelevel-' + (lvl * 1 + 1)).length ? $('#storelevel-' + (lvl * 1 + 1)).val() : '');
+                    function (event) {
+                        dynamicStorages(lvl = $(this).attr('lvl'), id = $(this).val(), $('#storelevel-' + (lvl * 1 + 1)).length ? $('#storelevel-' + (lvl * 1 + 1)).val() : '');
                     }
                 );
                 
