@@ -190,7 +190,7 @@ $this->registerJs(
                         $(this).attr('onclick', 'selectedListId($(this))').attr('cstm-mn', '.custom-menu-strg-unts')
                         .addClass($(this).attr('str-id') * 1 === $('#storelevel-' + $('.files-ctnt-pn-lst').attr('lvl')).val() * 1 ? 'lst-slctd' : '');
                         
-                        $(this).hasClass('lst-slctd') ? storageProperties(elmnt.attr('lvl'), $(this).attr('str-id')) : '';
+                        $(this).hasClass('lst-slctd') && !$('.files-right-pn-pn-sub-1 table').length ? storageProperties(elmnt.attr('lvl'), $(this).attr('str-id')) : '';
                     }
                 );
             }
@@ -591,6 +591,10 @@ $this->registerJs(
                 $('.files-left-pn-pn-lvls select').change(
                     function (event) {
                         dynamicStorages(lvl = $(this).attr('lvl'), id = $(this).val(), $('#storelevel-' + (lvl * 1 + 1)).length ? $('#storelevel-' + (lvl * 1 + 1)).val() : '');
+                        if ($(this).is(':focus')) {
+                            populateListDiv(elmnt = $(this));
+                            storageProperties(lvl, id);
+                        }
                     }
                 );
                 
@@ -600,7 +604,12 @@ $this->registerJs(
             /* trigger storage list population */
                 $('.files-left-pn-pn-lvls .input-group .input-group-addon').click(
                     function () {
-                        populateListDiv($(this).parent().find('select'));
+                        populateListDiv(elmnt = $(this).parent().find('select'));
+                        
+                        if ($(this).is(':hover')) {
+                            dynamicStorages(lvl = elmnt.attr('lvl'), id = elmnt.val(), $('#storelevel-' + (lvl * 1 + 1)).length ? $('#storelevel-' + (lvl * 1 + 1)).val() : '');
+                            storageProperties(lvl, id);
+                        }
                     }
                 );
                 
