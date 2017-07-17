@@ -54,7 +54,7 @@ foreach ($levels as $level => $detail)
 
             </div>
 
-            <div class="files-ctnt-pn-tl">
+            <div class="files-ctnt-pn-tl has-cstm-mn"  cstm-mn=".custom-menu-strg-unts">
 
             </div>
 
@@ -101,12 +101,11 @@ foreach ($levels as $level => $detail)
 <ul class="custom-menu custom-menu-strg-unts">
     <li class="custom-sub-menu strg-unts-opn" onclick="openStorage($(this).parent().attr('lvl'), $(this).parent().attr('str-id'))">Open</li>
     <li class="custom-sub-menu custom-menu-wait has-cstm-mn strg-unts-new" cstm-mn=".custom-menu-new-strg-unts" onclick="newStorageToShow()">New</li>
-    <li class="custom-sub-menu strg-unts-edt" onclick="storage2($('.files-ctnt-pn-lst-bdy [str-id=' + $(this).parent().attr('str-id') + ']'))">Edit</li>
+    <li class="custom-sub-menu strg-unts-edt" onclick="storage2($(this).parent().attr('lvl'), $(this).parent().attr('str-id'))">Edit</li>
     <li class="custom-sub-menu strg-unts-mv" onclick="moveStorages($(this).parent().attr('lvl'), $(this).parent().attr('str-id'), $(this).parent().attr('mv-actn'))">Move</li>
-    <li class="custom-sub-menu strg-unts-rgts" onclick="filePermission($('.files-ctnt-pn-lst-bdy [str-id=' + $(this).parent().attr('str-id') + ']').text(), $(this).parent().attr('lvl'), $(this).parent().attr('str-id'))">Privileges</li>
+    <li class="custom-sub-menu strg-unts-rgts" onclick="filePermission($(this).parent().attr('lvl'), $(this).parent().attr('str-id'))">Privileges</li>
     <li class="custom-sub-menu strg-unts-rfsh" onclick="refreshFiles()">Refresh</li>
     <li class="custom-sub-menu strg-unts-slct">Select</li>
-    <li class="custom-sub-menu strg-unts-prpt">Properties</li>
     <li class="custom-sub-menu strg-unts-dlt" onclick="deleteStorage($(this).parent().attr('lvl'), $(this).parent().attr('str-id'), $(this).parent().attr('dlt-actn'))">Delete</li>
 </ul>
 <!-- custom context menu for storage units -->
@@ -174,7 +173,7 @@ $this->registerJs(
             }
             
             function populateListDiv(elmnt) {
-                divs = '<div class=files-ctnt-pn-lst-hd><strong>' + $('#storelevels-' + elmnt.attr('lvl') + '-name').val() + '</strong></div><div class=files-ctnt-pn-lst-bdy>';
+                divs = '<div class=files-ctnt-pn-lst-hd><strong>' + $('#storelevels-' + elmnt.attr('lvl') + '-name').val() + '</strong></div><div class=files-ctnt-pn-lst-bdy cstm-mn=.custom-menu-strg-unts>';
                         
                 elmnt.find('option').each(
                     function () {
@@ -185,7 +184,7 @@ $this->registerJs(
                 
                 divs = divs + '</div>';
                             
-                $('.files-ctnt-pn-lst').html(divs).attr('lvl', elmnt.attr('lvl')).find('.files-ctnt-pn-lst-bdy').find('div').each(
+                $('.files-ctnt-pn-lst').html(divs).attr('lvl', elmnt.attr('lvl')).find('.files-ctnt-pn-lst-bdy').addClass('has-cstm-mn').find('div').each(
                     function () {
                         $(this).attr('onclick', 'selectedListId($(this))').attr('cstm-mn', '.custom-menu-strg-unts')
                         .addClass($(this).attr('str-id') * 1 === $('#storelevel-' + $('.files-ctnt-pn-lst').attr('lvl')).val() * 1 ? 'lst-slctd' : '');
@@ -199,11 +198,41 @@ $this->registerJs(
                 $('.custom-menu-strg-unts').attr('lvl', lvl = $('.files-ctnt-pn-lst').attr('lvl')).attr('str-id', elmnt.attr('str-id')).attr('mv-actn', 'move-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn')).attr('dlt-actn', 'delete-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn'));
             }
             
+            function selectedFileItem(id) {
+                $('.custom-menu-strg-unts').attr('lvl', lvl = $fileLevel).attr('str-id', id).attr('mv-actn', 'move-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn')).attr('dlt-actn', 'delete-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn'));
+            }
+            
             function highlightStorageOnList(lvl, val) {
                 if ($('.files-ctnt-pn [lvl=' + lvl + ']').length) {
                     $('.files-ctnt-pn [lvl=' + lvl + ']').parent().find('.files-ctnt-pn-lst-bdy .lst-slctd').removeClass('lst-slctd');
                     val * 1 > 0 ? $('.files-ctnt-pn [lvl=' + lvl + ']').parent().find('[str-id=' + val + ']').addClass('lst-slctd') : '';
                 }
+            }
+            
+            function listBodyOptions() {
+                $('.custom-menu-strg-unts').find('li').each(
+                    function () {
+                        $(this).hasClass('strg-unts-new') || $(this).hasClass('strg-unts-rfsh') ? $(this).show() : $(this).hide();
+                    }
+                );
+            }
+            
+            function storeLevelItemOptions() {
+                $('.custom-menu-strg-unts li').show();
+                $('.custom-menu-strg-unts .strg-unts-slct').hide();
+            }
+            
+            function filesPaneOptions() {
+                $('.custom-menu-strg-unts').find('li').each(
+                    function () {
+                        $(this).hasClass('strg-unts-new') || $(this).hasClass('strg-unts-rfsh') || $(this).hasClass('strg-unts-slct') ? $(this).show() : $(this).hide();
+                    }
+                );
+            }
+            
+            function filesPaneItemOptions() {
+                $('.custom-menu-strg-unts li').show();
+                $('.custom-menu-strg-unts .strg-unts-opn').hide();
             }
             
             function openStorage(lvl, id) {
@@ -238,10 +267,10 @@ $this->registerJs(
                 yiiModal(title, 'files/' + actn, post, $('.files-ctnt').width() * 0.5, $('.files-default-index').height() * 0.55);
             }
             
-            function storage2(elmnt) {
-                storage($('.files-ctnt-pn-lst-hd').text(), $('.files-left-pn-pn-new [lvl=' + $('.files-ctnt-pn-lst').attr('lvl') + ']').attr('actn'), updateStoragePostItems($('.files-ctnt-pn-lst').attr('lvl'), elmnt.attr('str-id')));
-                $('#str-lvl-fm').text($('.files-ctnt-pn-lst').attr('lvl'));
-                $('#str-fm').text(elmnt.attr('str-id'));
+            function storage2(lvl, id) {
+                storage(lvl * 1 < $fileLevel * 1 ? $('.files-ctnt-pn-lst-hd').text() : 'Files', $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn'), updateStoragePostItems(lvl, id));
+                $('#str-lvl-fm').text(lvl);
+                $('#str-fm').text(id);
             }
             
             function storage3(lvl) {
@@ -304,7 +333,7 @@ $this->registerJs(
                                     function (dltd) {
                                         if (dltd) {
                                             customErrorSwal('Completed', '<h3>Item Deleted Successfully</h3>', 2000, 'success');
-                                            dynamicStorages(lvl * 1 - 1, $('#storelevel-' + (lvl * 1 - 1)).length ?  $('#storelevel-' + (lvl * 1 - 1)).val() : '', $('#storelevel-' + lvl).val());
+                                            lvl * 1 < $fileLevel * 1 ? dynamicStorages(lvl * 1 - 1, $('#storelevel-' + (lvl * 1 - 1)).length ?  $('#storelevel-' + (lvl * 1 - 1)).val() : '', $('#storelevel-' + lvl).val()) : $('#storelevel-' + (lvl * 1 - 1)).change();
                                         } else
                                             customErrorSwal('Not Done', '<h3>Item could not be deleted!</h3>', 2000, 'error');
                                     }
@@ -314,8 +343,8 @@ $this->registerJs(
                 );            
             }
             
-            function filePermission(hdg, lvl, lvl_id) {
-                yiiModal('<small style=font-size:18px>Permissions: ' + hdg + '</small>', 'files/file-permission', {'FilePermissions[store_level]': lvl, 'FilePermissions[store_id]': lvl_id}, $('.files-ctnt').width() * 0.4, $('.files-default-index').height());
+            function filePermission(lvl, lvl_id) {
+                yiiModal('<small style=font-size:18px>Permissions: ' + (lvl * 1 < $fileLevel * 1 ? $('.files-ctnt-pn-lst-bdy [str-id=' + id + ']').text() : $('.files-ctnt-pn-tl [fl-hd=' + id + '] .fl-hd-pn-nm').text()) + '</small>', 'files/file-permission', {'FilePermissions[store_level]': lvl, 'FilePermissions[store_id]': lvl_id}, $('.files-ctnt').width() * 0.4, $('.files-default-index').height());
             }
             
             function rotatePermissionButton(btn, rtt, sbmt) {
@@ -649,6 +678,22 @@ $this->registerJs(
                     }
                 );
             /* actions for creating store elements */
+            
+            /* manage custom menu on file tiles pane */
+                $('.files-ctnt-pn-tl').click(
+                    function (event) {
+                        $(event.target).hasClass('files-ctnt-pn-tl') ? filesPaneOptions() : filesPaneItemOptions();
+                    }
+                );
+            /* manage custom menu on file tiles pane */
+            
+            /* manage custom menu on store level list pane */
+                $('.files-ctnt-pn-lst').click(
+                    function(event) {
+                        $(event.target).hasClass('files-ctnt-pn-lst-bdy') ? listBodyOptions() : storeLevelItemOptions();
+                    }
+                );
+            /* manage custom menu on store level list pane */
             
             /* put the right and left arrows middle for the carousel */
                 $('.carousel-control').css('padding-top', ($('.carousel-control').height() - 20) / 2 + 'px'); //20 is the font size for $('.carousel-control').text()
