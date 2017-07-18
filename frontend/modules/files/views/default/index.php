@@ -124,6 +124,17 @@ foreach ($levels as $level => $detail)
 </ul>
 <!-- custom context menu for new storage units -->
 
+<!-- custom context menu for selected file items -->
+<ul class="custom-menu custom-menu-fl-optns">
+    <li class="custom-sub-menu fl-optns-mv">Move</li>
+    <li class="custom-sub-menu fl-optns-rgts">Privileges</li>
+    <li class="custom-sub-menu fl-optns-pst">Paste</li>
+    <li class="custom-sub-menu fl-optns-dlt">Delete</li>
+    <li class="custom-sub-menu fl-optns-slct-all">Select All</li>
+    <li class="custom-sub-menu fl-optns-slct-qt">Quit Selecting</li>
+</ul>
+<!-- custom context menu for selected file items -->
+
 <?php $read_rights = FilePermissions::read_rights ?>
 <?php $write_rights = FilePermissions::write_rights; ?>
 <?php $deny_rights = FilePermissions::deny_rights ?>
