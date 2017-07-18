@@ -226,7 +226,7 @@ class Files extends \yii\db\ActiveRecord {
      * @return boolean true - files moved
      */
     public static function filesToMove($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $folder) {
-        foreach (static::searchFiles(null, null, null, null, null, null, null, $folder, true) as $file)
+        foreach (static::searchFiles(null, null, null, null, null, null, null, $folder, true, StoreLevels::all) as $file)
             if (!$file->moveFile($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch, $folder))
                 return false;
 

@@ -301,7 +301,12 @@ $this->registerJs(
                 $.post($('#' + form_id).attr('action'), post,
                     function (form) {
                         $('#yii-modal-cnt').html(form);
-                        dynamicStorages(lvl = $('#str-lvl-fm').text() * 1 - 1, $('#storelevel-' + lvl).length ?  $('#storelevel-' + lvl).val() : '', $('#storelevel-' + (lvl * 1 + 1)).val());
+                        if ((lvl = $('#str-lvl-fm').text() * 1 - 1) < $folderLevel * 1) {
+                            dynamicStorages(lvl, $('#storelevel-' + lvl).length ?  $('#storelevel-' + lvl).val() : '', $('#storelevel-' + (lvl * 1 + 1)).val());
+                            $('.files-ctnt-pn-lst').attr('lvl') * 1 === $('#str-lvl-fm').text() * 1 && $('.files-ctnt-pn-lst-bdy [str-id=' + $('#str-fm').text() + ']').hasClass('lst-slctd') ? storageProperties($('#str-lvl-fm').text(), $('#str-fm').text()) : '';
+                        } else {
+                            $('#storelevel-' + lvl).change();
+                        }
                     }
                 );
             }
@@ -318,6 +323,7 @@ $this->registerJs(
                 $.post($('#' + form_id).attr('action'), post,
                     function (moved) {
                         $('#storelevel-' + lvl).change();
+//                        storageProperties(lvl * 1 + 1, $('#str-fm').text());
                     }
                 );
             }
