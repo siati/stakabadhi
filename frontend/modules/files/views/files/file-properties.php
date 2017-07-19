@@ -1,19 +1,21 @@
 <?php
 /* @var $levelName string */
-/* @var $storage common\models\Stores|common\models\Compartments|common\models\SubCompartments|common\models\SubSubCompartments|common\models\Shelves|common\models\Drawers|common\models\Batches|common\models\Folders|Files */
+/* @var $storage common\models\Stores|common\models\Compartments|common\models\SubCompartments|common\models\SubSubCompartments|common\models\Shelves|common\models\Drawers|common\models\Batches|common\models\Folders|common\models\Files */
 /* @var $permissions array */
 
 use common\models\User;
 use common\models\StaticMethods;
 ?>
 
-<table class="table-striped">
+<?php if (is_object($storage)): ?>
 
-    <?php if (is_object($storage)): ?>
+    <table class="table-striped">
 
-        <tr><td colspan="3"><b><?= "$levelName: $storage->name" ?> Properties</b></td></tr>
+        <?php if (empty($storage->folder)): ?>
+            <tr><td colspan="3"><b><?= "$levelName: $storage->name" ?> Properties</b></td></tr>
 
-        <tr><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td></tr>
+        <?php endif; ?>
 
         <?php foreach ($permissions as $level => $permission): ?>
             <tr>
@@ -25,7 +27,9 @@ use common\models\StaticMethods;
 
         <?php if (is_object($user = User::returnUser($storage->created_by))): ?>
 
-            <tr><td colspan="3">&nbsp;</td></tr>
+            <?php if (empty($storage->folder)): ?>
+                <tr><td colspan="3">&nbsp;</td></tr>
+            <?php endif; ?>
 
             <tr>
                 <td class="td-left"><b>Created By</b></td>
@@ -58,6 +62,12 @@ use common\models\StaticMethods;
             </tr>
 
         <?php endif; ?>
+    </table>
 
-    <?php endif; ?>
-</table>
+<?php else: ?>
+
+    <div class="no-axn">
+        <h4 class="no-axn-txt">No Properties To Display Here</h4>
+    </div>
+
+<?php endif; ?>

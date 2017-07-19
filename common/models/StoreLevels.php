@@ -303,7 +303,7 @@ class StoreLevels extends \yii\db\ActiveRecord {
         if ($level < ($fls = self::files))
             $storages[$fls] = [static::returnLevel($fls)->name, Files::countFiles($level == $str ? $id : '', $level == $cpr ? $id : '', $level == $sbc ? $id : '', $level == $sbs ? $id : '', $level == $slf ? $id : '', $level == $drw ? $id : '', $level == $btc ? $id : '', $level == $fld ? $id : '', $whereStringAMust)];
 
-        return $storages;
+        return empty($storages) ? [] : $storages;
     }
 
 }

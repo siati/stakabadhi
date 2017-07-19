@@ -66,10 +66,10 @@ foreach ($levels as $level => $detail)
             <div class="files-prpt-pn-sub" style="height: 40%">
                 <div class="files-right-pn-pn-sub-1"></div>
             </div>
-            <div class="files-prpt-pn-sub" style="height: 15%">
+            <div class="files-prpt-pn-sub" style="height: 20%">
                 <div class="files-right-pn-pn-sub-2"></div>
             </div>
-            <div class="files-prpt-pn-sub" style="height: 15%">
+            <div class="files-prpt-pn-sub" style="height: 10%">
                 <div class="files-right-pn-pn-sub-3"></div>
             </div>
             <?= $branding ?>
@@ -170,7 +170,7 @@ $this->registerJs(
                     $.post('files/the-files', {'folder': id},
                         function (files) {
                             highlightStorageOnList(lvl, id);
-                            $('.files-ctnt-pn-tl').html(files);
+                            $('.files-ctnt-pn-tl').html(files).trigger('contentchanged');
                         }
                     );
             }
@@ -322,8 +322,8 @@ $this->registerJs(
                 
                 $.post($('#' + form_id).attr('action'), post,
                     function (moved) {
-                        $('#storelevel-' + lvl).change();
-//                        storageProperties(lvl * 1 + 1, $('#str-fm').text());
+                        $('#storelevel-' + lvl).change().parent().find('.input-group-addon').click();
+                        storageProperties(lvl, $('#storelevel-' + lvl).val());
                     }
                 );
             }
@@ -405,6 +405,19 @@ $this->registerJs(
                         $('.files-right-pn-pn-sub-1').html(prpts);
                     }
                 );
+            }
+            
+            function fileProperties(id) {
+                $.post('files/file-properties', {'level': '$fileLevel', 'id': id},
+                    function (prpts) {
+                        $('.files-right-pn-pn-sub-3').html(prpts);
+                    }
+                );
+            }
+            
+            function selectThisFileItem(elmnt) {
+                elmnt.find('.fl-hd-pn').addClass('fl-slctd');
+                fileProperties(elmnt.attr('fl-hd'));
             }
             
             function open_panel() {
@@ -625,6 +638,18 @@ $this->registerJs(
 <?php
 $this->registerJs(
         "
+            /* auto select one file from the file items */
+                $('.files-ctnt-pn-tl').bind('contentchanged',
+                    function () {
+                        $(this).find('.fl-hd').each(
+                            function () {
+                                $('.fl-slctd').length ? '' : selectThisFileItem($(this));
+                            }
+                        );
+                    }
+                );
+            /* auto select one file from the file items */
+            
             /* auto save rename of section */
                 $('.files-default-index .form-group input').change(
                     function () {

@@ -129,6 +129,11 @@ and open the template in the editor.
     overflow: hidden
 }
 
+.fl-slctd {
+    border: 1px solid #bbb;
+    border-radius: 6px;
+}
+
 .fl-hd-pn:hover, .vrsn-hd-pn:hover {
     border: 1px solid #ddd;
     border-radius: 6px;
