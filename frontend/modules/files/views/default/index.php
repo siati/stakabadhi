@@ -63,13 +63,13 @@ foreach ($levels as $level => $detail)
 
     <div class="files-right-pn">
         <div class="files-right-pn-pn">
-            <div class="files-prpt-pn-sub" style="height: 40%">
+            <div class="files-prpt-pn-sub" style="height: 35%">
                 <div class="files-right-pn-pn-sub-1"></div>
             </div>
-            <div class="files-prpt-pn-sub" style="height: 20%">
+            <div class="files-prpt-pn-sub" style="height: 22.5%">
                 <div class="files-right-pn-pn-sub-2"></div>
             </div>
-            <div class="files-prpt-pn-sub" style="height: 10%">
+            <div class="files-prpt-pn-sub" style="height: 12.5%">
                 <div class="files-right-pn-pn-sub-3"></div>
             </div>
             <?= $branding ?>
@@ -170,7 +170,7 @@ $this->registerJs(
                     $.post('files/the-files', {'folder': id},
                         function (files) {
                             highlightStorageOnList(lvl, id);
-                            $('.files-ctnt-pn-tl').html(files).trigger('contentchanged');
+                            $('.files-ctnt-pn-tl').html(files).trigger('contentchanged').trigger('contentchangednofile');
                         }
                     );
             }
@@ -209,8 +209,9 @@ $this->registerJs(
                 $('.custom-menu-strg-unts').attr('lvl', lvl = $('.files-ctnt-pn-lst').attr('lvl')).attr('str-id', elmnt.attr('str-id')).attr('mv-actn', 'move-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn')).attr('dlt-actn', 'delete-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn'));
             }
             
-            function selectedFileItem(id) {
-                $('.custom-menu-strg-unts').attr('lvl', lvl = $fileLevel).attr('str-id', id).attr('mv-actn', 'move-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn')).attr('dlt-actn', 'delete-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn'));
+            function selectedFileItem(elmnt) {
+                selectThisFileItem(elmnt);
+                $('.custom-menu-strg-unts').attr('lvl', lvl = $fileLevel).attr('str-id', id = elmnt.attr('fl-hd')).attr('mv-actn', 'move-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn')).attr('dlt-actn', 'delete-' + $('.files-left-pn-pn-new [lvl=' + lvl + ']').attr('actn'));
             }
             
             function highlightStorageOnList(lvl, val) {
@@ -416,6 +417,7 @@ $this->registerJs(
             }
             
             function selectThisFileItem(elmnt) {
+                $('.files-ctnt-pn-tl').find('.fl-hd .fl-slctd').removeClass('fl-slctd');
                 elmnt.find('.fl-hd-pn').addClass('fl-slctd');
                 fileProperties(elmnt.attr('fl-hd'));
             }
@@ -641,11 +643,20 @@ $this->registerJs(
             /* auto select one file from the file items */
                 $('.files-ctnt-pn-tl').bind('contentchanged',
                     function () {
-                        $(this).find('.fl-hd').each(
-                            function () {
-                                $('.fl-slctd').length ? '' : selectThisFileItem($(this));
-                            }
-                        );
+                        $('.fl-slctd').length ? '' :
+                            $(this).find('.fl-hd').each(
+                                function () {
+                                    $('.fl-slctd').length ? '' : selectThisFileItem($(this));
+                                }
+                            );
+                    }
+                );
+            /* auto select one file from the file items */
+            
+            /* auto select one file from the file items */
+                $('.files-ctnt-pn-tl').bind('contentchangednofile',
+                    function () {
+                        $('.fl-slctd').length ? '' : fileProperties('');
                     }
                 );
             /* auto select one file from the file items */
