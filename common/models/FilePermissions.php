@@ -302,7 +302,7 @@ class FilePermissions extends \yii\db\ActiveRecord {
      * @return string user right to `$storage`
      */
     public function userSubjectiveLogicalRight($user, $parentRight) {
-        return static::parentChildRight($parentRight, $this->userRight($user));
+        return static::parentChildRight($parentRight, ($selfRight = $this->userRight($user)) != self::deny || is_object(static::byStoreLevelAndId($this->store_level, $this->store_id)) ? $selfRight : $parentRight);
     }
 
     /**

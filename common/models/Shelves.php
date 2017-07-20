@@ -180,6 +180,42 @@ class Shelves extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
+    
+    /**
+     * 
+     * @return FilePermissions model
+     */
+    public function permission() {
+        return FilePermissions::byStoreLevelAndId(StoreLevels::shelves, $this->id);
+    }
+    
+    /**
+     * 
+     * @param integer $user user id
+     * @return string user right to shelf
+     */
+    public function userRight($user) {
+        return is_object($permission = $this->permission()) ? $permission->userRight($user) : SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userRight($user);
+    }
+    
+    /**
+     * 
+     * @param integer $user user id
+     * @return string user subjective right to shelf
+     */
+    public function userSubjectiveRight($user) {
+        return is_object($permission = $this->permission()) ? $permission->userSubjectiveRight($user) : SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userSubjectiveRight($user);
+    }
+    
+    /**
+     * 
+     * @param integer $user user id
+     * @param string $parentRight user subjective right to parent sub-sub-compartment
+     * @return string user subjective logical right to shelf
+     */
+    public function userSubjectiveLogicalRight($user, $parentRight) {
+        return is_object($permission = $this->permission()) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userSubjectiveRight($user) : $parentRight) : SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userSubjectiveRight($user, $parentRight);
+    }
 
     /**
      * 

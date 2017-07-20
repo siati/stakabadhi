@@ -188,6 +188,42 @@ class Drawers extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
+    
+    /**
+     * 
+     * @return FilePermissions model
+     */
+    public function permission() {
+        return FilePermissions::byStoreLevelAndId(StoreLevels::drawers, $this->id);
+    }
+    
+    /**
+     * 
+     * @param integer $user user id
+     * @return string user right to drawer
+     */
+    public function userRight($user) {
+        return is_object($permission = $this->permission()) ? $permission->userRight($user) : Shelves::returnShelf($this->shelf)->userRight($user);
+    }
+    
+    /**
+     * 
+     * @param integer $user user id
+     * @return string user subjective right to drawer
+     */
+    public function userSubjectiveRight($user) {
+        return is_object($permission = $this->permission()) ? $permission->userSubjectiveRight($user) : Shelves::returnShelf($this->shelf)->userSubjectiveRight($user);
+    }
+    
+    /**
+     * 
+     * @param integer $user user id
+     * @param string $parentRight user subjective right to parent shelf
+     * @return string user subjective logical right to drawer
+     */
+    public function userSubjectiveLogicalRight($user, $parentRight) {
+        return is_object($permission = $this->permission()) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Shelves::returnShelf($this->shelf)->userSubjectiveRight($user) : $parentRight) : Shelves::returnShelf($this->shelf)->userSubjectiveLogicalRight($user, $parentRight);
+    }
 
     /**
      * 

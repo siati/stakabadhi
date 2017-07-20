@@ -138,6 +138,23 @@ class Stores extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
+    
+    /**
+     * 
+     * @return FilePermissions model
+     */
+    public function permission() {
+        return FilePermissions::byStoreLevelAndId(StoreLevels::stores, $this->id);
+    }
+    
+    /**
+     * 
+     * @param integer $user user id
+     * @return string user right to store
+     */
+    public function userRight($user) {
+        return is_object($permission = $this->permission()) ? $permission->userRight($user) : FilePermissions::deny;
+    }
 
     /**
      * 
