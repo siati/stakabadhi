@@ -227,7 +227,7 @@ class Files extends \yii\db\ActiveRecord {
      * @return string user right to file
      */
     public function userRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userRight($user) : Folders::returnFolder($this->folder)->userRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userRight($user) : Folders::returnFolder($this->folder)->userRight($user);
     }
     
     /**
@@ -236,7 +236,7 @@ class Files extends \yii\db\ActiveRecord {
      * @return string user subjective right to file
      */
     public function userSubjectiveRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveRight($user) : Folders::returnFolder($this->folder)->userSubjectiveRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveRight($user) : Folders::returnFolder($this->folder)->userSubjectiveRight($user);
     }
     
     /**
@@ -246,7 +246,7 @@ class Files extends \yii\db\ActiveRecord {
      * @return string user subjective logical right to file
      */
     public function userSubjectiveLogicalRight($user, $parentRight) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Folders::returnFolder($this->folder)->userSubjectiveRight($user) : $parentRight) : Folders::returnFolder($this->folder)->userSubjectiveLogicalRight($user, $parentRight);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Folders::returnFolder($this->folder)->userSubjectiveRight($user) : $parentRight) : Folders::returnFolder($this->folder)->userSubjectiveLogicalRight($user, $parentRight);
     }
 
     /**

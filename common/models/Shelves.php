@@ -195,7 +195,7 @@ class Shelves extends \yii\db\ActiveRecord {
      * @return string user right to shelf
      */
     public function userRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userRight($user) : SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userRight($user) : SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userRight($user);
     }
     
     /**
@@ -204,7 +204,7 @@ class Shelves extends \yii\db\ActiveRecord {
      * @return string user subjective right to shelf
      */
     public function userSubjectiveRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveRight($user) : SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userSubjectiveRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveRight($user) : SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userSubjectiveRight($user);
     }
     
     /**
@@ -214,7 +214,7 @@ class Shelves extends \yii\db\ActiveRecord {
      * @return string user subjective logical right to shelf
      */
     public function userSubjectiveLogicalRight($user, $parentRight) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userSubjectiveRight($user) : $parentRight) : SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userSubjectiveRight($user, $parentRight);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userSubjectiveRight($user) : $parentRight) : SubSubCompartments::returnSubsubcompartment($this->sub_sub_compartment)->userSubjectiveRight($user, $parentRight);
     }
 
     /**

@@ -219,7 +219,7 @@ class Folders extends \yii\db\ActiveRecord {
      * @return string user right to folder
      */
     public function userRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userRight($user) : Batches::returnBatch($this->batch)->userRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userRight($user) : Batches::returnBatch($this->batch)->userRight($user);
     }
     
     /**
@@ -228,7 +228,7 @@ class Folders extends \yii\db\ActiveRecord {
      * @return string user subjective right to folder
      */
     public function userSubjectiveRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveRight($user) : Batches::returnBatch($this->batch)->userSubjectiveRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveRight($user) : Batches::returnBatch($this->batch)->userSubjectiveRight($user);
     }
     
     /**
@@ -238,7 +238,7 @@ class Folders extends \yii\db\ActiveRecord {
      * @return string user subjective logical right to folder
      */
     public function userSubjectiveLogicalRight($user, $parentRight) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Batches::returnBatch($this->batch)->userSubjectiveRight($user) : $parentRight) : Batches::returnBatch($this->batch)->userSubjectiveLogicalRight($user, $parentRight);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Batches::returnBatch($this->batch)->userSubjectiveRight($user) : $parentRight) : Batches::returnBatch($this->batch)->userSubjectiveLogicalRight($user, $parentRight);
     }
 
     /**

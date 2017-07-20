@@ -179,7 +179,7 @@ class SubCompartments extends \yii\db\ActiveRecord {
      * @return string user right to sub-compartment
      */
     public function userRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userRight($user) : Compartments::returnCompartment($this->compartment)->userRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userRight($user) : Compartments::returnCompartment($this->compartment)->userRight($user);
     }
     
     /**
@@ -188,7 +188,7 @@ class SubCompartments extends \yii\db\ActiveRecord {
      * @return string user subjective right to sub-compartment
      */
     public function userSubjectiveRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveRight($user) : Compartments::returnCompartment($this->compartment)->userSubjectiveRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveRight($user) : Compartments::returnCompartment($this->compartment)->userSubjectiveRight($user);
     }
     
     /**
@@ -198,7 +198,7 @@ class SubCompartments extends \yii\db\ActiveRecord {
      * @return string user subjective logical right to sub-compartment
      */
     public function userSubjectiveLogicalRight($user, $parentRight) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Compartments::returnCompartment($this->compartment)->userSubjectiveRight($user) : $parentRight) : Compartments::returnCompartment($this->compartment)->userSubjectiveLogicalRight($user, $parentRight);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Compartments::returnCompartment($this->compartment)->userSubjectiveRight($user) : $parentRight) : Compartments::returnCompartment($this->compartment)->userSubjectiveLogicalRight($user, $parentRight);
     }
 
     /**

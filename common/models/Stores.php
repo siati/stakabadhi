@@ -153,7 +153,7 @@ class Stores extends \yii\db\ActiveRecord {
      * @return string user right to store
      */
     public function userRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userRight($user) : FilePermissions::deny;
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userRight($user) : FilePermissions::deny;
     }
 
     /**

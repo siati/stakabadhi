@@ -211,7 +211,7 @@ class Batches extends \yii\db\ActiveRecord {
      * @return string user right to batch
      */
     public function userRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userRight($user) : Drawers::returnDrawer($this->drawer)->userRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userRight($user) : Drawers::returnDrawer($this->drawer)->userRight($user);
     }
     
     /**
@@ -220,7 +220,7 @@ class Batches extends \yii\db\ActiveRecord {
      * @return string user subjective right to batch
      */
     public function userSubjectiveRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveRight($user) : Drawers::returnDrawer($this->drawer)->userSubjectiveRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveRight($user) : Drawers::returnDrawer($this->drawer)->userSubjectiveRight($user);
     }
     
     /**
@@ -230,7 +230,7 @@ class Batches extends \yii\db\ActiveRecord {
      * @return string user subjective logical right to batch
      */
     public function userSubjectiveLogicalRight($user, $parentRight) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Drawers::returnDrawer($this->drawer)->userSubjectiveRight($user) : $parentRight) : Drawers::returnDrawer($this->drawer)->userSubjectiveLogicalRight($user, $parentRight);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Drawers::returnDrawer($this->drawer)->userSubjectiveRight($user) : $parentRight) : Drawers::returnDrawer($this->drawer)->userSubjectiveLogicalRight($user, $parentRight);
     }
 
     /**

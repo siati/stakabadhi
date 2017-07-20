@@ -171,7 +171,7 @@ class Compartments extends \yii\db\ActiveRecord {
      * @return string user right to compartment
      */
     public function userRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userRight($user) : Stores::returnStore($this->store)->userRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userRight($user) : Stores::returnStore($this->store)->userRight($user);
     }
     
     /**
@@ -180,7 +180,7 @@ class Compartments extends \yii\db\ActiveRecord {
      * @return string user subjective right to compartment
      */
     public function userSubjectiveRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveRight($user) : Stores::returnStore($this->store)->userRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveRight($user) : Stores::returnStore($this->store)->userRight($user);
     }
     
     /**
@@ -190,7 +190,7 @@ class Compartments extends \yii\db\ActiveRecord {
      * @return string user subjective logical right to compartment
      */
     public function userSubjectiveLogicalRight($user, $parentRight) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Stores::returnStore($this->store)->userRight($user) : $parentRight) : Stores::returnStore($this->store)->userRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Stores::returnStore($this->store)->userRight($user) : $parentRight) : Stores::returnStore($this->store)->userRight($user);
     }
 
     /**

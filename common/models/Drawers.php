@@ -203,7 +203,7 @@ class Drawers extends \yii\db\ActiveRecord {
      * @return string user right to drawer
      */
     public function userRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userRight($user) : Shelves::returnShelf($this->shelf)->userRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userRight($user) : Shelves::returnShelf($this->shelf)->userRight($user);
     }
     
     /**
@@ -212,7 +212,7 @@ class Drawers extends \yii\db\ActiveRecord {
      * @return string user subjective right to drawer
      */
     public function userSubjectiveRight($user) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveRight($user) : Shelves::returnShelf($this->shelf)->userSubjectiveRight($user);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveRight($user) : Shelves::returnShelf($this->shelf)->userSubjectiveRight($user);
     }
     
     /**
@@ -222,7 +222,7 @@ class Drawers extends \yii\db\ActiveRecord {
      * @return string user subjective logical right to drawer
      */
     public function userSubjectiveLogicalRight($user, $parentRight) {
-        return is_object($permission = $this->permission()) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Shelves::returnShelf($this->shelf)->userSubjectiveRight($user) : $parentRight) : Shelves::returnShelf($this->shelf)->userSubjectiveLogicalRight($user, $parentRight);
+        return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveLogicalRight($user, empty($parentRight) ? Shelves::returnShelf($this->shelf)->userSubjectiveRight($user) : $parentRight) : Shelves::returnShelf($this->shelf)->userSubjectiveLogicalRight($user, $parentRight);
     }
 
     /**

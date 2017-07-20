@@ -286,6 +286,16 @@ class FilePermissions extends \yii\db\ActiveRecord {
     public function userRight($user) {
         return in_array($user, StaticMethods::stringExplode($this->write_rights, self::comma)) ? (self::write) : (in_array($user, StaticMethods::stringExplode($this->read_rights, self::comma)) ? self::read : self::deny);
     }
+    
+    /**
+     * 
+     * @param integer $user user id
+     * @return boolean true - right exists in database
+     */
+    public function userRightExists($user) {
+        $comma = self::comma;
+        return in_array($user, StaticMethods::stringExplode("$this->write_rights$comma$this->read_rights$comma$this->deny_rights", self::comma));
+    }
 
     /**
      * 
@@ -302,7 +312,7 @@ class FilePermissions extends \yii\db\ActiveRecord {
      * @return string user right to `$storage`
      */
     public function userSubjectiveLogicalRight($user, $parentRight) {
-        return static::parentChildRight($parentRight, ($selfRight = $this->userRight($user)) != self::deny || is_object(static::byStoreLevelAndId($this->store_level, $this->store_id)) ? $selfRight : $parentRight);
+        return static::parentChildRight($parentRight, $this->userRight($user));
     }
 
     /**
