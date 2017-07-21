@@ -48,7 +48,7 @@ class FilePermissionsQuery extends \yii\db\ActiveQuery {
      * @param array $deny_users user ids
      * @return \common\models\FilePermissions ActiveRecords
      */
-    public function searchDrawers($store_level, $store_id, $read_users, $write_users, $deny_users) {
+    public function searchPermissions($store_level, $store_id, $read_users, $write_users, $deny_users) {
         $comma = FilePermissions::comma;
 
         foreach ($read_users as $read_user)
@@ -60,7 +60,7 @@ class FilePermissionsQuery extends \yii\db\ActiveQuery {
         foreach ($deny_users as $deny_user)
             $deny = (empty($deny) ? '' : "$deny || ") . "(deny_rights = '$deny_user' || deny_rights like '$deny_user$comma%' || deny_rights like '%$comma$deny_user$comma%' || deny_rights like '%$comma$deny_user')";
 
-        return $this->where("store_level = '$store_level'" . (empty($store_id) ? '' : " && store_id='$store_id'") . (empty($read) ? '' : " && ($read)") . (empty($write) ? '' : " && ($write)") . (empty($deny) ? '' : " && ($deny)"))->all();
+        return $this->where("store_level in ($store_level)" . (empty($store_id) ? '' : " && store_id='$store_id'") . (empty($read) ? '' : " && ($read)") . (empty($write) ? '' : " && ($write)") . (empty($deny) ? '' : " && ($deny)"))->all();
     }
 
     /**

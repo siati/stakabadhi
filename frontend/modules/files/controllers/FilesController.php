@@ -34,14 +34,14 @@ class FilesController extends Controller {
                 'class' => AccessControl::className(),
                 'only' => [
                     'section-name', 'dynamic-storages', 'the-files', 'stores', 'compartments', 'sections', 'subsections', 'shelves', 'drawers', 'batches', 'folders', 'files',
-                    'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission', 'file-properties',
+                    'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission', 'user-storage-permission', 'storage-write-rights', 'file-properties',
                     'delete-stores', 'delete-compartments', 'delete-sections', 'delete-subsections', 'delete-shelves', 'delete-drawers', 'delete-batches', 'delete-folders', 'delete-files', 'create', 'update', 'index', 'delete', 'view'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'section-name', 'dynamic-storages', 'the-files', 'stores', 'compartments', 'sections', 'subsections', 'shelves', 'drawers', 'batches', 'folders', 'files',
-                            'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission', 'file-properties',
+                            'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission', 'user-storage-permission', 'storage-write-rights', 'file-properties',
                             'delete-stores', 'delete-compartments', 'delete-sections', 'delete-subsections', 'delete-shelves', 'delete-drawers', 'delete-batches', 'delete-folders', 'delete-files'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
@@ -440,6 +440,21 @@ class FilesController extends Controller {
                     'users' => \common\models\User::activeUsers()
                         ]
         );
+    }
+    
+    /**
+     * load user right to storage onto view
+     */
+    public function actionUserStoragePermission() {
+        echo StoreLevels::storageByID($_POST['level'], $_POST['id'])->userSubjectiveRight($_POST['user']);
+    }
+    
+    /**
+     * 
+     * load storage units user has full rights to onto view
+     */
+    public function actionStorageWriteRights() {
+        return $this->renderPartial('storage-write-rights', ['permissions' => FilePermissions::userPermissions([$_POST['user']], FilePermissions::write)]);
     }
 
     /**

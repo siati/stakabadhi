@@ -90,8 +90,8 @@ class FilePermissions extends \yii\db\ActiveRecord {
      * @param array $deny_users user ids
      * @return FilePermissions models
      */
-    public static function searchDrawers($store_level, $store_id, $read_users, $write_users, $deny_users) {
-        return static::find()->searchDrawers($store_level, $store_id, $read_users, $write_users, $deny_users);
+    public static function searchPermissions($store_level, $store_id, $read_users, $write_users, $deny_users) {
+        return static::find()->searchPermissions(empty($store_level) ? '0' : $store_level, $store_id, $read_users, $write_users, $deny_users);
     }
 
     /**
@@ -101,8 +101,22 @@ class FilePermissions extends \yii\db\ActiveRecord {
      * @return  FilePermissions model
      */
     public static function byStoreLevelAndId($store_level, $store_id) {
-        foreach (static::searchDrawers($store_level, $store_id, [], [], []) as $permission)
+        foreach (static::searchPermissions($store_level, $store_id, [], [], []) as $permission)
             return $permission;
+    }
+
+    /**
+     * 
+     * @param array $users user ids
+     * @param string $permission read, write, deny
+     * @return FilePermissions models
+     */
+    public function userPermissions($users, $permission) {
+        $comma = self::comma;
+
+        $store_level = "'" . StoreLevels::stores . "', '" . StoreLevels::compartments . "', '" . StoreLevels::subcompartments . "', '" . StoreLevels::subsubcompartments . "', '" . StoreLevels::shelves . "', '" . StoreLevels::drawers . "', '" . StoreLevels::batches . "', '" . StoreLevels::folders . "', '" . StoreLevels::files . "'";
+        
+        return static::searchPermissions($store_level, null, $permission == self::read ? $users : [], $permission == self::write ? $users : [], $permission != self::write && $permission != self::read ? $users : []);
     }
 
     /**
@@ -286,7 +300,7 @@ class FilePermissions extends \yii\db\ActiveRecord {
     public function userRight($user) {
         return in_array($user, StaticMethods::stringExplode($this->write_rights, self::comma)) ? (self::write) : (in_array($user, StaticMethods::stringExplode($this->read_rights, self::comma)) ? self::read : self::deny);
     }
-    
+
     /**
      * 
      * @param integer $user user id

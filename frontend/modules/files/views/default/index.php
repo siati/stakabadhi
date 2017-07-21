@@ -9,6 +9,11 @@ use yii\web\View;
 use yii\bootstrap\ButtonDropdown;
 use common\models\StoreLevels;
 use common\models\FilePermissions;
+use common\models\User;
+
+$user = Yii::$app->user->identity->id;
+
+$is_admin = Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]);
 
 foreach ($levels as $level => $detail)
     $items[] = ['label' => $detail, 'url' => '#', 'options' => ['lvl' => $level, 'style' => 'width: 100%; font-weight: bold; float: right', 'actn' => strtolower($levelDetails[$level][0]), 'cls' => 'crt-lvl']];
@@ -189,7 +194,7 @@ $this->registerJs(
                 elmnt.find('option').each(
                     function () {
                         if ($(this).attr('value') * 1 > 0)
-                            divs =  divs + '<div class=has-cstm-mn str-id=' + $(this).attr('value') + '>' + $(this).text() + '</div>';
+                            divs =  divs + '<div class=has-cstm-mn str-id=' + $(this).attr('value') + ' rgt=$deny>' + $(this).text() + '</div>';
                     }
                 );
                 
@@ -201,6 +206,16 @@ $this->registerJs(
                         .addClass($(this).attr('str-id') * 1 === $('#storelevel-' + $('.files-ctnt-pn-lst').attr('lvl')).val() * 1 ? 'lst-slctd' : '');
                         
                         $(this).hasClass('lst-slctd') && !$('.files-right-pn-pn-sub-1 table').length ? storageProperties(elmnt.attr('lvl'), $(this).attr('str-id')) : '';
+                        
+                        storageItemPerm($('.files-ctnt-pn-lst').attr('lvl'), $(this).attr('str-id'), '$user', $(this), 'rgt');
+                    }
+                );
+            }
+            
+            function storageItemPerm(level, id, user, elmnt, attr) {
+                $.post('files/user-storage-permission', {'level': level, 'id': id, 'user': user},
+                    function (rgt) {
+                        elmnt.attr(attr, rgt);
                     }
                 );
             }
@@ -420,6 +435,14 @@ $this->registerJs(
                 $('.files-ctnt-pn-tl').find('.fl-hd .fl-slctd').removeClass('fl-slctd');
                 elmnt.find('.fl-hd-pn').addClass('fl-slctd');
                 fileProperties(elmnt.attr('fl-hd'));
+            }
+            
+            function userWritePermissions(user) {
+                $.post('files/storage-write-rights', {'user': user},
+                    function (perms) {
+                        $('.files-right-pn-pn-sub-2').html(perms);
+                    }
+                );
             }
             
             function open_panel() {
@@ -697,6 +720,10 @@ $this->registerJs(
                 
                 $('#storelevel-$folderLevel').parent().find('.input-group-addon').click();
             /* trigger storage list population */
+            
+            /* trigger population of items user has full rights over */
+                userWritePermissions($user);
+            /* trigger population of items user has full rights over */
             
             /* advanced store level change handling */
                 $('.files-left-pn-pn-lvls select').bind('valuechanged',
