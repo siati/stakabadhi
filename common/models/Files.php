@@ -35,6 +35,12 @@ class Files extends \yii\db\ActiveRecord {
     }
 
     /**
+     *
+     * @var integer store level
+     */
+    public $level = StoreLevels::files;
+
+    /**
      * @inheritdoc
      */
     public function rules() {
@@ -212,7 +218,7 @@ class Files extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
-    
+
     /**
      * 
      * @return FilePermissions model
@@ -220,7 +226,7 @@ class Files extends \yii\db\ActiveRecord {
     public function permission() {
         return FilePermissions::byStoreLevelAndId(StoreLevels::files, $this->id);
     }
-    
+
     /**
      * 
      * @param integer $user user id
@@ -229,7 +235,7 @@ class Files extends \yii\db\ActiveRecord {
     public function userRight($user) {
         return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userRight($user) : Folders::returnFolder($this->folder)->userRight($user);
     }
-    
+
     /**
      * 
      * @param integer $user user id
@@ -238,7 +244,7 @@ class Files extends \yii\db\ActiveRecord {
     public function userSubjectiveRight($user) {
         return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userSubjectiveRight($user) : Folders::returnFolder($this->folder)->userSubjectiveRight($user);
     }
-    
+
     /**
      * 
      * @param integer $user user id

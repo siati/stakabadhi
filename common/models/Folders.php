@@ -34,6 +34,12 @@ class Folders extends \yii\db\ActiveRecord {
     }
 
     /**
+     *
+     * @var integer store level
+     */
+    public $level = StoreLevels::folders;
+
+    /**
      * @inheritdoc
      */
     public function rules() {

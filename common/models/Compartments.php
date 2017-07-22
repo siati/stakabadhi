@@ -28,6 +28,12 @@ class Compartments extends \yii\db\ActiveRecord {
     }
 
     /**
+     *
+     * @var integer store level
+     */
+    public $level = StoreLevels::compartments;
+
+    /**
      * @inheritdoc
      */
     public function rules() {

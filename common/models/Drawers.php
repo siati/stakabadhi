@@ -32,6 +32,12 @@ class Drawers extends \yii\db\ActiveRecord {
     }
 
     /**
+     *
+     * @var integer store level
+     */
+    public $level = StoreLevels::drawers;
+
+    /**
      * @inheritdoc
      */
     public function rules() {

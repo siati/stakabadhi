@@ -30,6 +30,12 @@ class SubSubCompartments extends \yii\db\ActiveRecord {
     }
 
     /**
+     *
+     * @var integer store level
+     */
+    public $level = StoreLevels::subsubcompartments;
+
+    /**
      * @inheritdoc
      */
     public function rules() {

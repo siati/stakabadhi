@@ -33,6 +33,12 @@ class Batches extends \yii\db\ActiveRecord {
     }
 
     /**
+     *
+     * @var integer store level
+     */
+    public $level = StoreLevels::batches;
+
+    /**
      * @inheritdoc
      */
     public function rules() {

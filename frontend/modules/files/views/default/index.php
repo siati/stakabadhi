@@ -180,6 +180,36 @@ $this->registerJs(
                     );
             }
             
+            function customStoreNavigator(elmnt) {
+                for (lvl = $storeLevel * 1; lvl <= (maxLvl = elmnt.attr('str-lvl') * 1); lvl++)
+                    effectCustomStoreNavigator(lvl === $fileLevel ? $('.files-ctnt-pn-tl [fl-hd=' + (lvl === maxLvl ? elmnt.attr('str-id') : elmnt.attr('str-lvl-' + lvl)) + ']') : $('#storelevel-' + lvl), lvl, elmnt.attr('str-lvl-' + (lvl * 1 - 1)) ? elmnt.attr('str-lvl-' + (lvl * 1 - 1)) : '', lvl === maxLvl ? elmnt.attr('str-id') : elmnt.attr('str-lvl-' + lvl), lvl === maxLvl);
+            }
+            
+            function effectCustomStoreNavigator(elmnt, lvl, id, val, ctn) {
+                $.post('files/dynamic-storages', {'level': lvl, 'id': id, 'value': val, 'prompt': 1},
+                    function (optns) {
+                        if (lvl * 1 >= $folderLevel * 1 || ctn) {
+                            
+                            if (lvl * 1 > $folderLevel * 1) {
+                                selectThisFileItem(elmnt.length ? elmnt : cyclical(val));
+                            } else {
+                                ctn || lvl * 1 === $folderLevel * 1 ? elmnt.html(optns).val(val).change().parent().find('.input-group-addon').click() : elmnt.html(optns).val(val);
+                                
+                                storageProperties(lvl, val);
+                            }
+                        } else
+                            elmnt.html(optns).val(val);
+                    }
+                );
+            }
+            
+            function cyclical(id) {
+                if ($('.files-ctnt-pn-tl [fl-hd=' + id + ']').length)
+                    return $('.files-ctnt-pn-tl [fl-hd=' + id + ']');
+                    
+                setTimeout(cyclical(id), 1000);
+            }
+            
             function dynamicStorages2(lvl, id, val, prmpt, elmnt_id, rppl) {
                 $.post('files/dynamic-storages', {'level': lvl, 'id': id, 'value': val, 'prompt': prmpt},
                     function (optns) {
@@ -721,9 +751,9 @@ $this->registerJs(
                 $('#storelevel-$folderLevel').parent().find('.input-group-addon').click();
             /* trigger storage list population */
             
-            /* trigger population of items user has full rights over */
+            /* populate items user has full rights over */
                 userWritePermissions($user);
-            /* trigger population of items user has full rights over */
+            /* populate items user has full rights over */
             
             /* advanced store level change handling */
                 $('.files-left-pn-pn-lvls select').bind('valuechanged',

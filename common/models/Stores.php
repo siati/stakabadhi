@@ -27,6 +27,12 @@ class Stores extends \yii\db\ActiveRecord {
     }
 
     /**
+     *
+     * @var integer store level
+     */
+    public $level = StoreLevels::stores;
+
+    /**
      * @inheritdoc
      */
     public function rules() {
@@ -154,6 +160,24 @@ class Stores extends \yii\db\ActiveRecord {
      */
     public function userRight($user) {
         return is_object($permission = $this->permission()) && $permission->userRightExists($user) ? $permission->userRight($user) : FilePermissions::deny;
+    }
+    
+    /**
+     * 
+     * @param integer $user user id
+     * @return string user subjective right to store
+     */
+    public function userSubjectiveRight($user) {
+        return $this->userRight($user);
+    }
+    
+    /**
+     * 
+     * @param integer $user user id
+     * @return string user subjective logical right to compartment
+     */
+    public function userSubjectiveLogicalRight($user) {
+        return $this->userSubjectiveRight($user);
     }
 
     /**

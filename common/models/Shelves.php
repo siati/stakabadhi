@@ -31,6 +31,12 @@ class Shelves extends \yii\db\ActiveRecord {
     }
 
     /**
+     *
+     * @var integer store level
+     */
+    public $level = StoreLevels::shelves;
+
+    /**
      * @inheritdoc
      */
     public function rules() {
