@@ -201,14 +201,15 @@ class Folders extends \yii\db\ActiveRecord {
      * @return boolean true - model saved
      */
     public function modelSave() {
-        if ($this->isNewRecord)
+        if ($this->isNewRecord) {
             $this->created_at = StaticMethods::now();
-        else {
+            $isNew = true;
+        } else {
             $this->updated_by = Yii::$app->user->identity->id;
             $this->updated_at = StaticMethods::now();
         }
 
-        return $this->save();
+        return $this->save() && ((!empty($isNew) && Logs::newLog(Logs::create_store, "Created store $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, '',  '', "$this->level,$this->id", $this->name, null, Logs::success)) || true);
     }
     
     /**
@@ -278,6 +279,10 @@ class Folders extends \yii\db\ActiveRecord {
      * @return boolean true - folder moved
      */
     public function moveFolder($store, $compartment, $subcompartment, $subsubcompartment, $shelf, $drawer, $batch) {
+        $previous = static::returnFolder($this->id);
+
+        $old = "$previous->store,$previous->compartment,$previous->sub_compartment,$previous->sub_sub_compartment,$previous->shelf,$previous->drawer,$previous->batch";
+
         $this->store = $store;
 
         $this->compartment = $compartment;
@@ -292,11 +297,15 @@ class Folders extends \yii\db\ActiveRecord {
 
         $this->batch = $batch;
         
+        $new = "$this->store,$this->compartment,$this->sub_compartment,$this->sub_sub_compartment,$this->shelf,$this->drawer,$this->batch";
+
         Yii::$app->db->transaction === null ? $transaction = Yii::$app->db->beginTransaction() : '';
 
         try {
             if ($this->modelSave() && Files::filesToMove($this->store, $this->compartment, $this->sub_compartment, $this->sub_sub_compartment, $this->shelf, $this->drawer, $this->batch, $this->id)) {
-
+                
+                Logs::newLog(Logs::move_store, "Moved store $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, "$this->level,$this->id", $old, "$this->level,$this->id", $new, null, Logs::success);
+                
                 empty($transaction) ? '' : $transaction->commit();
 
                 return true;

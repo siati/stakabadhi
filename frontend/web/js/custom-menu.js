@@ -38,7 +38,7 @@ $(document).ready(
                                 return false;
                             }
 
-                            customMenu(event, $('.nvgtn-fldr-ctnr').length);
+                            customMenu(event, $('.nvgtn-fldr-ctnr').length || $('.files-left-pn').length);
                         } else
                         if ($(event.target).has('input'))
                             return true;

@@ -4,13 +4,7 @@
 
 use common\models\StoreLevels; ?>
 
-<?php if (empty($permissions)): ?>
-
-    <div class="no-axn">
-        <h4 class="no-axn-txt">No files under your administration</h4>
-    </div>
-
-<?php else: ?>
+<?php if (!empty($permissions)): ?>
 
     <?php $user = Yii::$app->user->identity->id ?>
 
@@ -21,6 +15,9 @@ use common\models\StoreLevels; ?>
     <div class="prmsn-pn-bdy" style="height: 90%">
         <div class="prmsn-pn-bdy-pn">
             <table class="table-hover">
+
+                <?php $count = 0 ?>
+
                 <?php foreach ($permissions as $permission): ?>
                     <?php if ($permission->userSubjectiveRight($user) == common\models\FilePermissions::write): ?>
 
@@ -39,10 +36,23 @@ use common\models\StoreLevels; ?>
                             <td class="td-left kasa-pointa str-nm"><?= substr($name, 0, 49) ?></td>
                         </tr>
 
+                        <?php $count++ ?>
+
                     <?php endif; ?>
                 <?php endforeach; ?>
             </table>
         </div>
     </div>
+
+<?php endif; ?>
+
+<?php if (empty($count)): ?>
+    <style
+        onload=
+        "
+                $('.files-right-pn-pn-sub-2').html('<div class=no-axn><h4 class=no-axn-txt>No files under your administration</h4></div>');
+                $(this).remove();
+        "
+    ></style>
 
 <?php endif; ?>

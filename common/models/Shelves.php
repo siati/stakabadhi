@@ -177,14 +177,15 @@ class Shelves extends \yii\db\ActiveRecord {
      * @return boolean true - model saved
      */
     public function modelSave() {
-        if ($this->isNewRecord)
+        if ($this->isNewRecord) {
             $this->created_at = StaticMethods::now();
-        else {
+            $isNew = true;
+        } else {
             $this->updated_by = Yii::$app->user->identity->id;
             $this->updated_at = StaticMethods::now();
         }
 
-        return $this->save();
+        return $this->save() && ((!empty($isNew) && Logs::newLog(Logs::create_store, "Created store $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, '',  '', "$this->level,$this->id", $this->name, null, Logs::success)) || true);
     }
     
     /**
@@ -248,6 +249,10 @@ class Shelves extends \yii\db\ActiveRecord {
      * @return boolean true - shelf moved
      */
     public function moveShelf($store, $compartment, $subcompartment, $subsubcompartment) {
+        $previous = static::returnShelf($this->id);
+
+        $old = "$previous->store,$previous->compartment,$previous->sub_compartment,$previous->sub_sub_compartment";
+
         $this->store = $store;
 
         $this->compartment = $compartment;
@@ -256,11 +261,15 @@ class Shelves extends \yii\db\ActiveRecord {
 
         $this->sub_sub_compartment = $subsubcompartment;
         
+        $new = "$this->store,$this->compartment,$this->sub_compartment,$this->sub_sub_compartment";
+
         Yii::$app->db->transaction === null ? $transaction = Yii::$app->db->beginTransaction() : '';
 
         try {
             if ($this->modelSave() && Drawers::drawersToMove($this->store, $this->compartment, $this->sub_compartment, $this->sub_sub_compartment, $this->id)) {
 
+                Logs::newLog(Logs::move_store, "Moved store $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, "$this->level,$this->id", $old, "$this->level,$this->id", $new, null, Logs::success);
+                
                 empty($transaction) ? '' : $transaction->commit();
 
                 return true;

@@ -161,14 +161,15 @@ class SubCompartments extends \yii\db\ActiveRecord {
      * @return boolean true - model saved
      */
     public function modelSave() {
-        if ($this->isNewRecord)
+        if ($this->isNewRecord) {
             $this->created_at = StaticMethods::now();
-        else {
+            $isNew = true;
+        } else {
             $this->updated_by = Yii::$app->user->identity->id;
             $this->updated_at = StaticMethods::now();
         }
 
-        return $this->save();
+        return $this->save() && ((!empty($isNew) && Logs::newLog(Logs::create_store, "Created store $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, '',  '', "$this->level,$this->id", $this->name, null, Logs::success)) || true);
     }
     
     /**
@@ -228,15 +229,23 @@ class SubCompartments extends \yii\db\ActiveRecord {
      * @return boolean true - sub-compartment moved
      */
     public function moveSubcompartment($store, $compartment) {
+        $previous = static::returnSubcompartment($this->id);
+
+        $old = "$previous->store,$previous->compartment";
+
         $this->store = $store;
 
         $this->compartment = $compartment;
+
+        $new = "$this->store,$this->compartment";
 
         Yii::$app->db->transaction === null ? $transaction = Yii::$app->db->beginTransaction() : '';
 
         try {
             if ($this->modelSave() && SubSubCompartments::subsubcompartmentsToMove($this->store, $this->compartment, $this->id)) {
 
+                Logs::newLog(Logs::move_store, "Moved store $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, "$this->level,$this->id", $old, "$this->level,$this->id", $new, null, Logs::success);
+                
                 empty($transaction) ? '' : $transaction->commit();
 
                 return true;

@@ -162,12 +162,15 @@ class StoreLevels extends \yii\db\ActiveRecord {
      * @return boolean true - model saved
      */
     public function modelSave() {
-        if (!$this->isNewRecord) {
+        if ($this->isNewRecord)
+            $isNew = true;
+        else {
+            $name = static::returnLevel($this->id)->name;
             $this->updated_by = Yii::$app->user->identity->id;
             $this->updated_at = StaticMethods::now();
         }
 
-        return $this->save();
+        return $this->save() && (Logs::newLog(empty($isNew) ? Logs::update_storage_level : Logs::create_storage_level, (empty($isNew) ? 'Updated' : 'Created') . " storage level $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, empty($isNew) ? $this->id : '',  empty($isNew) ? $name : '', $this->id, $this->name, null, Logs::success) || true);
     }
 
     /**

@@ -15,9 +15,9 @@ use Yii;
  * @property string $created_at
  * @property string $session_id
  * @property string $session_ip
- * @property integer $origin_id
+ * @property string $origin_id
  * @property string $origin_value
- * @property integer $destination_id
+ * @property string $destination_id
  * @property string $destination_value
  * @property string $further_narration
  * @property string $status
@@ -79,6 +79,13 @@ class Logs extends \yii\db\ActiveRecord {
     const give_user_group_privilege = 'Add User To Group';
     const remove_user_from_group = 'Remove User From Group';
     const drop_document_permission = 'Delete Document Permission';
+    const create_storage_level = 'Create Storage Level';
+    const update_storage_level = 'Update Storage Level';
+    const create_store = 'Create Store';
+    const update_store = 'Update Store';
+    const move_store = 'Move Store';
+    const delete_store = 'Delete Store';
+    const store_rigts = 'Update Store Rights';
 
     /**
      * @inheritdoc
@@ -93,9 +100,10 @@ class Logs extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['type', 'description', 'created_by', 'author_name'], 'required'],
-            [['description', 'origin_value', 'destination_value', 'further_narration', 'status'], 'string'],
-            [['created_by', 'origin_id', 'destination_id'], 'integer'],
+            [['description', 'origin_id', 'origin_value', 'destination_id', 'destination_value', 'further_narration', 'status'], 'string'],
+            [['created_by'], 'integer'],
             [['created_at'], 'safe'],
+            [['origin_id', 'destination_id'], 'string', 'max' => 15],
             [['type', 'author_name', 'session_id', 'session_ip'], 'string', 'max' => 128],
         ];
     }
