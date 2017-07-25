@@ -387,9 +387,9 @@ $this->registerJs(
                         if ((lvl = $('#str-lvl-fm').text() * 1 - 1) < $folderLevel * 1) {
                             dynamicStorages(lvl, $('#storelevel-' + lvl).length ?  $('#storelevel-' + lvl).val() : '', $('#storelevel-' + (lvl * 1 + 1)).val());
                             $('.files-ctnt-pn-lst').attr('lvl') * 1 === $('#str-lvl-fm').text() * 1 && $('.files-ctnt-pn-lst-bdy [str-id=' + $('#str-fm').text() + ']').hasClass('lst-slctd') ? storageProperties($('#str-lvl-fm').text(), $('#str-fm').text()) : '';
-                        } else {
+                        } else
                             $('#storelevel-' + lvl).change();
-                        }
+                        userWritePermissions($user);
                     }
                 );
             }
@@ -407,6 +407,7 @@ $this->registerJs(
                     function (moved) {
                         $('#storelevel-' + lvl).change().parent().find('.input-group-addon').click();
                         storageProperties(lvl, $('#storelevel-' + lvl).val());
+                        userWritePermissions($user);
                     }
                 );
             }

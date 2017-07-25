@@ -207,13 +207,14 @@ class FilePermissions extends \yii\db\ActiveRecord {
         else {
             $this->updated_by = Yii::$app->user->identity->id;
             $this->updated_at = StaticMethods::now();
+            $previous = static::returnPermission($this->id);
         }
 
         empty($this->read_rights) ? $this->read_rights = null : '';
         empty($this->write_rights) ? $this->write_rights = null : '';
         empty($this->deny_rights) ? $this->deny_rights = null : '';
 
-        return $this->save();
+        return $this->save() && (Logs::newLog(Logs::update_store_rigts, "Updated store privilege $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, empty($previous) ? '' : "$previous->store_level,$previous->store_id",  empty($previous) ? '' : "$previous->read_rights-$previous->write_rights-$previous->deny_rights", "$this->store_level,$this->store_id", "$this->read_rights-$this->write_rights-$this->deny_rights", null, Logs::success) || true);
     }
 
     /**
