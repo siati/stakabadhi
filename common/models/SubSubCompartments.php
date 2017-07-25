@@ -178,7 +178,8 @@ class SubSubCompartments extends \yii\db\ActiveRecord {
             $previous = static::returnSubsubcompartment($this->id);
         }
 
-        return $this->save() &&
+        return (Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $this->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write) &&
+                $this->save() &&
                 ((!empty($isNew) && Logs::newLog(Logs::create_store, "Created store $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, '',  '', "$this->level,$this->id", $this->name, null, Logs::success)) || true) &&
                 ((empty($isNew) && (($new = "$this->reference_no,$this->name,$this->location,$this->description") != ($old = "$previous->reference_no,$previous->name,$previous->location,$previous->description")) && Logs::newLog(Logs::update_store, "Updated store $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, "$this->level,$this->id", $old, "$this->level,$this->id", $new, null, Logs::success)) || true);
     }
@@ -188,7 +189,7 @@ class SubSubCompartments extends \yii\db\ActiveRecord {
      * @return FilePermissions model
      */
     public function permission() {
-        return FilePermissions::byStoreLevelAndId(StoreLevels::subsubcompartments, $this->id);
+        return $this->isNewRecord ? SubCompartments::returnSubcompartment($this->sub_compartment)->permission() : FilePermissions::byStoreLevelAndId(StoreLevels::subsubcompartments, $this->id);
     }
     
     /**
@@ -285,7 +286,7 @@ class SubSubCompartments extends \yii\db\ActiveRecord {
      * @return boolean true - sub-sub-compartment deleted
      */
     public function deleteSubsubcompartment() {
-        return $this->isDeletable() && $this->delete() && (Logs::newLog(Logs::delete_store, "Deleted store $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, "$this->level,$this->id", $this->name, null, null, null, Logs::success) || true);
+        return (Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $this->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write) && $this->isDeletable() && $this->delete() && (Logs::newLog(Logs::delete_store, "Deleted store $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, "$this->level,$this->id", $this->name, null, null, null, Logs::success) || true);
     }
 
 }
