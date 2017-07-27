@@ -5,13 +5,14 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Stores */
+/* @var $editor boolean */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="files-form" style="height: 90%; overflow-x: hidden">
 
     <?php $form = ActiveForm::begin(['id' => 'form-store', 'enableAjaxValidation' => true]); ?>
-    
+
     <?= Html::activeHiddenInput($model, 'id') ?>
 
     <?= $form->field($model, 'reference_no')->textInput() ?>
@@ -27,7 +28,17 @@ use yii\helpers\Html;
 </div>
 
 <div style="height: 10%; padding-top: 15px">
-    <div class="btn btn-success pull-left" onclick="saveStorage('form-store')">Save</div>
+    <?php if (!empty($editor)): ?>
+        <div class="btn btn-success pull-left" onclick="saveStorage('form-store')">Save</div>
+    <?php endif; ?>
+
     <div class="btn btn-danger pull-right" onclick="closeDialog()">Close</div>
-    <div class="btn btn-primary pull-right" onclick="storage3(<?= $level = \common\models\StoreLevels::stores ?>)" style="margin-right: 10px">New</div>
+
+    <?php if (!empty($editor)): ?>
+        <div class="btn btn-primary pull-right" onclick="storage3(<?= $level = \common\models\StoreLevels::stores ?>)" style="margin-right: 10px">New</div>
+    <?php endif; ?>
 </div>
+
+<?php if (empty($editor)): ?>
+    <style onload="$('#form-store input, #form-store textarea').attr('disabled', 'disabled'); $(this).remove()"></style>
+<?php endif; ?>

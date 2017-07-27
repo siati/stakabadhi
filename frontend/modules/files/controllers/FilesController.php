@@ -19,6 +19,7 @@ use common\models\Batches;
 use common\models\Folders;
 use common\models\Files;
 use common\models\FilePermissions;
+use common\models\User;
 
 /**
  * FilesController implements the CRUD actions for Files model.
@@ -104,7 +105,7 @@ class FilesController extends Controller {
             $model->modelSave() && $isNew ? $model = Stores::storeToLoad(null) : '';
         }
 
-        return $this->renderAjax('store-form', ['model' => $model]);
+        return $this->renderAjax('store-form', ['model' => $model, 'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $model->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write]);
     }
 
     /**
@@ -123,7 +124,7 @@ class FilesController extends Controller {
             $model->modelSave() && $isNew ? $model = Compartments::compartmentToLoad(null, $model->store) : '';
         }
 
-        return $this->renderAjax('compartment-form', ['model' => $model]);
+        return $this->renderAjax('compartment-form', ['model' => $model, 'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $model->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write]);
     }
 
     /**
@@ -142,7 +143,7 @@ class FilesController extends Controller {
             $model->modelSave() && $isNew ? $model = SubCompartments::subcompartmentToLoad(null, $model->store, $model->compartment) : '';
         }
 
-        return $this->renderAjax('sub-compartment-form', ['model' => $model]);
+        return $this->renderAjax('sub-compartment-form', ['model' => $model, 'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $model->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write]);
     }
 
     /**
@@ -161,7 +162,7 @@ class FilesController extends Controller {
             $model->modelSave() && $isNew ? $model = SubSubCompartments::subsubcompartmentToLoad(null, $model->store, $model->compartment, $model->sub_compartment) : '';
         }
 
-        return $this->renderAjax('sub-sub-compartment-form', ['model' => $model]);
+        return $this->renderAjax('sub-sub-compartment-form', ['model' => $model, 'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $model->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write]);
     }
 
     /**
@@ -180,7 +181,7 @@ class FilesController extends Controller {
             $model->modelSave() && $isNew ? $model = Shelves::shelfToLoad(null, $model->store, $model->compartment, $model->sub_compartment, $model->sub_sub_compartment) : '';
         }
 
-        return $this->renderAjax('shelf-form', ['model' => $model]);
+        return $this->renderAjax('shelf-form', ['model' => $model, 'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $model->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write]);
     }
 
     /**
@@ -199,7 +200,7 @@ class FilesController extends Controller {
             $model->modelSave() && $isNew ? $model = Drawers::drawerToLoad(null, $model->store, $model->compartment, $model->sub_compartment, $model->sub_sub_compartment, $model->shelf) : '';
         }
 
-        return $this->renderAjax('drawer-form', ['model' => $model]);
+        return $this->renderAjax('drawer-form', ['model' => $model, 'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $model->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write]);
     }
 
     /**
@@ -218,7 +219,7 @@ class FilesController extends Controller {
             $model->modelSave() && $isNew ? $model = Batches::batchToLoad(null, $model->store, $model->compartment, $model->sub_compartment, $model->sub_sub_compartment, $model->shelf, $model->drawer) : '';
         }
 
-        return $this->renderAjax('batch-form', ['model' => $model]);
+        return $this->renderAjax('batch-form', ['model' => $model, 'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $model->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write]);
     }
 
     /**
@@ -237,7 +238,7 @@ class FilesController extends Controller {
             $model->modelSave() && $isNew ? $model = Folders::folderToLoad(null, $model->store, $model->compartment, $model->sub_compartment, $model->sub_sub_compartment, $model->shelf, $model->drawer, $model->batch) : '';
         }
 
-        return $this->renderAjax('folder-form', ['model' => $model]);
+        return $this->renderAjax('folder-form', ['model' => $model, 'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $model->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write]);
     }
 
     /**
@@ -256,7 +257,7 @@ class FilesController extends Controller {
             $model->modelSave() && $isNew ? $model = Files::fileToLoad(null, $model->store, $model->compartment, $model->sub_compartment, $model->sub_sub_compartment, $model->shelf, $model->drawer, $model->batch, $model->folder) : '';
         }
 
-        return $this->renderAjax('file-form', ['model' => $model]);
+        return $this->renderAjax('file-form', ['model' => $model, 'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $model->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write]);
     }
 
     /**
