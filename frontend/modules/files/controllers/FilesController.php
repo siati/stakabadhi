@@ -19,6 +19,7 @@ use common\models\Batches;
 use common\models\Folders;
 use common\models\Files;
 use common\models\FilePermissions;
+use common\models\FileTrackingNotes;
 use common\models\User;
 
 /**
@@ -36,14 +37,14 @@ class FilesController extends Controller {
                 'only' => [
                     'section-name', 'dynamic-storages', 'the-files', 'stores', 'compartments', 'sections', 'subsections', 'shelves', 'drawers', 'batches', 'folders', 'files',
                     'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission', 'user-storage-permission', 'storage-write-rights', 'file-properties',
-                    'delete-stores', 'delete-compartments', 'delete-sections', 'delete-subsections', 'delete-shelves', 'delete-drawers', 'delete-batches', 'delete-folders', 'delete-files', 'create', 'update', 'index', 'delete', 'view'
+                    'delete-stores', 'delete-compartments', 'delete-sections', 'delete-subsections', 'delete-shelves', 'delete-drawers', 'delete-batches', 'delete-folders', 'delete-files', 'tracking-notes', 'create', 'update', 'index', 'delete', 'view'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'section-name', 'dynamic-storages', 'the-files', 'stores', 'compartments', 'sections', 'subsections', 'shelves', 'drawers', 'batches', 'folders', 'files',
                             'move-compartments', 'move-sections', 'move-subsections', 'move-shelves', 'move-drawers', 'move-batches', 'move-folders', 'move-files', 'file-permission', 'user-storage-permission', 'storage-write-rights', 'file-properties',
-                            'delete-stores', 'delete-compartments', 'delete-sections', 'delete-subsections', 'delete-shelves', 'delete-drawers', 'delete-batches', 'delete-folders', 'delete-files'
+                            'delete-stores', 'delete-compartments', 'delete-sections', 'delete-subsections', 'delete-shelves', 'delete-drawers', 'delete-batches', 'delete-folders', 'delete-files', 'tracking-notes'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -442,14 +443,14 @@ class FilesController extends Controller {
                         ]
         );
     }
-    
+
     /**
      * load user right to storage onto view
      */
     public function actionUserStoragePermission() {
         echo StoreLevels::storageByID($_POST['level'], $_POST['id'])->userSubjectiveRight($_POST['user']);
     }
-    
+
     /**
      * 
      * load storage units user has full rights to onto view
@@ -541,6 +542,40 @@ class FilesController extends Controller {
      */
     public function actionDeleteFiles() {
         echo Files::returnFile($_POST['Files']['id'])->deleteFile();
+    }
+
+    /**
+     * 
+     * render interface for and capture tracking notes
+     */
+    public function actionTrackingNotes() {
+        $model = FileTrackingNotes::noteToLoad(empty($_POST['FileTrackingNotes']['id']) ? '' : empty($_POST['FileTrackingNotes']['id']), empty($_POST['FileTrackingNotes']['store_level']) ? '' : $_POST['FileTrackingNotes']['store_level'], empty($_POST['FileTrackingNotes']['store_id']) ? '' : $_POST['FileTrackingNotes']['store_id']);
+
+        if (isset($_POST['FileTrackingNotes']['notes']) && $model->load(Yii::$app->request->post())) {
+
+            if ((($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) < 1) && isset($_POST['sbmt']))
+                return [$model->modelSave()];
+            else
+                return is_array($ajax) ? $ajax : [];
+
+            Yii::$app->end();
+        }
+
+        return $this->renderAjax('tracking-notes', [
+                    'model' => $model,
+                    'storage' => $storage = StoreLevels::storageByID($model->store_level, $model->store_id),
+                    'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $storage->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write,
+                    'notes_timeline' => $this->actionNotesTimeline()
+                        ]
+        );
+    }
+
+    /**
+     * 
+     * load notes for storage onto a view
+     */
+    public function actionNotesTimeline() {
+        return $this->renderPartial('notes-timeline', ['notes' => FileTrackingNotes::notesForStore(empty($_POST['FileTrackingNotes']['store_level']) ? '' : $_POST['FileTrackingNotes']['store_level'], empty($_POST['FileTrackingNotes']['store_id']) ? '' : $_POST['FileTrackingNotes']['store_id'])]);
     }
 
     /**

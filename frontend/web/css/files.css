@@ -201,3 +201,61 @@ and open the template in the editor.
     padding: 0;
     border-radius: 100%
 }
+
+.trck-nts-prpts {
+    width: 39.5%;
+    height: 100%;
+    padding-right: 5px;
+    border-right: 1px solid #ddd;
+    overflow: hidden
+}
+
+.trck-nts-prpts-pn {
+    width: 100%;
+    height: 70%;
+    overflow: hidden
+}
+
+.trck-nts-prpts-fm {
+    width: 100%;
+    height: 30%;
+    overflow: hidden
+}
+
+.trck-nts-prpts-fm-pn {
+    width: 100%;
+    height: 100%;
+    border-top: 1px solid #ddd;
+    border-radius: 6px;
+    overflow-x: hidden
+}
+
+.trck-nts-prpts-pn-pn {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden
+}
+
+.trck-nts-tmln {
+    width: 60%;
+    height: 100%;
+    overflow: hidden
+}
+
+.trck-nts-tmln-btns {
+    width: 100%;
+    height: 5%;
+    padding-top: 3px
+}
+
+.trck-nts-tmln-fm {
+    width: 100%;
+    height: 100%;
+    overflow: hidden
+}
+
+.trck-nts-tmln-fm-pn {
+    width: 100%;
+    height: 95%;
+    overflow-x: hidden
+}

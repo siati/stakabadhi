@@ -113,6 +113,7 @@ foreach ($levels as $level => $detail)
     <li class="custom-sub-menu strg-unts-dlt div1" rgt="<?= $write ?>" onclick="deleteStorage($(this).parent().attr('lvl'), $(this).parent().attr('str-id'), $(this).parent().attr('dlt-actn'))">Delete</li>
     <li class="custom-sub-menu divider" no="div1"></li>
     <li class="custom-sub-menu strg-unts-mv div2" rgt="<?= $write ?>" onclick="moveStorages($(this).parent().attr('lvl'), $(this).parent().attr('str-id'), $(this).parent().attr('mv-actn'))">Move</li>
+    <li class="custom-sub-menu strg-unts-nts div2" rgt="<?= $write ?>" onclick="trackingNotes($(this).parent().attr('lvl'), $(this).parent().attr('str-id'))">Tracking Notes</li>
     <li class="custom-sub-menu strg-unts-rgts div2" rgt="<?= $write ?>" onclick="filePermission($(this).parent().attr('lvl'), $(this).parent().attr('str-id'))">Privileges</li>
     <li class="custom-sub-menu divider" no="div2"></li>
     <li class="custom-sub-menu custom-menu-wait has-cstm-mn strg-unts-new div3" rgt="<?= $write ?>" cstm-mn=".custom-menu-new-strg-unts" onclick="newStorageToShow()">New</li>
@@ -511,6 +512,33 @@ $this->registerJs(
                 $.post('files/storage-write-rights', {'user': user},
                     function (perms) {
                         $('.files-right-pn-pn-sub-2').html(perms);
+                    }
+                );
+            }
+            
+            function trackingNotes(lvl, id) {
+                yiiModal('Tracking Notes', 'files/tracking-notes', {'FileTrackingNotes[store_level]': lvl, 'FileTrackingNotes[store_id]': id}, $('.files-ctnt').width() * 0.6, $('.files-default-index').height());
+            }
+            
+            function saveTrackingNotes(form_id) {
+                post = $('#' + form_id).serializeArray();
+
+                post.push({name: 'sbmt', value: ''});
+                
+                $.post('files/tracking-notes', post,
+                    function (saved) {
+                        if (saved[0]) {
+                            $('#filetrackingnotes-id, #filetrackingnotes-notes').val(null);
+                            $('.rfrs-nts').click();
+                        }
+                    }
+                );
+            }
+            
+            function storeTimeline(lvl, id) {
+                $.post('files/notes-timeline', {'FileTrackingNotes[store_level]': lvl, 'FileTrackingNotes[store_id]': id},
+                    function (notes) {
+                        $('.trck-nts-tmln-fm-pn').html(notes);
                     }
                 );
             }

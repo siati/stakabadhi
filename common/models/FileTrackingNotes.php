@@ -14,25 +14,24 @@ use Yii;
  * @property integer $created_by
  * @property string $created_at
  */
-class FileTrackingNotes extends \yii\db\ActiveRecord
-{
+class FileTrackingNotes extends \yii\db\ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return '{{%file_tracking_notes}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['store_level', 'store_id', 'notes', 'created_by'], 'required'],
             [['store_level', 'store_id', 'created_by'], 'integer'],
-            [['notes'], 'string'],
+            [['notes'], 'notNumerical'],
+            [['notes'], 'string', 'min' => 15],
             [['created_at'], 'safe'],
         ];
     }
@@ -40,8 +39,7 @@ class FileTrackingNotes extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'store_level' => Yii::t('app', 'Store Level'),
@@ -56,8 +54,64 @@ class FileTrackingNotes extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return \common\activeQueries\FileTrackingNotesQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new \common\activeQueries\FileTrackingNotesQuery(get_called_class());
     }
+    
+    /**
+     * 
+     * @param integer $pk note id
+     * @return FileTrackingNotes model
+     */
+    public static function returnNote($pk) {
+        return static::findByPk($pk);
+    }
+    
+    /**
+     * 
+     * @param integer $store_level store level
+     * @param integer $store_id store id
+     * @return FileTrackingNotes notes
+     */
+    public static function notesForStore($store_level, $store_id) {
+        return static::find()->notesForStore($store_level, $store_id);
+    }
+    
+    /**
+     * 
+     * @param integer $store_level store level
+     * @param integer $store_id store id
+     * @return FileTrackingNotes notes
+     */
+    public static function newNote($store_level, $store_id) {
+        $model = new FileTrackingNotes;
+        
+        $model->store_level = $store_level;
+        $model->store_id = $store_id;
+        $model->created_by = Yii::$app->user->identity->id;
+        
+        return $model;
+    }
+    
+    /**
+     * 
+     * @param integer $id note id
+     * @param integer $store_level store level
+     * @param integer $store_id store id
+     * @return FileTrackingNotes notes
+     */
+    public static function noteToLoad($id, $store_level, $store_id) {
+        return is_object($model = static::returnNote($id)) ? $model : static::newNote($store_level, $store_id);
+    }
+    
+    /**
+     * 
+     * @return boolean true - model saved
+     */
+    public function modelSave() {
+        $this->isNewRecord ? $this->created_at = StaticMethods::now() : '';
+        
+        return $this->save();
+    }
+
 }
