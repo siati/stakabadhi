@@ -1,19 +1,27 @@
+<?php /* @var $notes common\models\FileTrackingNotes */ ?>
+
 <?php
-/* @var $notes common\models\FileTrackingNotes */
+
+use common\models\User;
+use common\models\StaticMethods;
 ?>
+
 <?php if (empty($notes)): ?>
-    <div style="height: 100%; width: 100%; display: table">
-        <div style="height: 100%; width: 100%; display: table-cell; text-align: center; vertical-align: middle">
-            <h3>There are no notes for this item</h3>
+    <div class="no-note-tbl">
+        <div class="no-note-cell">
+            <h3><i>There are no notes for this item</i></h3>
         </div>
     </div>
 <?php else: ?>
     <?php foreach ($notes as $note): ?>
-        <div style="border-bottom: 2px solid #ddd; padding: 1px 2px 3px 2px; margin-bottom: 15px">
-            <div class="pull-left"><smll><b><?= $note->created_by ?></b></smll></div>
-            <div class="pull-right"><small><b><?= $note->created_at ?></b></small></div>
+        <div class="note-ctnr">
 
-            <div style="clear: both"><?= $note->notes ?></div>
+            <div class="td-left"><small><u><?= StaticMethods::dateString($note->created_at, StaticMethods::longest) . ' @' . substr($note->created_at, 11) ?>&nbsp;</u></small></div>
+
+            <div class="td-justify"><small><b><i><?= $note->notes ?></i></b></small></div>
+
+            <div class="td-right"><small><?= User::returnUser($note->created_by)->name ?></small></div>
+
         </div>
     <?php endforeach; ?>
 <?php endif; ?>

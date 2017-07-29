@@ -563,6 +563,7 @@ class FilesController extends Controller {
 
         return $this->renderAjax('tracking-notes', [
                     'model' => $model,
+                    'level' => StoreLevels::returnLevel($model->store_level),
                     'storage' => $storage = StoreLevels::storageByID($model->store_level, $model->store_id),
                     'editor' => Yii::$app->user->identity->userStillHasRights([User::USER_SUPER_ADMIN, User::USER_ADMIN]) || $storage->userSubjectiveRight(Yii::$app->user->identity->id) == FilePermissions::write,
                     'notes_timeline' => $this->actionNotesTimeline()

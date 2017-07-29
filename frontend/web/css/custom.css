@@ -27,6 +27,10 @@ thead {
     text-align: right;
 }
 
+.td-justify {
+    text-align: justify
+}
+
 .td-pdg-rgt {
     padding-right: 2px;
 }

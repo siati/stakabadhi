@@ -113,7 +113,7 @@ foreach ($levels as $level => $detail)
     <li class="custom-sub-menu strg-unts-dlt div1" rgt="<?= $write ?>" onclick="deleteStorage($(this).parent().attr('lvl'), $(this).parent().attr('str-id'), $(this).parent().attr('dlt-actn'))">Delete</li>
     <li class="custom-sub-menu divider" no="div1"></li>
     <li class="custom-sub-menu strg-unts-mv div2" rgt="<?= $write ?>" onclick="moveStorages($(this).parent().attr('lvl'), $(this).parent().attr('str-id'), $(this).parent().attr('mv-actn'))">Move</li>
-    <li class="custom-sub-menu strg-unts-nts div2" rgt="<?= $write ?>" onclick="trackingNotes($(this).parent().attr('lvl'), $(this).parent().attr('str-id'))">Tracking Notes</li>
+    <li class="custom-sub-menu strg-unts-nts div2" rgt="<?= $write ?>" onclick="trackingNotes($(this).parent().attr('lvl'), $(this).parent().attr('str-id'))">Notes</li>
     <li class="custom-sub-menu strg-unts-rgts div2" rgt="<?= $write ?>" onclick="filePermission($(this).parent().attr('lvl'), $(this).parent().attr('str-id'))">Privileges</li>
     <li class="custom-sub-menu divider" no="div2"></li>
     <li class="custom-sub-menu custom-menu-wait has-cstm-mn strg-unts-new div3" rgt="<?= $write ?>" cstm-mn=".custom-menu-new-strg-unts" onclick="newStorageToShow()">New</li>

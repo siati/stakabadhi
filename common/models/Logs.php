@@ -86,6 +86,7 @@ class Logs extends \yii\db\ActiveRecord {
     const move_store = 'Move Store';
     const delete_store = 'Delete Store';
     const update_store_rigts = 'Update Store Rights';
+    const file_tracking_note = 'Tracking Note';
 
     /**
      * @inheritdoc

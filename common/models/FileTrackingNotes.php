@@ -111,7 +111,7 @@ class FileTrackingNotes extends \yii\db\ActiveRecord {
     public function modelSave() {
         $this->isNewRecord ? $this->created_at = StaticMethods::now() : '';
         
-        return $this->save();
+        return $this->save() && (Logs::newLog(Logs::file_tracking_note, "Made note $this->id in " . static::tableName(), Yii::$app->user->identity->id, Yii::$app->user->identity->username, Yii::$app->user->identity->session_id, Yii::$app->user->identity->signed_in_ip, null,  null, "$this->store_level,$this->store_id", $this->notes, null, Logs::success) || true);
     }
 
 }
