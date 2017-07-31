@@ -140,9 +140,7 @@ foreach ($levels as $level => $detail)
 
 <!-- custom context menu for selected file items -->
 <ul class="custom-menu custom-menu-fl-optns" rgt="<?= $write ?>">
-    <li class="custom-sub-menu fl-optns-mv div4">Move</li>
-    <li class="custom-sub-menu fl-optns-rgts div4">Privileges</li>
-    <li class="custom-sub-menu fl-optns-dlt div4">Delete</li>
+    <li class="custom-sub-menu fl-optns-mv div4" onclick="$('.strg-unts-mv').click()">Move</li>
     <li class="custom-sub-menu divider" no="div4"></li>
     <li class="custom-sub-menu fl-optns-slct-all">Select All</li>
     <li class="custom-sub-menu fl-optns-cntn">Continue Selecting</li>
@@ -398,9 +396,7 @@ $this->registerJs(
                 lvl * 1 > $storeLevel * 1 ? yiiModal('Move Items', 'files/' + actn, updateStoragePostItems(lvl, id), $('.files-ctnt').width() * 0.5, $('.files-default-index').height() * 0.775) : '';
             }
             
-            function moveStorage(form_id, lvl) {
-                post = $('#' + form_id).serializeArray();
-
+            function moveStorage(form_id, lvl, post) {
                 post.push({name: 'sbmt', value: ''});
                 
                 $.post($('#' + form_id).attr('action'), post,
@@ -410,6 +406,26 @@ $this->registerJs(
                         userWritePermissions($user);
                     }
                 );
+            }
+            
+            function moveMultipleStorages(form_id, lvl) {
+                if ($('#slctd-fls').text() === null || $('#slctd-fls').text() === '')
+                    moveStorage(form_id, lvl, $('#' + form_id).serializeArray());
+                else {
+                    items = $('#slctd-fls').text().split(',');
+                    
+                    for (var i = 0; i < items.length; i++) {
+                        $('#files-id').val(items[i]);
+                        moveStorage(form_id, lvl, $('#' + form_id).serializeArray());
+                    }
+                    
+                    quitSelectAndCloseModal();
+                }
+            }
+            
+            function quitSelectAndCloseModal() {
+                quitFileSelect();
+                closeDialog();
             }
             
             function deleteStorage(lvl, id, actn) {

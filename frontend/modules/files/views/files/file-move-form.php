@@ -56,8 +56,8 @@ use common\models\Folders;
 </div>
 
 <div style="height: 7.5%; padding-top: 15px">
-    <div class="btn btn-success pull-left" onclick="moveStorage('form-file-move', '<?= $folderLevel ?>')">Save</div>
-    <div class="btn btn-danger pull-right" onclick="closeDialog()">Close</div>
+    <div class="btn btn-success pull-left" onclick="moveMultipleStorages('form-file-move', '<?= $folderLevel ?>')">Save</div>
+    <div class="btn btn-danger pull-right" onclick="quitSelectAndCloseModal()">Close</div>
 </div>
 
 <style onload="$('.yii-modal-head').html('Move ' + '<?= StoreLevels::returnLevel(StoreLevels::files)->name ?>'); $(this).remove();"></style>
