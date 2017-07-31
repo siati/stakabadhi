@@ -104,6 +104,7 @@ foreach ($levels as $level => $detail)
 
 <div id="str-lvl-fm" hidden="hidden"></div>
 <div id="str-fm" hidden="hidden"></div>
+<div id="slctd-fls" hidden="hidden"></div>
 
 
 <!-- custom context menu for storage units -->
@@ -143,8 +144,6 @@ foreach ($levels as $level => $detail)
     <li class="custom-sub-menu fl-optns-rgts div4">Privileges</li>
     <li class="custom-sub-menu fl-optns-dlt div4">Delete</li>
     <li class="custom-sub-menu divider" no="div4"></li>
-    <li class="custom-sub-menu fl-optns-pst div5">Paste</li>
-    <li class="custom-sub-menu divider" no="div5"></li>
     <li class="custom-sub-menu fl-optns-slct-all">Select All</li>
     <li class="custom-sub-menu fl-optns-cntn">Continue Selecting</li>
     <li class="custom-sub-menu fl-optns-slct-qt">Quit Selecting</li>
@@ -769,6 +768,34 @@ $this->registerJs(
                 return {};
             }
             
+            function selectedFileIDs() {
+                ids = null;
+                
+                $('.files-ctnt-pn-tl').find('.fl-hd .fl-is-slctd').each(
+                    function () {
+                        ids = (ids === null ? '' : (ids + ',')) + $(this).parent().attr('fl-hd');
+                    }
+                );
+                
+                $('#slctd-fls').text(ids);
+            }
+            
+            function commenceFileSelect() {
+                $('.fl-hd-pn-img, .files-ctnt-pn-tl').attr('cstm-mn', '.custom-menu-fl-optns');
+                $('.files-ctnt-pn-lst-bdy, .files-ctnt-pn-lst-bdy div').attr('cstm-mn', null);
+                selectedFileIDs();
+            }
+            
+            function quitFileSelect() {
+                $('.fl-hd-pn-img, .files-ctnt-pn-tl, .files-ctnt-pn-lst-bdy, .files-ctnt-pn-lst-bdy div').attr('cstm-mn', '.custom-menu-strg-unts');
+                $('.fl-is-slctd').removeClass('fl-is-slctd');
+                $('#slctd-fls').text(null);
+            }
+            
+            function clickAndContextEventDuringSelect(event) {
+                $(event.target).attr('cstm-mn') === '.custom-menu-fl-optns' ? customMenu(event, true) : '';
+            }
+            
         "
         , View::POS_HEAD
 );
@@ -784,6 +811,7 @@ $this->registerJs(
                             $(this).find('.fl-hd').each(
                                 function () {
                                     $('.fl-slctd').length ? '' : selectThisFileItem($(this));
+                                    quitFileSelect();
                                 }
                             );
                     }
@@ -876,7 +904,17 @@ $this->registerJs(
             /* manage custom menu on file tiles pane */
                 $('.files-ctnt-pn-tl').click(
                     function (event) {
-                        $(event.target).hasClass('files-ctnt-pn-tl') ? filesPaneOptions() : filesPaneItemOptions();
+                        if ($(event.target).hasClass('files-ctnt-pn-tl'))
+                            filesPaneOptions();
+                        else {
+                            
+                            if ($(event.target).hasClass('fl-hd-pn-img') && $(event.target).attr('cstm-mn') === '.custom-menu-fl-optns') {
+                                event.which === 3 ? '' : $(event.target).parent().hasClass('fl-is-slctd') ? $(event.target).parent().removeClass('fl-is-slctd') : $(event.target).parent().addClass('fl-is-slctd');
+                                selectedFileIDs();
+                            }
+                            
+                            filesPaneItemOptions();
+                        }
                     }
                 );
             /* manage custom menu on file tiles pane */
@@ -896,6 +934,32 @@ $this->registerJs(
                     }
                 );
             /* manage custom menus by user rights to item */
+            
+            /* start second level custom menu */
+                $('.strg-unts-slct').click(
+                    function () {
+                        $('.fl-slctd').addClass('fl-is-slctd');
+                        commenceFileSelect();
+                    }
+                );
+            /* start second level custom menu */
+            
+            /* select all files */
+                $('.fl-optns-slct-all').click(
+                    function () {
+                        $('.files-ctnt-pn-tl .fl-hd .fl-hd-pn').addClass('fl-is-slctd');
+                        selectedFileIDs();
+                    }
+                );
+            /* select all files */
+            
+            /* choose to stop file actions custom menu */
+                $('.fl-optns-slct-qt').click(
+                    function () {
+                        quitFileSelect();
+                    }
+                );
+            /* choose to stop file actions custom menu */
             
             /* put the right and left arrows middle for the carousel */
                 $('.carousel-control').css('padding-top', ($('.carousel-control').height() - 20) / 2 + 'px'); //20 is the font size for $('.carousel-control').text()

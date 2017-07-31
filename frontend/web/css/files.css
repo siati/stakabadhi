@@ -305,3 +305,8 @@ and open the template in the editor.
     text-align: justify;
     vertical-align: middle
 }
+
+.fl-is-slctd {
+    background-color: #e4b9b9;
+    border-radius: 100%;
+}
