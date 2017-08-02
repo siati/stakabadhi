@@ -120,7 +120,7 @@ foreach ($levels as $level => $detail)
     <li class="custom-sub-menu custom-menu-wait has-cstm-mn strg-unts-new div3" rgt="<?= $write ?>" cstm-mn=".custom-menu-new-strg-unts" onclick="newStorageToShow()">New</li>
     <li class="custom-sub-menu divider" no="div3"></li>
     <li class="custom-sub-menu strg-unts-rfsh" rgt="<?= $read ?>" onclick="refreshFiles()">Refresh</li>
-    <li class="custom-sub-menu strg-unts-slct" rgt="<?= $write ?>">Select</li>
+    <!--<li class="custom-sub-menu strg-unts-slct" rgt="<?= $write ?>">Select</li>-->
 </ul>
 <!-- custom context menu for storage units -->
 

@@ -27,6 +27,13 @@ use Yii;
  */
 class Logs extends \yii\db\ActiveRecord {
 
+    const log_title = 'title';
+    const log_origin_id = 'origin_id';
+    const log_final_id = 'final_id';
+    const log_origin_value = 'origin_value';
+    const log_final_value = 'final_value';
+    const log_description = 'description';
+    const log_narration = 'narration';
     const success = 'success';
     const failed = 'failed';
     const available = 'yes';
@@ -348,6 +355,60 @@ class Logs extends \yii\db\ActiveRecord {
                 $log->update(false, ['available']);
             }
         }
+    }
+
+    /**
+     * 
+     * @param string $title title of log element
+     * @param string|integer $origin_id original id
+     * @param string $origin_value original value
+     * @param string|integer $final_id final id
+     * @param string $final_value final value
+     * @param string $description log description
+     * @param string $narration log narration
+     * @return array desired log detail parameters
+     */
+    public static function logDetailer($title, $origin_id, $origin_value, $final_id, $final_value, $description, $narration) {
+        return [
+            self::log_title => $title,
+            self::log_origin_id => $origin_id,
+            self::log_origin_value => $origin_value,
+            self::log_final_id => $final_id,
+            self::log_final_value => $final_value,
+            self::log_description => $description,
+            self::log_narration => $narration,
+        ];
+    }
+
+    /**
+     * 
+     * @return array logs applicable to documents
+     */
+    public static function documentLogCategories() {
+        return [
+            self::new_document => static::logDetailer('Create', false, false, true, false, false, false),
+            self::copy_document => static::logDetailer('Copy', true, false, false, false, false, false),
+            self::move_document => static::logDetailer('Move', true, false, false, false, false, false),
+            self::archive_document => static::logDetailer('Archive', true, false, false, false, false, false),
+            self::recycle_document => static::logDetailer('Trash', true, false, false, false, false, false),
+            self::drop_document => static::logDetailer('Drop', true, false, false, false, false, false),
+            self::update_document_description => static::logDetailer('Description', true, false, false, false, false, false),
+            self::rename_document => static::logDetailer('Rename', true, false, false, false, false, false),
+            self::document_movable_updatable_deletable => static::logDetailer('Modifiability', true, false, false, false, true, false),
+            self::restore_from_archive => static::logDetailer('Restore', true, false, false, false, false, false),
+            self::restore_to_archive => static::logDetailer('Restore to Recycle', true, false, false, false, false, false),
+            self::restore_to_documents => static::logDetailer('Restore to Documents', true, false, false, false, false, false),
+            self::lock_document => static::logDetailer('Lock', true, false, false, false, false, false),
+            self::unlock_document => static::logDetailer('Unlock', true, false, false, false, false, false),
+            self::new_version => static::logDetailer('Update', true, false, false, false, false, false),
+            self::insert_into_history => static::logDetailer('Save Version', true, false, false, false, false, false),
+            self::revert_from_history => static::logDetailer('Revert to Version', true, false, false, false, false, false),
+            self::document_download => static::logDetailer('Download', true, false, false, false, false, false),
+            self::send_documents_by_mail => static::logDetailer('Send', true, false, false, false, false, false),
+            self::zip_and_export => static::logDetailer('Zipped', true, false, false, false, false, false),
+            self::document_version_download => static::logDetailer('Download Version', true, false, false, false, false, false),
+            self::document_version_delete => static::logDetailer('Delete Version', true, false, false, false, false, false),
+        ];
     }
 
 }

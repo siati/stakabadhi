@@ -32,8 +32,8 @@
             <tr><td class="td-left">Uploaded On</td> <td class="td-cnter">:</td> <td class="td-left"><?= $uploadedOn ?></td></tr>
 
             <?php if (!empty($updatedBy) && !empty($updatedOn)): ?>
-                <tr><td class="td-left">Updated By</td> <td class="td-cnter">:</td> <td class="td-left"><?= $updatedBy ?></td></tr>
-                <tr><td class="td-left">Updated On</td> <td class="td-cnter">:</td> <td class="td-left"><?= $updatedOn ?></td></tr>
+                <tr><td class="td-left">Modified By</td> <td class="td-cnter">:</td> <td class="td-left"><?= $updatedBy ?></td></tr>
+                <tr><td class="td-left">Modified On</td> <td class="td-cnter">:</td> <td class="td-left"><?= $updatedOn ?></td></tr>
             <?php endif; ?>
         <?php endif; ?>
 
