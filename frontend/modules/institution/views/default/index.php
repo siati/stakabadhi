@@ -189,6 +189,7 @@ $file_move = Documents::file_move
 <?php $profile = common\models\Profiles::returnProfile(Yii::$app->user->identity->profile)->profile ?>
 <?php $admin = \common\models\User::USER_ADMIN ?>
 <?php $detail_delimiter = common\models\DocumentsMailings::detail_delimiter ?>
+<?php $connection_failed = \common\models\DocumentsMailings::connection_failed ?>
 
 <?php
 $this->registerJs(
@@ -487,9 +488,9 @@ $this->registerJs(
                         
                     $.post('sections/send-files', post,
                         function (sent) {
-                            if (sent === null || sent === '' || $.isNumeric(sent)) {
-                                sent === null || sent === '' ? '' : $('#documentsmailings-id').val(sent);
-                                customErrorSwal('Connection Failed', 'We could not connect to your email host service<br/><br/>Check that you have adequate internet access', '15000', 'info');
+                            if (sent === null || sent === '' || sent === '$connection_failed' || $.isNumeric(sent)) {
+                                sent === null || sent === '' || sent === '$connection_failed' ? '' : $('#documentsmailings-id').val(sent);
+                                customErrorSwal((notConnect = !sent || sent === '$connection_failed') ? 'Connection Failed' : 'Done', notConnect ? 'We could not connect to your email host service<br/><br/>Check that you have adequate internet access' : 'Your documents have been sent', '10000', notConnect ? 'info' : 'success');
                             } else {
                                 $('#document-mailing-form').html(sent);
                                 swal.close();

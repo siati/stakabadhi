@@ -27,9 +27,9 @@ class DocumentsMailings extends \yii\db\ActiveRecord {
 
     const validity = 14;
     const detail_delimiter = '~';
-    const connection_failed = 'connection failed';
-    const sent = 'sent';
-    const not_sent = 'failed';
+    const connection_failed = StaticMethods::connection_failed;
+    const sent = StaticMethods::sent;
+    const not_sent = StaticMethods::not_sent;
 
     /**
      * @inheritdoc
@@ -196,8 +196,8 @@ class DocumentsMailings extends \yii\db\ActiveRecord {
      */
     public function saveTheZip($source) {
         if (!$this->isNewRecord && (is_dir($fldr = StaticMethods::mailZipsFolder() . $this->zip_folder) || is_file($fldr)))
-            @unlink ($fldr);
-        
+            @unlink($fldr);
+
         copy($source, $destination = str_replace(StaticMethods::downloadsFolder(), $zip = StaticMethods::mailZipsFolder(), $source)) ? $this->zip_folder = str_replace($zip, '', $destination) : '';
     }
 
@@ -243,24 +243,14 @@ class DocumentsMailings extends \yii\db\ActiveRecord {
             return false;
 
         $this->documents = $zip[1];
+
         $this->saveTheZip($zip[0]);
 
-        try {
-            $this->sent = Yii::$app->mailer
-                            ->compose(['html' => 'send-document-html', 'text' => 'send-document-text'], ['mail' => $this])
-                            ->setFrom([$this->from => Yii::$app->name])
-                            ->setTo($this->explodeRecipients('to'))
-                            ->setCc($this->explodeRecipients('cc'))
-                            ->setBcc($this->explodeRecipients('bcc'))
-                            ->setSubject($this->subject)
-                            ->attach($zip[0])
-                            ->send() ? self::sent : self::not_sent;
-
-            $sent = $this->sent == self::sent;
-        } catch (\Exception $ex) {
-            $this->narration = substr($ex, 0, 100);
-            $sent = self::connection_failed;
-        }
+        if (is_array($sent = StaticMethods::sendMail('send-document-html', 'send-document-text', ['mail' => $this], [$this->from => Yii::$app->name], $this->explodeRecipients('to'), $this->explodeRecipients('cc'), $this->explodeRecipients('bcc'), $this->subject, [$zip[0]]))) {
+            $this->narration = $sent[0];
+            $sent = $sent[1];
+        } else
+            $this->sent = $sent ? self::sent : self::not_sent;
 
         $this->modelSave();
 

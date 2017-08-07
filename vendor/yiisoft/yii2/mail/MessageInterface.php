@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -30,8 +31,8 @@ namespace yii\mail;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-interface MessageInterface
-{
+interface MessageInterface {
+
     /**
      * Returns the character set of this message.
      * @return string the character set of this message.

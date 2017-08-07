@@ -63,6 +63,9 @@ class StaticMethods {
     const ext_is_cde = 'c';
     const ext_is_dbs = 'b';
     const ext_is_unknown = 'u';
+    const connection_failed = 'connection failed';
+    const sent = 'sent';
+    const not_sent = 'failed';
 
     /**
      * 
@@ -147,7 +150,7 @@ class StaticMethods {
 
         return implode(DIRECTORY_SEPARATOR, $ex) . '/';
     }
-    
+
     /**
      * 
      * @return string root mail zips link
@@ -155,7 +158,7 @@ class StaticMethods {
     public static function mailZipsFolderUrl() {
         return Yii::$app->homeUrl . '../../' . self::mail_zips_folder . '/';
     }
-    
+
     /**
      * 
      * @return string root mail zips path
@@ -175,7 +178,7 @@ class StaticMethods {
 
         return implode(DIRECTORY_SEPARATOR, $ex) . '/';
     }
-    
+
     /**
      * 
      * @return string root document versions link
@@ -183,7 +186,7 @@ class StaticMethods {
     public static function versionsFolderUrl() {
         return Yii::$app->homeUrl . '../../' . self::versions_folder . '/';
     }
-    
+
     /**
      * 
      * @return string root document versions path
@@ -191,7 +194,7 @@ class StaticMethods {
     public static function versionsFolder() {
         return Yii::$app->basePath . '/../' . self::versions_folder . '/';
     }
-    
+
     /**
      * 
      * @return string root extension icons link
@@ -199,7 +202,7 @@ class StaticMethods {
     public static function extensionIconsFolderUrl() {
         return Yii::$app->homeUrl . '../../common/assets/icons/' . self::file_extensions_folder . '/';
     }
-    
+
     /**
      * 
      * @return string root extension icons path
@@ -403,7 +406,7 @@ class StaticMethods {
 
         return $extensions[empty($extensions[$type]) ? 'unknown' : $type];
     }
-    
+
     /**
      * @param string $extension file extension
      * @param boolean $location true - return icon location, else icon url
@@ -412,7 +415,7 @@ class StaticMethods {
     public static function documentVersionIcon($extension, $location) {
         return ($location ? static::extensionIconsFolder() : static::extensionIconsFolderUrl()) . static::fileTypeDescription($extension)[static::ext_icon];
     }
-    
+
     /**
      * @param string $extension file extension
      * @return string icon location or url
@@ -491,9 +494,9 @@ class StaticMethods {
      */
     public static function zipAndDownload($files) {
         $return = self::zipFiles($files);
-        
+
         $return[0] == '' || empty($return[0]) ? ('') : ($return[0] = self::downloadsFolderUrl() . $return[0]);
-                
+
         return $return;
     }
 
@@ -504,9 +507,9 @@ class StaticMethods {
      */
     public static function zipAndLoad($files) {
         $return = self::zipFiles($files);
-        
+
         $return[0] == '' || empty($return[0]) ? ('') : ($return[0] = self::downloadsFolder() . $return[0]);
-        
+
         return $return;
     }
 
@@ -521,7 +524,7 @@ class StaticMethods {
         $zip->open($chuja = self::downloadsFolder() . ($location = self::stripNonNumeric(self::now()) . '.zip'), ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         $names = [];
-        
+
         $detail_delimiter = DocumentsMailings::detail_delimiter;
 
         foreach ($files as $file)
@@ -757,7 +760,7 @@ class StaticMethods {
     public static function stringExplode($string, $delimiter) {
         return explode($delimiter, $string);
     }
-    
+
     /**
      * 
      * @param array $pieces pieces / elements
@@ -790,6 +793,35 @@ class StaticMethods {
             return [ceil($size / (1024 * 1024 * 1024 * 1024)), 'TB'];
 
         return [ceil($size / (1024 * 1024 * 1024 * 1024 * 1024)), 'PB'];
+    }
+
+    /**
+     * 
+     * @param string $html_view mail html view
+     * @param string $text_view mail text view
+     * @param array $mail parameter for the mail views
+     * @param array $from sender - [email => name]
+     * @param array $to primary recipients - [email1 => name1, email2 => name2]
+     * @param array $cc secondary recipients - [email1 => name1, email2 => name2]
+     * @param array $bcc tertiary recipients - [email1 => name1, email2 => name2]
+     * @param string $subject subject of email
+     * @param array $attachments file locations
+     * @return array|boolean true -sent, false - not sent, array - connection fail exception
+     */
+    public static function sendMail($html_view, $text_view, $mail, $from, $to, $cc, $bcc, $subject, $attachments) {
+        try {
+            $mailer = Yii::$app->mailer->compose(['html' => $html_view, 'text' => $text_view], $mail);
+
+            $mailer->setFrom($from)->setTo($to)->setCc($cc)->setBcc($bcc)->setSubject($subject);
+
+            if (is_array($attachments))
+                foreach ($attachments as $attachment)
+                    $mailer->attach($attachment);
+
+            return $mailer->send();
+        } catch (\Exception $ex) {
+            return [substr($ex, 0, 100), self::connection_failed];
+        }
     }
 
 }

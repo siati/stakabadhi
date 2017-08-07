@@ -304,10 +304,12 @@ class SectionsController extends Controller {
             if (!isset($_POST['sbmt']) && count($ajax = $this->ajaxValidate($model)) > 0)
                 return $ajax;
 
-            if (($sent = $model->validate(['from', 'to', 'cc', 'bcc', 'documents', 'subject', 'body', 'footer']) && $model->sendFiles($_POST['status'])) == DocumentsMailings::connection_failed) {
+            if (($sent = ($valid = $model->validate(['from', 'to', 'cc', 'bcc', 'documents', 'subject', 'body', 'footer'])) && ($done = $model->sendFiles($_POST['status'])) == DocumentsMailings::connection_failed)) {
                 echo $id == $model->id ? '' : $model->id;
                 Yii::$app->end();
-            } else {
+            } else
+            if ($valid) {
+                echo $done;
                 $model = DocumentsMailings::mailToLoad(null, null, null, null, empty($_POST['ids']) ? '' : Documents::documentsForSending($_POST['ids'], $_POST['status']));
                 $model->load(Yii::$app->request->post());
             }
@@ -501,13 +503,13 @@ class SectionsController extends Controller {
         $model = DocumentsPermissions::permissionToLoad($_POST['DocumentsPermissions']['document'], $_POST['DocumentsPermissions']['section']);
 
         $model->load(Yii::$app->request->post());
-        
+
         $model->syncRights();
 
         $model->modelSave();
 
         echo $model->permission;
-        
+
         $model->documentChildrenRights();
     }
 

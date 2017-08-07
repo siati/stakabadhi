@@ -2,15 +2,17 @@
 /* @var $mail common\models\DocumentsMailings */
 ?>
 
-<div style="font-size: 12px; text-align: justify">
+<div class="mail-body">
     <?= $mail->body ?>
 
     <?php if (!empty($mail->footer)): ?>
-        <div class="divider"></div>
 
-        <div style="font-size: 10px">
+        <div class="mail-footer">
+
             <i><?= $mail->footer ?></i>
+
         </div>
+
     <?php endif; ?>
 
 </div>
