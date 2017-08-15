@@ -80,6 +80,7 @@ $file_move = Documents::file_move
     <li class="custom-sub-menu fl-dplct div3" rgt="alt" onclick="duplicateFile()">Duplicate</li>
     <li class="custom-sub-menu divider" no="div3"></li>
     <li class="custom-sub-menu snd-dcmt div4" rgt="alt" onclick="sendFiles($('.custom-menu-nav-fldr-nds .custom-sub-menu-title').attr('fldr'), $('.custom-menu-nav-fldr-nds .custom-sub-menu-title').attr('fl'))">Send</li>
+    <li class="custom-sub-menu psh-dcmt div4" rgt="alt" onclick="pushFile($('.custom-menu-nav-fldr-nds .custom-sub-menu-title').attr('fl'))">Push</li>
     <li class="custom-sub-menu divider" no="div4"></li>
     <li class="custom-sub-menu doc-arcv" rgt="alt" onclick="archiveFile()">Archive</li>
     <li class="custom-sub-menu dcmt-dlt" rgt="alt" onclick="recycleFile()">Recycle</li>
@@ -490,11 +491,22 @@ $this->registerJs(
                         function (sent) {
                             if (sent === null || sent === '' || sent === '$connection_failed' || $.isNumeric(sent)) {
                                 sent === null || sent === '' || sent === '$connection_failed' ? '' : $('#documentsmailings-id').val(sent);
-                                customErrorSwal((notConnect = !sent || sent === '$connection_failed') ? 'Connection Failed' : 'Done', notConnect ? 'We could not connect to your email host service<br/><br/>Check that you have adequate internet access' : 'Your documents have been sent', '10000', notConnect ? 'info' : 'success');
+                                customErrorSwal((notConnect = sent === null || sent === '$connection_failed') ? 'Connection Failed' : 'Done', notConnect ? 'We could not connect to your email host service<br/><br/>Check that you have adequate internet access' : 'Your documents have been sent', '10000', notConnect ? 'info' : 'success');
                             } else {
                                 $('#document-mailing-form').html(sent);
                                 swal.close();
                             }
+                        }
+                    );
+                }
+                
+                function pushFile(id) {
+                    customAjaxLoader('Sending Files', 'Please wait while we work on this...');
+                    
+                    $.post('sections/push-files', {'id': $('#' + id).attr('dcl')},
+                        function (pushed) {
+                            alert(pushed);
+                            swal.close();
                         }
                     );
                 }
@@ -1213,19 +1225,19 @@ $this->registerJs(
                                 $('.custom-menu-nav-fldr-nds .custom-sub-menu-title').attr('fl', '');
                                 $('.custom-menu-nav-fldr-nds .custom-sub-menu-title').html('Directory Options');
                                 $('.custom-menu-nav-fldr-nds .fl-dwnld').html('Explore');
-                                $('.custom-menu-nav-fldr-nds .opn-updt, .custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc, .custom-menu-nav-fldr-nds .doc-vrsn, .custom-menu-nav-fldr-nds .shr-updt').hide();
+                                $('.custom-menu-nav-fldr-nds .opn-updt, .custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc, .custom-menu-nav-fldr-nds .doc-vrsn, .custom-menu-nav-fldr-nds .shr-updt, .custom-menu-nav-fldr-nds .psh-dcmt').hide();
                             } else {
                                 $('.custom-menu-nav-fldr-nds .custom-sub-menu-title').attr('fl', $(e.target).hasClass('fldr-in-ctnt-pn') ? $(e.target).attr('id') : $(e.target).attr('prnt'));
                                 $('.custom-menu-nav-fldr-nds .custom-sub-menu-title').html('File Options');
                                 $('.custom-menu-nav-fldr-nds .fl-dwnld').html('Open / Download');
-                                $('.custom-menu-nav-fldr-nds .opn-updt, .custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc, .custom-menu-nav-fldr-nds .doc-vrsn, .custom-menu-nav-fldr-nds .shr-updt').show();
+                                $('.custom-menu-nav-fldr-nds .opn-updt, .custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc, .custom-menu-nav-fldr-nds .doc-vrsn, .custom-menu-nav-fldr-nds .shr-updt, .custom-menu-nav-fldr-nds .psh-dcmt').show();
                             }
 
                             if (prnt.attr('stts') === '$default_status') {
-                                $('.custom-menu-nav-fldr-nds .cp-dcmnt, .custom-menu-nav-fldr-nds .mv-dcmnt, .custom-menu-nav-fldr-nds .fl-dplct, .custom-menu-nav-fldr-nds .dcmt-rnm, .custom-menu-nav-fldr-nds .dcmt-shr, .custom-menu-nav-fldr-nds .snd-dcmt, .custom-menu-nav-fldr-nds .doc-arcv').show();
+                                $('.custom-menu-nav-fldr-nds .cp-dcmnt, .custom-menu-nav-fldr-nds .mv-dcmnt, .custom-menu-nav-fldr-nds .fl-dplct, .custom-menu-nav-fldr-nds .dcmt-rnm, .custom-menu-nav-fldr-nds .dcmt-shr, .custom-menu-nav-fldr-nds .psh-dcmt, .custom-menu-nav-fldr-nds .snd-dcmt, .custom-menu-nav-fldr-nds .doc-arcv').show();
                                 $('.custom-menu-nav-fldr-nds .dcmt-dlt, .custom-menu-nav-fldr-nds .doc-rstr, .custom-menu-nav-fldr-nds .doc-rstr2, .custom-menu-nav-fldr-nds .dcmt-drp').hide();
                             } else {
-                                $('.custom-menu-nav-fldr-nds .cp-dcmnt, .custom-menu-nav-fldr-nds .mv-dcmnt, .custom-menu-nav-fldr-nds .fl-dplct, .custom-menu-nav-fldr-nds .dcmt-rnm, .custom-menu-nav-fldr-nds .dcmt-shr, .custom-menu-nav-fldr-nds .snd-dcmt, .custom-menu-nav-fldr-nds .doc-arcv').hide();
+                                $('.custom-menu-nav-fldr-nds .cp-dcmnt, .custom-menu-nav-fldr-nds .mv-dcmnt, .custom-menu-nav-fldr-nds .fl-dplct, .custom-menu-nav-fldr-nds .dcmt-rnm, .custom-menu-nav-fldr-nds .dcmt-shr, .custom-menu-nav-fldr-nds .psh-dcmt, .custom-menu-nav-fldr-nds .snd-dcmt, .custom-menu-nav-fldr-nds .doc-arcv').hide();
                                 
                                 if (prnt.attr('stts') === '$status_archive') {
                                     $('.custom-menu-nav-fldr-nds .doc-rstr2, .custom-menu-nav-fldr-nds .dcmt-drp').hide();
@@ -1242,8 +1254,8 @@ $this->registerJs(
                                 $('.custom-menu-nav-fldr-nds .fl-dwnld').html('Open / Download');
                                 
                                 if (prnt.attr('stts') === '$default_status') {
-                                    $('.custom-menu-nav-fldr-nds .opn-updt, .custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc, .custom-menu-nav-fldr-nds .shr-updt, .custom-menu-nav-fldr-nds .snd-dcmt').show();
-                                    (opn_4_updt = $(e.target).hasClass('opn-4-updt') || $(e.target).parent().hasClass('opn-4-updt')) || ($(e.target).hasClass('lckd-by-usr') || $(e.target).parent().hasClass('lckd-by-usr')) ? $('.custom-menu-nav-fldr-nds .opn-updt, .custom-menu-nav-fldr-nds .doc-arcv, .custom-menu-nav-fldr-nds .doc-dlt').hide() : $('.custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc').hide();
+                                    $('.custom-menu-nav-fldr-nds .opn-updt, .custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc, .custom-menu-nav-fldr-nds .shr-updt, .custom-menu-nav-fldr-nds .psh-dcmt, .custom-menu-nav-fldr-nds .snd-dcmt').show();
+                                    (opn_4_updt = $(e.target).hasClass('opn-4-updt') || $(e.target).parent().hasClass('opn-4-updt')) || ($(e.target).hasClass('lckd-by-usr') || $(e.target).parent().hasClass('lckd-by-usr')) ? $('.custom-menu-nav-fldr-nds .opn-updt, .custom-menu-nav-fldr-nds .doc-arcv, .custom-menu-nav-fldr-nds .doc-dlt, .custom-menu-nav-fldr-nds .psh-dcmt').hide() : $('.custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc').hide();
                                     !$(e.target).hasClass('lckd-by-usr') && !$(e.target).parent().hasClass('lckd-by-usr') ? $('.custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc').hide() : '';
                                     ($(e.target).hasClass('has-vrsns') || $(e.target).parent().hasClass('has-vrsns')) && (!opn_4_updt || ($(e.target).hasClass('lckd-by-usr') || $(e.target).parent().hasClass('lckd-by-usr'))) ? $('.custom-menu-nav-fldr-nds .doc-vrsn').show() : $('.custom-menu-nav-fldr-nds .doc-vrsn').hide();
                                 }
@@ -1254,7 +1266,7 @@ $this->registerJs(
 
                                 $(e.target).hasClass('fldr-in-ctnt-pn') || $(e.target).parent().hasClass('fldr-in-ctnt-pn') ? $('.custom-menu-nav-fldr-nds .snd-dcmt').show() : $('.custom-menu-nav-fldr-nds .snd-dcmt').hide();
 
-                                $('.custom-menu-nav-fldr-nds .opn-updt, .custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc, .custom-menu-nav-fldr-nds .doc-vrsn, .custom-menu-nav-fldr-nds .doc-vrsn, .custom-menu-nav-fldr-nds .shr-updt').hide();
+                                $('.custom-menu-nav-fldr-nds .opn-updt, .custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .unlk-file, .custom-menu-nav-fldr-nds .doc-rplc, .custom-menu-nav-fldr-nds .doc-vrsn, .custom-menu-nav-fldr-nds .doc-vrsn, .custom-menu-nav-fldr-nds .shr-updt, .custom-menu-nav-fldr-nds .psh-dcmt').hide();
                             }
                             
                             if ((is_self = $(e.target).hasClass('file-in-ctnt-pn') || $(e.target).hasClass('fldr-in-ctnt-pn')) || (is_prnt = $(e.target).parent().hasClass('file-in-ctnt-pn') || $(e.target).parent().hasClass('fldr-in-ctnt-pn'))) {

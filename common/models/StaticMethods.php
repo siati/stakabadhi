@@ -824,4 +824,23 @@ class StaticMethods {
         }
     }
 
+    /**
+     * 
+     * @param string $target_url target url / endpoint
+     * @param array $post parameters being parsed via post
+     * @return string|boolean success or failure message
+     */
+    public static function sendDocuments($target_url, $post) {
+        $ch = curl_init();
+        
+        curl_setopt($ch, CURLOPT_URL, $target_url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        
+        return $result;
+    }
+
 }

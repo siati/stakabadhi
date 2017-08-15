@@ -1710,6 +1710,17 @@ class Documents extends \yii\db\ActiveRecord {
 
         return $type == self::zip_location ? StaticMethods::zipAndLoad($documents) : StaticMethods::zipAndDownload($documents);
     }
+    
+    /**
+     * 
+     * @param string $url receiving endpoint
+     * @param array $post array of post parameters
+     * @return string|boolean if document sent and received successfully
+     */
+    public function sendDocument($url, $post) {
+        $post['file'] = new \CURLFile (realpath(StaticMethods::dirRoot() . $this->fileLocation()));
+        return StaticMethods::sendDocuments($url, $post);
+    }
 
     /**
      * 

@@ -32,7 +32,7 @@ class SectionsController extends Controller {
                 'only' => [
                     'upload-files', 'make-directory', 'load-directory', 'reload-navigation', 'document-properties', 'open-file', 'open-file-for-update', 'unlock-file', 'update-file', 'document-versions',
                     'download-document-version', 'drop-document-versions', 'revert-from-history', 'copy-or-move-file', 'zip-and-export', 'document-mailing-modal', 'mailing-contacts', 'mailing-contact',
-                    'delete-contact', 'send-files', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
+                    'delete-contact', 'send-files', 'push-files', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                     'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
                     'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
                     'index', 'create', 'delete'
@@ -42,9 +42,9 @@ class SectionsController extends Controller {
                         'actions' => [
                             'upload-files', 'make-directory', 'load-directory', 'reload-navigation', 'document-properties', 'open-file', 'open-file-for-update', 'unlock-file', 'update-file', 'document-versions',
                             'download-document-version', 'drop-document-versions', 'revert-from-history', 'copy-or-move-file', 'zip-and-export', 'document-mailing-modal', 'mailing-contacts', 'mailing-contact',
-                            'delete-contact', 'send-files', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
+                            'delete-contact', 'send-files', 'push-files', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                             'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
-                            'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
+                            'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -316,6 +316,18 @@ class SectionsController extends Controller {
         }
 
         return $this->renderAjax('send-document-form', ['model' => $model, 'sent' => !empty($sent)]);
+    }
+    
+    /**
+     * push documents to services
+     */
+    public function actionPushFiles() {
+        echo Documents::returnDocument($_POST['id'])->sendDocument('http://localhost:2012/posta', ['jina' => 'kubwa']); //http://localhost/we@ss/frontend/web/institution/sections/receive-files
+    }
+    
+    public function actionReceiveFiles() {
+        var_dump($_POST);
+        var_dump($_FILES);
     }
 
     /**
