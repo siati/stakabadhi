@@ -39,7 +39,7 @@ class ProfilesQuery extends \yii\db\ActiveQuery {
     
     /**
      * 
-     * @param sring $profile profile
+     * @param string $profile profile
      * @return Profiles ActiveRecord
      */
     public function byProfile($profile) {

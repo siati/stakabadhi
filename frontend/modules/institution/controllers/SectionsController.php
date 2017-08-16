@@ -34,7 +34,7 @@ class SectionsController extends Controller {
                     'download-document-version', 'drop-document-versions', 'revert-from-history', 'copy-or-move-file', 'zip-and-export', 'document-mailing-modal', 'mailing-contacts', 'mailing-contact',
                     'delete-contact', 'send-files', 'push-files', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                     'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
-                    'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
+                    'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents', 'repositories', 'receive-files',
                     'index', 'create', 'delete'
                 ],
                 'rules' => [
@@ -44,10 +44,16 @@ class SectionsController extends Controller {
                             'download-document-version', 'drop-document-versions', 'revert-from-history', 'copy-or-move-file', 'zip-and-export', 'document-mailing-modal', 'mailing-contacts', 'mailing-contact',
                             'delete-contact', 'send-files', 'push-files', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                             'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
-                            'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents'
+                            'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents', 'repositories'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
+                        'verbs' => ['post']
+                    ],
+                    [
+                        'actions' => ['receive-files'],
+                        'allow' => true,
+                        'roles' => ['*'],
                         'verbs' => ['post']
                     ],
                     [
@@ -59,6 +65,17 @@ class SectionsController extends Controller {
                 ],
             ],
         ];
+    }
+
+    /**
+     * 
+     * @param string $action action name
+     * @return boolean true - action should continue to run
+     */
+    public function beforeAction($action) {
+        in_array($this->action->id, ['receive-files']) ? $this->enableCsrfValidation = false : '';
+
+        return parent::beforeAction($action);
     }
 
     /**
@@ -317,14 +334,17 @@ class SectionsController extends Controller {
 
         return $this->renderAjax('send-document-form', ['model' => $model, 'sent' => !empty($sent)]);
     }
-    
+
     /**
      * push documents to services
      */
     public function actionPushFiles() {
-        echo Documents::returnDocument($_POST['id'])->sendDocument('http://localhost:2012/posta', ['jina' => 'kubwa']); //http://localhost/we@ss/frontend/web/institution/sections/receive-files
+        echo Documents::returnDocument($_POST['id'])->sendDocument('http://localhost/we@ss/frontend/web/institution/sections/receive-files', ['jina' => 'kubwa']);
     }
-    
+
+    /**
+     * receive files sent from clients
+     */
     public function actionReceiveFiles() {
         var_dump($_POST);
         var_dump($_FILES);

@@ -43,6 +43,7 @@ $file_move = Documents::file_move
             <div class="btn btn-lg btn-primary glyphicon glyphicon-search" onclick="docSearchFormOpen()" title="Search Files"></div>
             <div class="btn btn-lg btn-primary glyphicon glyphicon-king" onclick="documentPrivelegesModal()" title="Document Privileges"></div>
             <div class="btn btn-lg btn-primary glyphicon glyphicon-picture" onclick="slideImages()" title="Slide Items"></div>
+            <div class="btn btn-lg btn-primary glyphicon glyphicon-cloud-upload" onclick="repositories()" title="Repositories"></div>
             <div class="btn btn-lg btn-primary glyphicon glyphicon-barcode" onclick="graphs()" title="Graphs"></div>
         </div>
     </div>
@@ -1557,6 +1558,10 @@ $this->registerJs(
                 
                 function slideImages() {
                     yiiModal('Slide Images', 'sections/slide-images', {}, $('.inst-ctnt').width() * 0.75, $('.institution-default-index').height());
+                }
+                
+                function repositories() {
+                    yiiModal('Cloud Repositories', 'sections/repositories', {}, $('.inst-ctnt').width() * 0.75, $('.institution-default-index').height());
                 }
                 
                 function graphs() {
