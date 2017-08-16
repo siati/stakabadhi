@@ -74,7 +74,6 @@ class SectionsController extends Controller {
      */
     public function beforeAction($action) {
         in_array($this->action->id, ['receive-files']) ? $this->enableCsrfValidation = false : '';
-
         return parent::beforeAction($action);
     }
 
