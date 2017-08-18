@@ -502,12 +502,17 @@ $this->registerJs(
                 }
                 
                 function pushFile(id) {
-                    customAjaxLoader('Sending Files', 'Please wait while we work on this...');
+                    yiiModal('Schemes of Work', 'sections/push-schemes-of-work', {'SchemesOfWork[submitted_as]': $('#' + id).attr('dcl')}, $('.inst-ctnt').width() * 0.75, $('.institution-default-index').height());
+                }
+                
+                function pushShemeOfWork() {
+                    post = $('#form-sceheme-of-work').serializeArray();
+
+                    post.push({name: 'sbmt', value: ''});
                     
-                    $.post('sections/push-files', {'id': $('#' + id).attr('dcl')},
-                        function (pushed) {
-                            alert(pushed);
-                            swal.close();
+                    $.post('sections/push-schemes-of-work', post,
+                        function (form) {
+                            $('#yii-modal-cnt').html(form);
                         }
                     );
                 }

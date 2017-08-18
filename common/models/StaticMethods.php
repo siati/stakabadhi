@@ -24,6 +24,7 @@ class StaticMethods {
     const slides_folder = 'slides';
     const mail_zips_folder = 'mailzips';
     const versions_folder = 'versions';
+    const uploads_folder = 'uploads';
     const file_extensions_folder = 'doc-icons';
     const min_root_document_level = 0;
     const min_sub_root_document_level = 1;
@@ -193,6 +194,34 @@ class StaticMethods {
      */
     public static function versionsFolder() {
         return Yii::$app->basePath . '/../' . self::versions_folder . '/';
+    }
+
+    /**
+     * 
+     * @return string location of uploads root folder
+     */
+    public static function uploadsFolderHardCode() {
+        $ex = explode(DIRECTORY_SEPARATOR, Yii::$app->basePath);
+
+        $ex[count($ex) - 1] = self::uploads_folder;
+
+        return implode(DIRECTORY_SEPARATOR, $ex) . '/';
+    }
+
+    /**
+     * 
+     * @return string root uploads link
+     */
+    public static function uploadsFolderUrl() {
+        return Yii::$app->homeUrl . '../../' . self::uploads_folder . '/';
+    }
+
+    /**
+     * 
+     * @return string root uploads path
+     */
+    public static function uploadsFolder() {
+        return Yii::$app->basePath . '/../' . self::uploads_folder . '/';
     }
 
     /**
@@ -372,6 +401,14 @@ class StaticMethods {
      */
     public static function acceptableFileTypes() {
         return ['doc', 'docx', 'xls', 'xlsx', 'pdf', 'ppt', 'pps', 'pptx', 'csv', 'jpg', 'jpeg', 'png', 'bmp', 'gif', 'mp3', 'mp4', 'flv', 'dat'];
+    }
+    
+    /**
+     * 
+     * @return string json format of `acceptableFileTypes()`
+     */
+    public static function implodeAcceptableFileTypes() {
+        return static::arrayImplode(static::acceptableFileTypes(), ',');
     }
 
     /**
@@ -830,17 +867,34 @@ class StaticMethods {
      * @param array $post parameters being parsed via post
      * @return string|boolean success or failure message
      */
-    public static function sendDocuments($target_url, $post) {
+    public static function seekService($target_url, $post) {
         $ch = curl_init();
-        
+
         curl_setopt($ch, CURLOPT_URL, $target_url);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, static::buildQueryForCurl($post));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-type: multipart/form-data']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
         curl_close($ch);
-        
+
         return $result;
+    }
+
+    /**
+     * 
+     * @param array $post post values in array form
+     * @return array formatted post values
+     */
+    public static function buildQueryForCurl($post) {
+        foreach ($post as $className => $attributes)
+            if (is_array($attributes))
+                foreach ($attributes as $attribute => $value)
+                    $thePost["$className" . "[$attribute]"] = $value;
+            else
+                $thePost["$className"] = $attributes;
+
+        return empty($thePost) ? [] : $thePost;
     }
 
 }

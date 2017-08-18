@@ -31,8 +31,22 @@ thead {
     text-align: justify
 }
 
+.td-pdg-rgt-lft {
+    padding-right: 2px;
+    padding-left: 2px;
+    text-align: justify;
+}
+
+.td-pdg-lft {
+    padding-left: 2px;
+}
+
 .td-pdg-rgt {
     padding-right: 2px;
+}
+
+.td-center {
+    text-align: center;
 }
 
 .td-cnter {

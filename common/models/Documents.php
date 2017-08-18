@@ -138,7 +138,7 @@ class Documents extends \yii\db\ActiveRecord {
         return [
             [['directory', 'file_level', 'dir_or_file', 'created_by', 'status_by', 'forwarded_for_update_by', 'opened_for_update_by', 'visible_to_others_during_update', 'can_be_updated', 'can_be_moved', 'can_be_deleted', 'updated_by', 'archived_by', 'deleted_by', 'restored_by'], 'integer'],
             [['name', 'filename', 'file_level'], 'required'],
-            [['filename'], 'file', 'extensions' => implode(',', StaticMethods::acceptableFileTypes()), 'checkExtensionByMimeType' => false, 'maxSize' => 1024 * 1024 * 1024 * 1024 * 1024],
+            [['filename'], 'file', 'extensions' => StaticMethods::implodeAcceptableFileTypes(), 'checkExtensionByMimeType' => false, 'maxSize' => 1024 * 1024 * 1024 * 1024 * 1024],
             [['description', 'status', 'permissions', 'opened_for_update', 'archived_in', 'deleted_to'], 'string'],
             [['created_at', 'status_at', 'opened_for_update_at', 'updated_at', 'archived_at', 'deleted_at', 'restored_at'], 'safe'],
             [['name'], 'string', 'min' => 2, 'max' => 40],
@@ -1710,16 +1710,21 @@ class Documents extends \yii\db\ActiveRecord {
 
         return $type == self::zip_location ? StaticMethods::zipAndLoad($documents) : StaticMethods::zipAndDownload($documents);
     }
-    
+
     /**
      * 
-     * @param string $url receiving endpoint
      * @param array $post array of post parameters
      * @return string|boolean if document sent and received successfully
      */
-    public function sendDocument($url, $post) {
-        $post['file'] = new \CURLFile (realpath(StaticMethods::dirRoot() . $this->fileLocation()));
-        return StaticMethods::sendDocuments($url, $post);
+    public function sendDocumentAsSchemeOfWork($post) {
+        if (isset($post['sbmt'])) {
+            $post['SchemesOfWork']['location'] = new \CURLFile(realpath(StaticMethods::dirRoot() . $this->fileLocation()));
+
+            $post['SchemesOfWork']['submitted_by'] = Yii::$app->user->identity->name;
+        } else
+            $post['SchemesOfWork']['school'] = 1;
+
+        return StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/receive-schemes-of-work', $post);
     }
 
     /**
@@ -2325,7 +2330,7 @@ class Documents extends \yii\db\ActiveRecord {
 
         if ($status != self::FILE_STATUS_AVAILABLE)
             for ($i = 0; $i < 2; $i++) { // only three statuses, one executed above, remaining 2: self::FILE_STATUS_ARCHIVED, self::FILE_STATUS_DELETED
-                $name = str_replace(static::subDirNameForStatus($status), static::subDirNameForStatus( ++$status), $name);
+                $name = str_replace(static::subDirNameForStatus($status), static::subDirNameForStatus(++$status), $name);
 
                 if (is_object($document = static::documentByLevelAndFilename($level, $name, $status)))
                     return $document;
@@ -2529,34 +2534,37 @@ class Documents extends \yii\db\ActiveRecord {
 
         return [$folders, $files, $rights, $new_dir_contents, $new_file_contents, $preferredRights, !empty($is_admin)];
     }
-    
+
     /**
      * launch root document folders
      */
     public static function launchDirectories() {
         if (!file_exists($fldr = substr($folder = StaticMethods::dirRoot(), 0, strlen($folder) - 1)))
-                mkdir($fldr, 0777, false);
-        
+            mkdir($fldr, 0777, false);
+
         if (!file_exists($fldr = $folder . static::subDirNameForStatus(self::FILE_STATUS_AVAILABLE)))
-                mkdir($fldr, 0777, false);
-        
+            mkdir($fldr, 0777, false);
+
         if (!file_exists($fldr = $folder . static::subDirNameForStatus(self::FILE_STATUS_ARCHIVED)))
-                mkdir($fldr, 0777, false);
-        
+            mkdir($fldr, 0777, false);
+
         if (!file_exists($fldr = $folder . static::subDirNameForStatus(self::FILE_STATUS_DELETED)))
-                mkdir($fldr, 0777, false);
-        
+            mkdir($fldr, 0777, false);
+
         if (!file_exists($fldr = substr($folder = StaticMethods::downloadsFolder(), 0, strlen($folder) - 1)))
-                mkdir($fldr, 0777, false);
-        
+            mkdir($fldr, 0777, false);
+
         if (!file_exists($fldr = substr($folder = StaticMethods::mailZipsFolder(), 0, strlen($folder) - 1)))
-                mkdir($fldr, 0777, false);
-        
+            mkdir($fldr, 0777, false);
+
         if (!file_exists($fldr = substr($folder = StaticMethods::slidesFolder(), 0, strlen($folder) - 1)))
-                mkdir($fldr, 0777, false);
-        
+            mkdir($fldr, 0777, false);
+
         if (!file_exists($fldr = substr($folder = StaticMethods::versionsFolder(), 0, strlen($folder) - 1)))
-                mkdir($fldr, 0777, false);
+            mkdir($fldr, 0777, false);
+
+        if (!file_exists($fldr = substr($folder = StaticMethods::uploadsFolder(), 0, strlen($folder) - 1)))
+            mkdir($fldr, 0777, false);
     }
 
     /**
