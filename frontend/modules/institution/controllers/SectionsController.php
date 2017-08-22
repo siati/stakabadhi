@@ -15,6 +15,7 @@ use common\models\DocumentsMailingsContacts;
 use common\models\SlideImages;
 use common\models\Logs;
 use common\models\User;
+use common\models\AuthKey;
 
 /**
  * SectionsController implements the CRUD actions for Sections model.
@@ -34,7 +35,8 @@ class SectionsController extends Controller {
                     'download-document-version', 'drop-document-versions', 'revert-from-history', 'copy-or-move-file', 'zip-and-export', 'document-mailing-modal', 'mailing-contacts', 'mailing-contact',
                     'delete-contact', 'send-files', 'push-schemes-of-work', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                     'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
-                    'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents', 'repositories',
+                    'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
+                    'school-registration', 'commit-registration',
                     'index', 'create', 'delete'
                 ],
                 'rules' => [
@@ -44,7 +46,8 @@ class SectionsController extends Controller {
                             'download-document-version', 'drop-document-versions', 'revert-from-history', 'copy-or-move-file', 'zip-and-export', 'document-mailing-modal', 'mailing-contacts', 'mailing-contact',
                             'delete-contact', 'send-files', 'push-schemes-of-work', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                             'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
-                            'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents', 'repositories'
+                            'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
+                            'school-registration', 'commit-registration'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -323,6 +326,20 @@ class SectionsController extends Controller {
      */
     public function actionPushSchemesOfWork() {
         echo Documents::returnDocument($_POST['SchemesOfWork']['submitted_as'])->sendDocumentAsSchemeOfWork($_POST);
+    }
+
+    /**
+     * update school details through service
+     */
+    public function actionSchoolRegistration() {
+        echo AuthKey::loadKey(null)->sendRegistration($_POST);
+    }
+    
+    /**
+     * capture returned auth key
+     */
+    public function actionCommitRegistration() {
+        AuthKey::loadKey($_POST['AuthKey']['auth_key']);
     }
 
     /**

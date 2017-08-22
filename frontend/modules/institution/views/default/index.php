@@ -505,7 +505,7 @@ $this->registerJs(
                     yiiModal('Schemes of Work', 'sections/push-schemes-of-work', {'SchemesOfWork[submitted_as]': $('#' + id).attr('dcl')}, $('.inst-ctnt').width() * 0.75, $('.institution-default-index').height());
                 }
                 
-                function pushShemeOfWork() {
+                function pushSchemeOfWork() {
                     post = $('#form-sceheme-of-work').serializeArray();
 
                     post.push({name: 'sbmt', value: ''});

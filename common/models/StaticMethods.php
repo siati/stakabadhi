@@ -67,6 +67,33 @@ class StaticMethods {
     const connection_failed = 'connection failed';
     const sent = 'sent';
     const not_sent = 'failed';
+    const cat1 = '1';
+    const cat2 = '2';
+    const cat3 = '3';
+    const cat4 = '4';
+    const form_one = '1';
+    const form_two = '2';
+    const form_three = '3';
+    const form_four = '4';
+    const term_one = '1';
+    const term_two = '2';
+    const term_three = '3';
+    const grade = 'grade';
+    const name = 'name';
+    const points = 'points';
+    const symbol = 'symbol';
+    const irregularity = 'Y';
+    const missed = 'X';
+    const code = 'code';
+    const dept = 'dept';
+    const lang = 'lang';
+    const scnc = 'scnc';
+    const hmnt = 'hmnt';
+    const tcnl = 'tcnl';
+    const level = 'level';
+    const primary = 'primary';
+    const secondary = 'secondary';
+    const primary_and_secondary = 'both';
 
     /**
      * 
@@ -402,7 +429,7 @@ class StaticMethods {
     public static function acceptableFileTypes() {
         return ['doc', 'docx', 'xls', 'xlsx', 'pdf', 'ppt', 'pps', 'pptx', 'csv', 'jpg', 'jpeg', 'png', 'bmp', 'gif', 'mp3', 'mp4', 'flv', 'dat'];
     }
-    
+
     /**
      * 
      * @return string json format of `acceptableFileTypes()`
@@ -868,6 +895,8 @@ class StaticMethods {
      * @return string|boolean success or failure message
      */
     public static function seekService($target_url, $post) {
+        empty($post['auth_key']) && is_object($auth = AuthKey::loadKey(null)) ? $post['auth_key'] = $auth->auth_key : '';
+
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $target_url);
@@ -895,6 +924,203 @@ class StaticMethods {
                 $thePost["$className"] = $attributes;
 
         return empty($thePost) ? [] : $thePost;
+    }
+
+    /**
+     * 
+     * @return array school levels - primary, secondary
+     */
+    public static function schoolLevels() {
+        return [
+            $val = self::primary => ucfirst($val),
+            $val = self::secondary => ucfirst($val),
+            $val = self::primary_and_secondary => ucfirst($val)
+        ];
+    }
+
+    /**
+     * @param string $level primary or secondary
+     * @return array terms
+     */
+    public static function terms($level) {
+        return $level == self::primary || $level == self::secondary ? [
+            self::term_one => 'One',
+            self::term_two => 'Two',
+            self::term_three => 'Three',
+                ] : [
+                ]
+        ;
+    }
+
+    /**
+     * 
+     * @param string $level primary or secondary
+     * @return array classes
+     */
+    public static function classes($level) {
+        return $level == self::primary || $level == self::secondary ? [
+            self::form_one => [self::symbol => 'I', self::name => 'One'],
+            self::form_two => [self::symbol => 'II', self::name => 'Two'],
+            self::form_three => [self::symbol => 'III', self::name => 'Three'],
+            self::form_four => [self::symbol => 'IV', self::name => 'Four']
+                ] : [
+                ]
+        ;
+    }
+
+    /**
+     * 
+     * @param string $level primary or secondary
+     * @return array departments
+     */
+    public static function departments($level) {
+        return $level == self::primary || $level == self::secondary ? [
+            self::lang => 'Language Subjects',
+            self::scnc => 'Science Subjects',
+            self::hmnt => 'Humanity Subjects',
+            self::tcnl => 'Technical Subjects'
+                ] : [
+                ]
+        ;
+    }
+
+    /**
+     * 
+     * @param string $level primary or secondary
+     * @return array subjects
+     */
+    public static function subjects($level) {
+        return $level == self::primary || $level == self::secondary ? [
+            /* languages in alphabetical order */
+            'eng' => [self::code => 101, self::dept => self::lang, self::name => 'English'],
+            'kis' => [self::code => 102, self::dept => self::lang, self::name => 'Kiswahil'],
+            /* sciences in alphabetical order */
+            'bio' => [self::code => 104, self::dept => self::scnc, self::name => 'Biology'],
+            'bsc' => [self::code => 105, self::dept => self::scnc, self::name => 'Biological Sciences'],
+            'che' => [self::code => 106, self::dept => self::scnc, self::name => 'Chemistry'],
+            'mat' => [self::code => 103, self::dept => self::scnc, self::name => 'Mathematics'],
+            'phy' => [self::code => 107, self::dept => self::scnc, self::name => 'Physics'],
+            /* humanities in alphabetical order */
+            'cre' => [self::code => 110, self::dept => self::hmnt, self::name => 'Christian Religious Education'],
+            'geo' => [self::code => 108, self::dept => self::hmnt, self::name => 'Geography'],
+            'hre' => [self::code => 112, self::dept => self::hmnt, self::name => 'Hindu Religious Education'],
+            'his' => [self::code => 109, self::dept => self::hmnt, self::name => 'History and Government'],
+            'ire' => [self::code => 111, self::dept => self::hmnt, self::name => 'Islamic Religious Education'],
+            /* technicals in alphabetical order */
+            'agr' => [self::code => 113, self::dept => self::tcnl, self::name => 'Agriculture'],
+            'ara' => [self::code => 121, self::dept => self::tcnl, self::name => 'Arabic'],
+            'art' => [self::code => 117, self::dept => self::tcnl, self::name => 'Art and Design'],
+            'avi' => [self::code => 118, self::dept => self::tcnl, self::name => 'Aviation'],
+            'bus' => [self::code => 114, self::dept => self::tcnl, self::name => 'Business Studies'],
+            'cpt' => [self::code => 115, self::dept => self::tcnl, self::name => 'Computer Studies'],
+            'fre' => [self::code => 119, self::dept => self::tcnl, self::name => 'French'],
+            'ger' => [self::code => 120, self::dept => self::tcnl, self::name => 'German'],
+            'hsc' => [self::code => 116, self::dept => self::tcnl, self::name => 'Home Science'],
+            'msc' => [self::code => 122, self::dept => self::tcnl, self::name => 'Music']
+                ] : [
+                ]
+        ;
+    }
+
+    /**
+     * 
+     * @param string $level primary or secondary
+     * @param array $toRemoves subjects to be removed
+     * @return array subjects for dropdown
+     */
+    public static function subjectsForDropDown($level, $toRemoves) {
+        if ($level == self::primary || $level == self::secondary)
+            foreach ($subjects = static::subjects() as $key => $subject) {
+
+                $removed = false;
+
+                foreach ($toRemoves as $toRemove)
+                    if ($toRemove === $key) {
+                        unset($subjects[$key]);
+                        $removed = true;
+                    }
+
+                if (!$removed)
+                    $subjects[$key] = $subject[self::name];
+            } else
+            $subjects = [];
+
+        return $subjects;
+    }
+
+    /**
+     * 
+     * @param string $level primary or secondary
+     * @return array grades
+     */
+    public static function grades($level) {
+        return $level == self::primary || $level == self::secondary ? [
+            'A' => [self::name => 'A Plain', self::points => 12],
+            'A-' => [self::name => 'A Minus', self::points => 11],
+            'B+' => [self::name => 'B Plus', self::points => 10],
+            'B' => [self::name => 'B Plain', self::points => 9],
+            'B-' => [self::name => 'B Minus', self::points => 8],
+            'C+' => [self::name => 'C Plus', self::points => 7],
+            'C' => [self::name => 'C Plain', self::points => 6],
+            'C-' => [self::name => 'C Minus', self::points => 5],
+            'D+' => [self::name => 'D Plus', self::points => 4],
+            'D' => [self::name => 'D Plain', self::points => 3],
+            'D-' => [self::name => 'D Minus', self::points => 2],
+            'E' => [self::name => 'E Plain', self::points => 1],
+            self::missed => [self::name => 'Missed Exam', self::points => 0],
+            self::irregularity => [self::name => 'Irregularity', self::points => 0]
+                ] : [
+                ]
+        ;
+    }
+
+    /**
+     * 
+     * @param string $level primary or secondary
+     * @return array grades for drop down
+     */
+    public static function gradesForDropDown($level) {
+        if ($level == self::primary || $level == self::secondary)
+            foreach ($grades = self::grades($level) as $grd => $grade)
+                if (in_array($grd, [self::missed, self::irregularity]))
+                    unset($grades[$grd]);
+                else
+                    $grades[$grd] = $grade[self::name];
+        else
+            $grades = [];
+
+        return $grades;
+    }
+
+    /**
+     * 
+     * @param string $level primary or secondary
+     * @param real $points points
+     * @return string grade
+     */
+    public static function gradeForPoints($level, $points) {
+        if ($level == self::primary || $level == self::secondary)
+            foreach (self::grades($level) as $grd => $grade)
+                if ($points > 0 && $points <= 12 && $points >= $grade[self::points] - 0.5 && $points < $grade[self::points] + 0.5)
+                    return $grd;
+
+        return '0';
+    }
+
+    /**
+     * 
+     * @param string $level primary or secondary
+     * @return array cats / exams
+     */
+    public static function exams($level) {
+        return $level == self::primary || $level == self::secondary ? [
+            self::cat1 => [self::symbol => 'I', self::name => 'One'],
+            self::cat2 => [self::symbol => 'II', self::name => 'Two'],
+            self::cat3 => [self::symbol => 'III', self::name => 'Three'],
+            self::cat4 => [self::symbol => 'AVG', self::name => 'Average']
+                ] : [
+                ]
+        ;
     }
 
 }

@@ -14,6 +14,7 @@ use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use common\models\User;
 use common\models\Profiles;
+use common\models\StaticMethods;
 
 /**
  * Site controller
@@ -70,6 +71,17 @@ class SiteController extends Controller {
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
+    }
+
+    /**
+     * 
+     * @param string $action action name
+     * @return boolean true - action should continue to run
+     */
+    public function beforeAction($action) {
+        in_array($this->action->id, ['dynamic-server-constituencies', 'dynamic-server-wards']) ? $this->enableCsrfValidation = false : '';
+
+        return parent::beforeAction($action);
     }
 
     /**
@@ -308,12 +320,26 @@ class SiteController extends Controller {
      */
     public function actionUserProfile() {
         $model = User::returnUser($_POST['User']['id']);
-        
+
         $model->updateUserProfile($_POST['User']['profile']);
 
         $profile = Profiles::returnProfile($model->profile);
 
         echo empty($profile->profile) ? User::NO_RIGHT_NAME : $profile->profile;
+    }
+
+    /**
+     * return desired constituencies from service
+     */
+    public function actionDynamicServerConstituencies() {
+        echo StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/dynamic-constituencies', $_POST);
+    }
+
+    /**
+     * return desired wards from service
+     */
+    public function actionDynamicServerWards() {
+        echo StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/dynamic-wards', $_POST);
     }
 
 }

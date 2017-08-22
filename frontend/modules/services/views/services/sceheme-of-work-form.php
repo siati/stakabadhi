@@ -68,7 +68,7 @@ use yii\helpers\Html;
 </div>
 
 <div style="height: 10%; padding-top: 15px">
-    <div class="btn btn-success pull-left" onclick="pushShemeOfWork()">Save</div>
+    <div class="btn btn-success pull-left" onclick="pushSchemeOfWork()">Save</div>
 
     <div class="btn btn-danger pull-right" onclick="closeDialog()">Close</div>
 </div>
