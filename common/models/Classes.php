@@ -51,11 +51,11 @@ class Classes extends \yii\db\ActiveRecord {
     }
 
     /**
-     * class can only exist once
+     * stream can only exist once per class
      */
     public function distinctStream() {
         if (is_object(static::bySchoolLevelClassAndStream($this->id, $this->school, $this->level, $this->class, $this->stream)))
-            $this->addError('stream', 'This class already exists');
+            $this->addError('stream', 'This stream already exists for the class');
     }
 
     /**
