@@ -53,6 +53,11 @@ thead {
     text-align: center;
 }
 
+.td-pdg-vtc {
+    padding-top: 3px;
+    padding-bottom: 3px
+}
+
 .td-span-btn {
     padding: 1px 2px 2px 2px;
 }

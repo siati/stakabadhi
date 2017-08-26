@@ -166,35 +166,6 @@ $searhField = DatePicker::widget([
         <?php
         $this->registerJs(
                 "
-                
-                    function registerSchool() {
-                        yiiModal('School Registration', '../institution/sections/school-registration', {}, $('.class-of-content').width() * 0.5, $('.class-of-content').height() * 0.775)
-                    }
-                    
-                    function commitRegistration(auth_key) {
-                        $.post('../institution/sections/commit-registration', {'AuthKey[auth_key]': auth_key}, function() {});
-                    }
-                    
-                    function pushRegistration() {
-                        post = $('#form-school-registration').serializeArray();
-
-                        post.push({name: 'sbmt', value: ''});
-
-                        $.post('../institution/sections/school-registration', post,
-                            function (form) {
-                                $('#yii-modal-cnt').html(form);
-                            }
-                        );
-                    }
-
-                "
-                , \yii\web\VIEW::POS_HEAD
-        )
-        ?>
-
-        <?php
-        $this->registerJs(
-                "
                 $('.class-of-content').css('margin-top', $('.wrap .navbar').css('height'));
                 
                 /* align floating menu div appropriately */

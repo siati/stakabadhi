@@ -895,7 +895,7 @@ class StaticMethods {
      * @return string|boolean success or failure message
      */
     public static function seekService($target_url, $post) {
-        empty($post['auth_key']) && is_object($auth = AuthKey::loadKey(null)) ? $post['auth_key'] = $auth->auth_key : '';
+        is_object($auth = AuthKey::loadKey(null)) ? $post['auth_key'] = $auth->auth_key : '';
 
         $ch = curl_init();
 
@@ -918,8 +918,12 @@ class StaticMethods {
     public static function buildQueryForCurl($post) {
         foreach ($post as $className => $attributes)
             if (is_array($attributes))
-                foreach ($attributes as $attribute => $value)
-                    $thePost["$className" . "[$attribute]"] = $value;
+                foreach ($attributes as $attribute => $values)
+                    if (is_array($values))
+                        foreach ($values as $index => $value)
+                            $thePost["$className" . "[$attribute][$index]"] = $value;
+                    else
+                        $thePost["$className" . "[$attribute]"] = $values;
             else
                 $thePost["$className"] = $attributes;
 
@@ -966,6 +970,18 @@ class StaticMethods {
                 ] : [
                 ]
         ;
+    }
+
+    /**
+     * 
+     * @param string $level primary or secondary
+     * @return array classes
+     */
+    public function classesForDropdown($level) {
+        foreach (static::classes($level) as $id => $class)
+            $classes[$id] = $class[self::name];
+
+        return $classes;
     }
 
     /**

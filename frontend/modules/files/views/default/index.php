@@ -203,7 +203,6 @@ $this->registerJs(
                                 if (elmnt.length)
                                     selectThisFileItem(elmnt);
                                 else {
-                                    
                                     $('#storelevel-$folderLevel').change().parent().find('.input-group-addon').click();
                                     
                                     $.post('files/the-files', {'folder': $('#storelevel-$folderLevel').val()},

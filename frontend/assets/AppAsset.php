@@ -30,7 +30,9 @@ class AppAsset extends AssetBundle {
         'js/custom-menu.js',
         'js/file-up-down-load.js',
         'js/mail-trigger.js',
-        'js/dynamic-regions.js'
+        'js/dynamic-regions.js',
+        'js/pushers.js',
+        'js/listeners.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

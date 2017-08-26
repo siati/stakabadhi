@@ -4,6 +4,8 @@ namespace frontend\modules\services\controllers;
 
 use Yii;
 use common\models\SchoolRegistrations;
+use common\models\Classes;
+use common\models\Subjects;
 use common\models\SchemesOfWork;
 use common\models\StaticMethods;
 use common\models\Constituencies;
@@ -25,11 +27,11 @@ class ServicesController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'register-school', 'receive-schemes-of-work', 'dynamic-constituencies', 'dynamic-wards'
+                    'register-school', 'school-classes', 'school-subjects', 'receive-schemes-of-work', 'dynamic-constituencies', 'dynamic-wards'
                 ],
                 'rules' => [
                     [
-                        'actions' => ['register-school', 'receive-schemes-of-work', 'dynamic-constituencies', 'dynamic-wards'],
+                        'actions' => ['register-school', 'school-classes', 'school-subjects', 'receive-schemes-of-work', 'dynamic-constituencies', 'dynamic-wards'],
                         'allow' => (empty($_POST['auth_key']) && $this->isAnOpenAction()) || $this->isAuthenticRequest(),
                         'roles' => ['*'],
                         'verbs' => ['post']
@@ -38,15 +40,23 @@ class ServicesController extends Controller {
             ],
         ];
     }
-    
+
     /**
      * 
-     * @return boolean true - action can be run without verifying user identity
+     * @return boolean true - action can be run without verifying the requesting user
      */
     public function isAnOpenAction() {
         return in_array($this->action->id, ['register-school', 'dynamic-constituencies', 'dynamic-wards']);
     }
-    
+
+    /**
+     * 
+     * @return boolean true - action can be run on verifying the requesting user
+     */
+    public function isASecureAction() {
+        return in_array($this->action->id, ['school-classes', 'school-subjects', 'receive-schemes-of-work']);
+    }
+
     /**
      * 
      * @return boolean true - request has been duly authenticated
@@ -61,18 +71,23 @@ class ServicesController extends Controller {
      * @return boolean true - action should continue to run
      */
     public function beforeAction($action) {
-        $this->isAnOpenAction() || in_array($this->action->id, ['receive-schemes-of-work']) ? $this->enableCsrfValidation = false : '';
+        if (Yii::$app->request->isAjax)
+            return parent::beforeAction($action);
+
+        $this->isAnOpenAction() || $this->isASecureAction() ? $this->enableCsrfValidation = false : '';
 
         return parent::beforeAction($action);
     }
 
+    /**
+     * 
+     * load interface to and receive registration details from clients
+     */
     public function actionRegisterSchool() {
 
         $model = SchoolRegistrations::schoolToLoad(empty($_POST['SchoolRegistrations']['id']) ? '' : $_POST['SchoolRegistrations']['id'], empty($_POST['auth_key']) ? '' : $_POST['auth_key'], empty($_POST['SchoolRegistrations']['level']) ? '' : $_POST['SchoolRegistrations']['level'], empty($_POST['SchoolRegistrations']['code']) ? '' : $_POST['SchoolRegistrations']['code'], empty($_POST['SchoolRegistrations']['name']) ? '' : $_POST['SchoolRegistrations']['name'], empty($_POST['SchoolRegistrations']['created_by']) ? '' : $_POST['SchoolRegistrations']['created_by']);
 
-        $model->load(Yii::$app->request->post());
-
-        if (isset($_POST['SchoolRegistrations']['name'])) {
+        if (isset($_POST['SchoolRegistrations']['name']) && $model->load(Yii::$app->request->post())) {
 
             if (!isset($_POST['sbmt']) && (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0))
                 return is_array($ajax) ? $ajax : [];
@@ -88,15 +103,44 @@ class ServicesController extends Controller {
     }
 
     /**
-     * receive documents sent from clients
+     * load interface to and receive classes from clients
+     */
+    public function actionSchoolClasses() {
+
+        $school = SchoolRegistrations::byAuthKey($_POST['auth_key']);
+
+        if (empty($_POST['Classes']))
+            $models = Classes::forSchool($school->id, null);
+        else {
+
+            foreach ($_POST['Classes'] as $id => $post)
+                $models[$id] = Classes::classToLoad($id, $school->id, $school->level, empty($post['class']) ? '' : $post['class'], empty($post['stream']) ? '' : $post['stream']);
+
+            $ajaxes = [];
+
+            if (Classes::loadMultiple($models, Yii::$app->request->post()))
+                foreach ($models as $model)
+                    !isset($_POST['sbmt']) && (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0) ?
+                                    ($ajaxes[$id] = is_array($ajax) ? $ajax : []) :
+                                    (($model->modelSave() ? $saved[] = $model->id : $notLoadNew = true));
+
+            if (!empty($ajaxes))
+                return is_array($ajax) ? $ajax : [];
+        }
+
+        empty($notLoadNew) ? array_push($models, Classes::classToLoad(null, $school->id, $school->level, null, null)) : '';
+
+        return $this->renderAjax('school-classes-form', ['models' => $models, 'auth_key' => $school->auth_key, 'saved' => empty($saved) ? [] : $saved]);
+    }
+
+    /**
+     * render interface to and receive documents sent from clients
      */
     public function actionReceiveSchemesOfWork() {
 
         $model = SchemesOfWork::schemeToLoad(empty($_POST['SchemesOfWork']['id']) ? '' : $_POST['SchemesOfWork']['id'], empty($_POST['SchemesOfWork']['school']) ? '' : $_POST['SchemesOfWork']['school'], empty($_POST['SchemesOfWork']['year']) ? '' : $_POST['SchemesOfWork']['year'], empty($_POST['SchemesOfWork']['term']) ? '' : $_POST['SchemesOfWork']['term'], empty($_POST['SchemesOfWork']['class']) ? '' : $_POST['SchemesOfWork']['class'], empty($_POST['SchemesOfWork']['stream']) ? '' : $_POST['SchemesOfWork']['stream'], empty($_POST['SchemesOfWork']['subject']) ? '' : $_POST['SchemesOfWork']['subject']);
 
-        $model->load(Yii::$app->request->post());
-
-        if (isset($_POST['SchemesOfWork']['subject'])) {
+        if ($model->load(Yii::$app->request->post()) && isset($_POST['SchemesOfWork']['subject'])) {
 
             if (!isset($_POST['sbmt']) && (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0))
                 return is_array($ajax) ? $ajax : [];

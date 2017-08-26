@@ -41,10 +41,11 @@ class Classes extends \yii\db\ActiveRecord {
             [['level', 'class', 'stream', 'symbol', 'name', 'created_by'], 'required'],
             [['level', 'active'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['stream'], 'string', 'max' => 2],
-            [['symbol'], 'string', 'max' => 5],
+            [['stream'], 'string', 'max' => 1],
+            [['symbol'], 'string', 'max' => 2],
             [['name'], 'string', 'max' => 20],
-            [['stream'], 'distinctStream'],
+            [['stream', 'symbol', 'name'], 'distinctStream'],
+            [['active'], 'newClassMustBeActive'],
             [['symbol', 'name'], 'distinctAttribute'],
             [['created_by', 'updated_by'], 'string', 'max' => 25],
         ];
@@ -63,7 +64,15 @@ class Classes extends \yii\db\ActiveRecord {
      */
     public function distinctAttribute($attribute) {
         if (is_object(static::find()->distinctAttribute($this->id, $this->school, $this->level, $attribute, $this->$attribute)))
-            $this->addError('stream', 'This ' . $this->getAttributeLabel($attribute) . 'already exists');
+            $this->addError($attribute, 'This ' . $this->getAttributeLabel($attribute) . 'already exists');
+    }
+    
+    /**
+     * new class must be active
+     */
+    public function newClassMustBeActive() {
+        if ($this->isNewRecord && $this->active != self::active)
+            $this->addError ('active', 'New class must be active by default');
     }
 
     /**
@@ -219,6 +228,19 @@ class Classes extends \yii\db\ActiveRecord {
         $this->isNewRecord ? $this->created_at = StaticMethods::now() : $this->updated_at = StaticMethods::now();
 
         return $this->save();
+    }
+
+    /**
+     * 
+     * @param array $posts post params
+     * @return string server response
+     */
+    public static function classRegistrationService($posts) {
+        if (isset($posts['Classes']))
+            foreach ($posts['Classes'] as $id => $post)
+                empty($id) ? $posts['Classes'][$id]['created_by'] = Yii::$app->user->identity->name : $posts['Classes'][$id]['updated_by'] = Yii::$app->user->identity->name;
+
+        return StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/school-classes', $posts);
     }
 
 }
