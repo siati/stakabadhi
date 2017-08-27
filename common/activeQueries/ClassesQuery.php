@@ -61,9 +61,9 @@ class ClassesQuery extends \yii\db\ActiveQuery {
                         (empty($symbol) ? '' : " && symbol = '$symbol'") .
                         (empty($name) ? '' : " && name like '%$name%'") .
                         (empty($active) ? '' : " && active = '$active'")
-                )->orderBy("school asc, level asc, class asc, name asc")->all();
+                )->orderBy('school asc, level asc, class asc, name asc')->all();
     }
-    
+
     /**
      * 
      * @param integer $id class id
@@ -75,6 +75,22 @@ class ClassesQuery extends \yii\db\ActiveQuery {
      */
     public function distinctAttribute($id, $school, $level, $attribute, $value) {
         return $this->where("id != '$id'" . (empty($school) ? '' : " && school = '$school'") . " && level = '$level' && $attribute = '$value'")->one();
+    }
+
+    /**
+     * 
+     * @param integer|null $school school id
+     * @param string $level school level
+     * @param string $active yes, no
+     * @return Classes ActiveRecords
+     */
+    public function distinctSchoolClassesWithoutStreams($school, $level, $active) {
+        return $this->where(
+                        'id > 0' .
+                        (empty($school) ? '' : " && school = '$school'") .
+                        (empty($level) ? '' : " && level = '$level'") .
+                        (empty($active) ? '' : " && active = '$active'")
+                )->groupBy('school, level, class')->orderBy('school asc, level asc, class asc, name asc')->all();
     }
 
 }

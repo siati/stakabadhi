@@ -17,6 +17,7 @@ use common\models\Logs;
 use common\models\User;
 use common\models\AuthKey;
 use common\models\Classes;
+use common\models\Subjects;
 
 /**
  * SectionsController implements the CRUD actions for Sections model.
@@ -37,7 +38,7 @@ class SectionsController extends Controller {
                     'delete-contact', 'send-files', 'push-schemes-of-work', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                     'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
                     'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
-                    'school-registration', 'school-classes', 'commit-registration', 'commit-class',
+                    'school-registration', 'school-classes', 'school-subjects', 'commit-registration', 'commit-class', 'commit-subject',
                     'index', 'create', 'delete'
                 ],
                 'rules' => [
@@ -48,7 +49,7 @@ class SectionsController extends Controller {
                             'delete-contact', 'send-files', 'push-schemes-of-work', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                             'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
                             'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
-                            'school-registration', 'school-classes', 'commit-registration', 'commit-class'
+                            'school-registration', 'school-classes', 'school-subjects', 'commit-registration', 'commit-class', 'commit-subject'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -361,6 +362,26 @@ class SectionsController extends Controller {
         $model->isNewRecord ? $model->created_by = Yii::$app->user->identity->name : $model->updated_by = Yii::$app->user->identity->name;
         
         $model->modelSave();
+    }
+    
+    /**
+     * capture returned subject details
+     */
+    public function actionCommitSubject() {
+        $model = Subjects::subjectToLoad(null, null, $_POST['Subjects']['level'], $_POST['Subjects']['class'], $_POST['Subjects']['subject']);
+        
+        $model->load(Yii::$app->request->post());
+        
+        $model->isNewRecord ? $model->created_by = Yii::$app->user->identity->name : $model->updated_by = Yii::$app->user->identity->name;
+        
+        $model->modelSave();
+    }
+    
+    /**
+     * update subjects through services
+     */
+    public function actionSchoolSubjects() {
+        echo Subjects::subjectRegistrationService($_POST);
     }
 
     /**

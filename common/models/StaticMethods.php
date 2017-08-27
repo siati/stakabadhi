@@ -943,6 +943,15 @@ class StaticMethods {
     }
 
     /**
+     * 
+     * @param string $level school level
+     * @return string title
+     */
+    public static function schoolLevelClassTitle($level) {
+        return $level == self::secondary ? 'Form' : 'Class';
+    }
+
+    /**
      * @param string $level primary or secondary
      * @return array terms
      */
@@ -979,7 +988,7 @@ class StaticMethods {
      */
     public function classesForDropdown($level) {
         foreach (static::classes($level) as $id => $class)
-            $classes[$id] = $class[self::name];
+            $classes[$id] = static::schoolLevelClassTitle($level) . ' ' . $class[self::name];
 
         return $classes;
     }
@@ -1009,7 +1018,7 @@ class StaticMethods {
         return $level == self::primary || $level == self::secondary ? [
             /* languages in alphabetical order */
             'eng' => [self::code => 101, self::dept => self::lang, self::name => 'English'],
-            'kis' => [self::code => 102, self::dept => self::lang, self::name => 'Kiswahil'],
+            'kis' => [self::code => 102, self::dept => self::lang, self::name => 'Kiswahili'],
             /* sciences in alphabetical order */
             'bio' => [self::code => 104, self::dept => self::scnc, self::name => 'Biology'],
             'bsc' => [self::code => 105, self::dept => self::scnc, self::name => 'Biological Sciences'],

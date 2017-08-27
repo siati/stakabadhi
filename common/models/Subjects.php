@@ -93,7 +93,7 @@ class Subjects extends \yii\db\ActiveRecord {
      * @param integer $pk subject id
      * @return Subjects model
      */
-    public static function returnSubjects($pk) {
+    public static function returnSubject($pk) {
         return static::findByPk($pk);
     }
 
@@ -168,7 +168,8 @@ class Subjects extends \yii\db\ActiveRecord {
      * @return Subjects models
      */
     public static function bySchoolLevelClassAndSubject($id, $school, $level, $class, $subject) {
-        return static::searchSubjects($id, $school, $level, null, $class, $subject, null);
+        foreach (static::searchSubjects($id, $school, $level, null, $class, $subject, null) as $sbjct)
+            return $sbjct;
     }
 
     /**
@@ -187,7 +188,7 @@ class Subjects extends \yii\db\ActiveRecord {
         $model->class = $class;
         $model->subject = $subject;
 
-        $model->active = self::active;
+        $model->active = self::not_active;
 
         return $model;
     }
@@ -199,10 +200,35 @@ class Subjects extends \yii\db\ActiveRecord {
      * @param string $level school level
      * @param integer $class class
      * @param string $subject subject
+     * @return Subjects model
+     */
+    public static function subjectToLoad($id, $school, $level, $class, $subject) {
+        return is_object($model = static::returnSubject($id)) || is_object($model = static::bySchoolLevelClassAndSubject($id, $school, $level, $class, $subject)) ? $model : static::newSubject($school, $level, $class, $subject);
+    }
+
+    /**
+     * 
+     * @param integer|null $school school id
+     * @param string $level school level
+     * @param string $active yes, no
      * @return Subjects models
      */
-    public static function classToLoad($id, $school, $level, $class, $subject) {
-        return is_object($model = static::returnSubjects($id)) ? $model : static::newSubject($school, $level, $class, $subject);
+    public static function subjectsToLoad($school, $level, $active) {
+        $classes = Classes::distinctSchoolClassesWithoutStreams($school, $level, $active);
+
+        foreach (StaticMethods::departments($level) as $dept => $name)
+            foreach (StaticMethods::subjects($level) as $sbjct => $subject)
+                if ($subject[StaticMethods::dept] == $dept)
+                    foreach ($classes as $class) {
+                        $model = static::subjectToLoad(null, $school, $level, $class->class, $sbjct);
+                        $model->dept = $dept;
+                        $model->dept_name = $name;
+                        $model->code = $subject[StaticMethods::code];
+                        $model->name = $subject[StaticMethods::name];
+                        $models[] = $model;
+                    }
+
+        return empty($models) ? [] : $models;
     }
 
     /**
@@ -213,6 +239,18 @@ class Subjects extends \yii\db\ActiveRecord {
         $this->isNewRecord ? $this->created_at = StaticMethods::now() : $this->updated_at = StaticMethods::now();
 
         return $this->save();
+    }
+
+    /**
+     * 
+     * @param array $posts post params
+     * @return string server response
+     */
+    public static function subjectRegistrationService($posts) {
+        if (isset($posts['Subjects']))
+            empty($posts['Subjects']['id']) ? $posts['Subjects']['created_by'] = Yii::$app->user->identity->name : $posts['Subjects']['updated_by'] = Yii::$app->user->identity->name;
+
+        return StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/school-subjects', $posts);
     }
 
 }

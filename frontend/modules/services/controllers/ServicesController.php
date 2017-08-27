@@ -134,6 +134,27 @@ class ServicesController extends Controller {
     }
 
     /**
+     * load interface to and receive subjects from clients
+     */
+    public function actionSchoolSubjects() {
+
+        $school = SchoolRegistrations::byAuthKey($_POST['auth_key']);
+
+        $models = Subjects::subjectsToLoad($school->id, $school->level, Subjects::active);
+
+        if (!empty($_POST['Subjects']['subject'])) {
+            foreach ($models as $model)
+                if ($model->class == $_POST['Subjects']['class'] && $model->subject == $_POST['Subjects']['subject'])
+                    if ($model->load(Yii::$app->request->post()) && $model->modelSave())
+                        echo $model->active;
+
+            Yii::$app->end();
+        }
+
+        return $this->renderAjax('school-subjects-form', ['models' => $models]);
+    }
+
+    /**
      * render interface to and receive documents sent from clients
      */
     public function actionReceiveSchemesOfWork() {

@@ -148,6 +148,17 @@ class Classes extends \yii\db\ActiveRecord {
     public static function forSchoolAndLevel($school, $level, $active) {
         return static::searchClasses(null, $school, $level, null, null, null, null, $active);
     }
+    
+     /**
+     * 
+     * @param integer|null $school school id
+     * @param string $level school level
+     * @param string $active yes, no
+     * @return Classes models
+     */
+    public static function distinctSchoolClassesWithoutStreams($school, $level, $active) {
+        return static::find()->distinctSchoolClassesWithoutStreams($school, $level, $active);
+    }
 
     /**
      * 
