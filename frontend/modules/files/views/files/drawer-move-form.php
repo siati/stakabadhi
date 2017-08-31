@@ -31,15 +31,15 @@ use common\models\Shelves;
     
     <input name="mv" type="hidden" />
     
-    <?= $form->field($model, 'store')->dropDownList(StaticMethods::modelsToArray(Stores::allStores(), 'id', 'name'), ['onchange' => "dynamicStorages2('$compartmentLevel', $(this).val(), $('#drawers-compartment').val(), null, 'drawers-compartment', true)"]) ?>
+    <?= $form->field($model, 'store')->dropDownList(StaticMethods::modelsToArray(Stores::allStores(), 'id', 'name', false), ['onchange' => "dynamicStorages2('$compartmentLevel', $(this).val(), $('#drawers-compartment').val(), null, 'drawers-compartment', true)"]) ?>
     
-    <?= $form->field($model, 'compartment')->dropDownList(StaticMethods::modelsToArray(Compartments::compartmentsForStore($model->store, true, StoreLevels::all), 'id', 'name'), ['onchange' => "dynamicStorages2('$subcompartmentLevel', $(this).val(), $('#drawers-sub_compartment').val(), null, 'drawers-sub_compartment', true)"]) ?>
+    <?= $form->field($model, 'compartment')->dropDownList(StaticMethods::modelsToArray(Compartments::compartmentsForStore($model->store, true, StoreLevels::all), 'id', 'name', false), ['onchange' => "dynamicStorages2('$subcompartmentLevel', $(this).val(), $('#drawers-sub_compartment').val(), null, 'drawers-sub_compartment', true)"]) ?>
     
-    <?= $form->field($model, 'sub_compartment')->dropDownList(StaticMethods::modelsToArray(SubCompartments::searchSubcompartments(null, $model->compartment, true, StoreLevels::all), 'id', 'name'), ['onchange' => "dynamicStorages2('$subsubcompartmentLevel', $(this).val(), $('#drawers-sub_sub_compartment').val(), null, 'drawers-sub_sub_compartment', true)"]) ?>
+    <?= $form->field($model, 'sub_compartment')->dropDownList(StaticMethods::modelsToArray(SubCompartments::searchSubcompartments(null, $model->compartment, true, StoreLevels::all), 'id', 'name', false), ['onchange' => "dynamicStorages2('$subsubcompartmentLevel', $(this).val(), $('#drawers-sub_sub_compartment').val(), null, 'drawers-sub_sub_compartment', true)"]) ?>
     
-    <?= $form->field($model, 'sub_sub_compartment')->dropDownList(StaticMethods::modelsToArray(SubSubCompartments::searchSubsubcompartments(null, null, $model->sub_compartment, true, StoreLevels::all), 'id', 'name'), ['onchange' => "dynamicStorages2('$shelfLevel', $(this).val(), $('#drawers-shelf').val(), null, 'drawers-shelf', true)"]) ?>
+    <?= $form->field($model, 'sub_sub_compartment')->dropDownList(StaticMethods::modelsToArray(SubSubCompartments::searchSubsubcompartments(null, null, $model->sub_compartment, true, StoreLevels::all), 'id', 'name', false), ['onchange' => "dynamicStorages2('$shelfLevel', $(this).val(), $('#drawers-shelf').val(), null, 'drawers-shelf', true)"]) ?>
     
-    <?= $form->field($model, 'shelf')->dropDownList(StaticMethods::modelsToArray(Shelves::searchShelves(null, null, null, $model->sub_sub_compartment, true, StoreLevels::all), 'id', 'name'), []) ?>
+    <?= $form->field($model, 'shelf')->dropDownList(StaticMethods::modelsToArray(Shelves::searchShelves(null, null, null, $model->sub_sub_compartment, true, StoreLevels::all), 'id', 'name', false), []) ?>
 
     <?php ActiveForm::end(); ?>
 

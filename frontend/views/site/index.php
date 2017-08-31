@@ -33,6 +33,12 @@ $this->title = 'My Yii Application';
 
                 <p>Click Here To Register Subjects Offered In Your School On The TSC Portal</p>
             </div>
+
+            <div class="col-lg-4 kasa-pointa" onclick="registerTeacher()">
+                <h2>Register Teachers</h2>
+
+                <p>Click Here To Register Teachers In Your School On The TSC Portal</p>
+            </div>
         </div>
 
     </div>

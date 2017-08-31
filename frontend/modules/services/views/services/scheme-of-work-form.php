@@ -2,15 +2,29 @@
 
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
+use common\models\Classes;
+use common\models\StaticMethods;
+use common\models\Subjects;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\SchemesOfWork */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
+<?php
+foreach (Classes::distinctSchoolClassesWithoutStreams($model->school, $level, Classes::active) as $class)
+    $classes[$class->class] = StaticMethods::schoolLevelClassTitle($level) . ' ' . StaticMethods::classes($level)[$class->class][StaticMethods::name];
+
+$model->isNewRecord ? $model->class = StaticMethods::form_one : '';
+
+$active = Classes::active;
+    ?>
+
 <div class="files-form" style="height: 90%; overflow-x: hidden">
 
     <?php $form = ActiveForm::begin(['id' => 'form-sceheme-of-work', 'enableAjaxValidation' => true]); ?>
+
+    <input type="hidden" name="auth_key" value="<?= $auth_key ?>" />
 
     <?= Html::activeHiddenInput($model, 'id') ?>
 
@@ -21,23 +35,23 @@ use yii\helpers\Html;
     <?= Html::activeHiddenInput($model, 'submitted_by') ?>
 
     <?= Html::activeHiddenInput($model, 'submitted_as') ?>
-    
+
     <table>
         <tr>
-            <td class="td-pdg-rgt-lft" style="width: 50%"><?= $form->field($model, 'year')->textInput() ?></td>
-            <td class="td-pdg-rgt-lft" style="width: 50%"><?= $form->field($model, 'term')->textInput() ?></td>
+            <td class="td-pdg-rgt-lft" style="width: 50%"><?= $form->field($model, 'year')->dropDownList([$yr = date('Y') - 1 => $yr, ++$yr => $yr, ++$yr => $yr]) ?></td>
+            <td class="td-pdg-rgt-lft" style="width: 50%"><?= $form->field($model, 'term')->dropDownList(StaticMethods::terms($level)) ?></td>
         </tr>
     </table>
 
     <table>
         <tr>
-            <td class="td-pdg-rgt-lft" style="width: 25%"><?= $form->field($model, 'class')->textInput() ?></td>
-            <td class="td-pdg-rgt-lft" style="width: 25%"><?= $form->field($model, 'stream')->textInput() ?></td>
-            <td class="td-pdg-rgt-lft" style="width: 50%"><?= $form->field($model, 'subject')->textInput() ?></td>
+            <td class="td-pdg-rgt-lft" style="width: 25%"><?= $form->field($model, 'class')->dropDownList(empty($classes) ? [] : $classes, ['onchange' => "serverClassChanged($(this).val(), $('#schemesofwork-stream').val(), $('#schemesofwork-subject').val(), '$active')"]) ?></td>
+            <td class="td-pdg-rgt-lft" style="width: 25%"><?= $form->field($model, 'stream')->dropDownList(StaticMethods::modelsToArray(Classes::forSchoolLevelAndClass($model->school, $level, $model->class, $active), 'id', 'name', false)) ?></td>
+            <td class="td-pdg-rgt-lft" style="width: 50%"><?= $form->field($model, 'subject')->dropDownList(StaticMethods::modelsToArray(Subjects::forSchoolLevelDeptAndClass($model->school, $level, null, $model->class, $active), 'id', 'name', true)) ?></td>
         </tr>
     </table>
 
-    <?= $form->field($model, 'notes')->textArea() ?>
+    <?= $form->field($model, 'notes')->textArea(['maxlength' => true, 'style' => 'text-align: justify; resize: none']) ?>
 
     <table>
         <tr>
@@ -60,8 +74,6 @@ use yii\helpers\Html;
             <td class="td-pdg-rgt-lft"><?= $form->field($model, 'school_head_tsc_no')->textInput() ?></td>
         </tr>
     </table>
-    
-    <?= $form->errorSummary($model) ?>
 
     <?php ActiveForm::end(); ?>
 

@@ -35,12 +35,20 @@ use common\models\StaticMethods;
 
                 <?php $id = empty($model->id) ? '0' : $model->id ?>
 
+                <?php
+                $classes = [];
+
+                foreach (StaticMethods::classesForDropdown($model->level) as $cls => $class)
+                    if ($model->isNewRecord || $cls == $model->class)
+                        $classes[$cls] = $class;
+                ?>
+
                 <tr>
                     <?= Html::activeHiddenInput($model, "[$id]created_by") ?>
                     <?= Html::activeHiddenInput($model, "[$id]updated_by") ?>
                     <td class="td-cnter td-pdg-vtc"><b><?= ++$no ?>.</b></td>
-                    <td class="td-pdg-rgt-lft td-pdg-vtc"><?= $form->field($model, "[$id]class")->dropDownList(StaticMethods::classesForDropdown($model->level))->label(false) ?></td>
-                    <td class="td-pdg-rgt-lft td-pdg-vtc"><?= $form->field($model, "[$id]stream")->textInput(['maxlength' => true, 'style' => 'text-align: center', 'placeholder' => 'E'])->label(false) ?></td>
+                    <td class="td-pdg-rgt-lft td-pdg-vtc"><?= $form->field($model, "[$id]class")->dropDownList(empty($classes) ? [] : $classes)->label(false) ?></td>
+                    <td class="td-pdg-rgt-lft td-pdg-vtc"><?= $form->field($model, "[$id]stream")->textInput(['maxlength' => true, 'style' => 'text-align: center', 'placeholder' => 'E', 'readonly' => !$model->isNewRecord])->label(false) ?></td>
                     <td class="td-pdg-rgt-lft td-pdg-vtc"><?= $form->field($model, "[$id]symbol")->textInput(['maxlength' => true, 'style' => 'text-align: center', 'placeholder' => '1E'])->label(false) ?></td>
                     <td class="td-pdg-rgt-lft td-pdg-vtc"><?= $form->field($model, "[$id]name")->textInput(['maxlength' => true, 'style' => 'text-align: center', 'placeholder' => 'One East'])->label(false) ?></td>
                     <td class="td-pdg-rgt-lft td-pdg-vtc"><?= $form->field($model, "[$id]active")->dropDownList([$actv = Classes::active => ucfirst($actv), $actv = Classes::not_active => ucfirst($actv)])->label(false) ?></td>

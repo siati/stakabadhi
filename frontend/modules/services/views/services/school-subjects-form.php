@@ -27,11 +27,11 @@ endforeach;
             <table>
                 <?php foreach ($subjects as $name => $classes): ?>
                     <tr>
-                        <td class="td-left" style="width: 50%"><b><?= $name ?></b></td>
+                        <td class="td-left" style="width: 40%"><b><?= $name ?></b></td>
 
                         <?php foreach ($classes as $class): ?>
 
-                            <td class="td-pdg-vtc" style="width: <?= 50 / count($classes) ?>%">
+                            <td class="td-pdg-vtc" style="width: <?= 60 / count($classes) ?>%">
                                 <div class="btn btn-xs btn-<?= $class->active == common\models\Subjects::active ? 'success' : 'warning' ?>"
                                      lvl="<?= $class->level ?>" dpt="<?= $class->dept ?>" dpt_nm="<?= $class->dept_name ?>" cls="<?= $class->class ?>" sbj="<?= $class->subject ?>" cd="<?= $class->code ?>" nm="<?= $class->name ?>"
                                      onclick="pushSubject($(this))">

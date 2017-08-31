@@ -501,22 +501,6 @@ $this->registerJs(
                     );
                 }
                 
-                function pushFile(id) {
-                    yiiModal('Schemes of Work', 'sections/push-schemes-of-work', {'SchemesOfWork[submitted_as]': $('#' + id).attr('dcl')}, $('.inst-ctnt').width() * 0.75, $('.institution-default-index').height());
-                }
-                
-                function pushSchemeOfWork() {
-                    post = $('#form-sceheme-of-work').serializeArray();
-
-                    post.push({name: 'sbmt', value: ''});
-                    
-                    $.post('sections/push-schemes-of-work', post,
-                        function (form) {
-                            $('#yii-modal-cnt').html(form);
-                        }
-                    );
-                }
-                
                 function contactFormValues(id, name, email, dscrptn) {
                     $('#documentsmailingscontacts-id').val(id);
                     $('#documentsmailingscontacts-email').val(email);

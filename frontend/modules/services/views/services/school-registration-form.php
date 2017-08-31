@@ -38,15 +38,15 @@ use common\models\PostalCodes;
     <table>
         <tr>
             <td class="td-pdg-rgt-lft" style="width: 40%"><?= $form->field($model, 'postal_no')->textInput() ?></td>
-            <td class="td-pdg-rgt-lft" style="width: 60%"><?= $form->field($model, 'postal_town')->dropDownList(StaticMethods::modelsToArray(PostalCodes::allCodes(), 'id', 'town'), ['prompt' => '-- Select Town --']) ?></td>
+            <td class="td-pdg-rgt-lft" style="width: 60%"><?= $form->field($model, 'postal_town')->dropDownList(StaticMethods::modelsToArray(PostalCodes::allCodes(), 'id', 'town', false), ['prompt' => '-- Select Town --']) ?></td>
         </tr>
     </table>
 
     <table>
         <tr>
-            <td class="td-pdg-rgt-lft" style="width: 33.333%"><?= $form->field($model, 'county')->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name'), ['prompt' => '-- Select County --', 'onchange' => "dynamicConstituencies($(this).val(), $('#schoolregistrations-constituency').val(), $('#schoolregistrations-constituency'), 'dynamic-server-constituencies')"]) ?></td>
-            <td class="td-pdg-rgt-lft" style="width: 33.333%"><?= $form->field($model, 'constituency')->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($model->county), 'id', 'name'), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#schoolregistrations-ward').val(), $('#schoolregistrations-ward'), 'dynamic-server-wards')"]) ?></td>
-            <td class="td-pdg-rgt-lft" style="width: 33.333%"><?= $form->field($model, 'ward')->dropDownList(StaticMethods::modelsToArray(Wards::wardsForConstituency($model->constituency), 'id', 'name'), ['prompt' => '-- Select Ward --']) ?></td>
+            <td class="td-pdg-rgt-lft" style="width: 33.333%"><?= $form->field($model, 'county')->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "dynamicConstituencies($(this).val(), $('#schoolregistrations-constituency').val(), $('#schoolregistrations-constituency'), 'dynamic-server-constituencies')"]) ?></td>
+            <td class="td-pdg-rgt-lft" style="width: 33.333%"><?= $form->field($model, 'constituency')->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#schoolregistrations-ward').val(), $('#schoolregistrations-ward'), 'dynamic-server-wards')"]) ?></td>
+            <td class="td-pdg-rgt-lft" style="width: 33.333%"><?= $form->field($model, 'ward')->dropDownList(StaticMethods::modelsToArray(Wards::wardsForConstituency($model->constituency), 'id', 'name', false), ['prompt' => '-- Select Ward --']) ?></td>
         </tr>
     </table>
 

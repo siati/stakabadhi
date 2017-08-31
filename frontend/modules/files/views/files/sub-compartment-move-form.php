@@ -25,9 +25,9 @@ use common\models\Compartments;
     
     <input name="mv" type="hidden" />
     
-    <?= $form->field($model, 'store')->dropDownList(StaticMethods::modelsToArray(Stores::allStores(), 'id', 'name'), ['onchange' => "dynamicStorages2('$compartmentLevel', $(this).val(), $('#subcompartments-compartment').val(), null, 'subcompartments-compartment', true)"]) ?>
+    <?= $form->field($model, 'store')->dropDownList(StaticMethods::modelsToArray(Stores::allStores(), 'id', 'name', false), ['onchange' => "dynamicStorages2('$compartmentLevel', $(this).val(), $('#subcompartments-compartment').val(), null, 'subcompartments-compartment', true)"]) ?>
     
-    <?= $form->field($model, 'compartment')->dropDownList(StaticMethods::modelsToArray(Compartments::compartmentsForStore($model->store, true, StoreLevels::all), 'id', 'name'), []) ?>
+    <?= $form->field($model, 'compartment')->dropDownList(StaticMethods::modelsToArray(Compartments::compartmentsForStore($model->store, true, StoreLevels::all), 'id', 'name', false), []) ?>
 
     <?php ActiveForm::end(); ?>
 

@@ -4,6 +4,7 @@ namespace frontend\modules\services\controllers;
 
 use Yii;
 use common\models\SchoolRegistrations;
+use common\models\Teachers;
 use common\models\Classes;
 use common\models\Subjects;
 use common\models\SchemesOfWork;
@@ -27,11 +28,11 @@ class ServicesController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'register-school', 'school-classes', 'school-subjects', 'receive-schemes-of-work', 'dynamic-constituencies', 'dynamic-wards'
+                    'register-school', 'school-classes', 'school-subjects', 'register-teacher', 'receive-schemes-of-work', 'dynamic-teacher-subjects', 'dynamic-streams', 'dynamic-subjects', 'dynamic-constituencies', 'dynamic-wards'
                 ],
                 'rules' => [
                     [
-                        'actions' => ['register-school', 'school-classes', 'school-subjects', 'receive-schemes-of-work', 'dynamic-constituencies', 'dynamic-wards'],
+                        'actions' => ['register-school', 'school-classes', 'school-subjects', 'register-teacher', 'receive-schemes-of-work', 'dynamic-teacher-subjects', 'dynamic-streams', 'dynamic-subjects', 'dynamic-constituencies', 'dynamic-wards'],
                         'allow' => (empty($_POST['auth_key']) && $this->isAnOpenAction()) || $this->isAuthenticRequest(),
                         'roles' => ['*'],
                         'verbs' => ['post']
@@ -54,7 +55,7 @@ class ServicesController extends Controller {
      * @return boolean true - action can be run on verifying the requesting user
      */
     public function isASecureAction() {
-        return in_array($this->action->id, ['school-classes', 'school-subjects', 'receive-schemes-of-work']);
+        return in_array($this->action->id, ['school-classes', 'school-subjects', 'register-teacher', 'receive-schemes-of-work', 'dynamic-teacher-subjects', 'dynamic-streams', 'dynamic-subjects']);
     }
 
     /**
@@ -119,10 +120,10 @@ class ServicesController extends Controller {
             $ajaxes = [];
 
             if (Classes::loadMultiple($models, Yii::$app->request->post()))
-                foreach ($models as $model)
+                foreach ($models as $id => $model)
                     !isset($_POST['sbmt']) && (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0) ?
                                     ($ajaxes[$id] = is_array($ajax) ? $ajax : []) :
-                                    (($model->modelSave() ? $saved[] = $model->id : $notLoadNew = true));
+                                    (($model->modelSave() ? $saved[] = $id : $notLoadNew = true));
 
             if (!empty($ajaxes))
                 return is_array($ajax) ? $ajax : [];
@@ -155,9 +156,34 @@ class ServicesController extends Controller {
     }
 
     /**
+     * 
+     * load interface to and receive teacher registration details from clients
+     */
+    public function actionRegisterTeacher() {
+
+        $school = SchoolRegistrations::byAuthKey($_POST['auth_key']);
+
+        $model = Teachers::teacherToLoad(empty($_POST['Teachers']['id']) ? '' : $_POST['Teachers']['id']);
+
+        if (isset($_POST['Teachers']['tsc_no']) && $model->load(Yii::$app->request->post())) {
+
+            if (!isset($_POST['sbmt']) && (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0))
+                return is_array($ajax) ? $ajax : [];
+            
+            $model->isNewRecord ? $model->author_school = $school->id : $model->updater_school = $school->id;
+
+            $sync = $model->modelSave();
+        }
+
+        return $this->renderAjax('teacher-registration-form', ['model' => $model, 'level' => $school->level, 'auth_key' => $school->auth_key, 'sync' => !empty($sync)]);
+    }
+
+    /**
      * render interface to and receive documents sent from clients
      */
     public function actionReceiveSchemesOfWork() {
+
+        $school = SchoolRegistrations::byAuthKey($_POST['auth_key']);
 
         $model = SchemesOfWork::schemeToLoad(empty($_POST['SchemesOfWork']['id']) ? '' : $_POST['SchemesOfWork']['id'], empty($_POST['SchemesOfWork']['school']) ? '' : $_POST['SchemesOfWork']['school'], empty($_POST['SchemesOfWork']['year']) ? '' : $_POST['SchemesOfWork']['year'], empty($_POST['SchemesOfWork']['term']) ? '' : $_POST['SchemesOfWork']['term'], empty($_POST['SchemesOfWork']['class']) ? '' : $_POST['SchemesOfWork']['class'], empty($_POST['SchemesOfWork']['stream']) ? '' : $_POST['SchemesOfWork']['stream'], empty($_POST['SchemesOfWork']['subject']) ? '' : $_POST['SchemesOfWork']['subject']);
 
@@ -177,21 +203,48 @@ class ServicesController extends Controller {
             }
         }
 
-        return $this->renderAjax('sceheme-of-work-form', ['model' => $model]);
+        return $this->renderAjax('scheme-of-work-form', ['model' => $model, 'auth_key' => $school->auth_key, 'level' => $school->level]);
+    }
+    
+    /**
+     * load dynamic subjects
+     */
+    public function actionDynamicTeacherSubjects() {
+        $school = SchoolRegistrations::byAuthKey($_POST['auth_key']);
+
+        StaticMethods::populateDropDown(StaticMethods::subjectsForDropDown($school->level, [$_POST['subject1']]), 'Subject Two', $_POST['subject2']);
+    }
+    
+    /**
+     * load dynamic streams
+     */
+    public function actionDynamicStreams() {
+        $school = SchoolRegistrations::byAuthKey($_POST['auth_key']);
+
+        StaticMethods::populateDropDown(StaticMethods::modelsToArray(Classes::forSchoolLevelAndClass($school->id, $school->level, $_POST['class'], $_POST['active']), 'id', 'name', false), null, $_POST['stream']);
+    }
+    
+    /**
+     * load dynamic subjects
+     */
+    public function actionDynamicSubjects() {
+        $school = SchoolRegistrations::byAuthKey($_POST['auth_key']);
+        
+        StaticMethods::populateDropDown(StaticMethods::modelsToArray(Subjects::forSchoolLevelDeptAndClass($school->id, $school->level, null, $_POST['class'], $_POST['active']), 'id', 'name', true), null, $_POST['subject']);
     }
 
     /**
      * load dynamic constituencies
      */
     public function actionDynamicConstituencies() {
-        StaticMethods::populateDropDown(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($_POST['county']), 'id', 'name'), 'Select Constituency', $_POST['constituency']);
+        StaticMethods::populateDropDown(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($_POST['county']), 'id', 'name', false), 'Select Constituency', $_POST['constituency']);
     }
 
     /**
      * load dynamic wards
      */
     public function actionDynamicWards() {
-        StaticMethods::populateDropDown(StaticMethods::modelsToArray(Wards::wardsForConstituency($_POST['constituency']), 'id', 'name'), 'Select Ward', $_POST['ward']);
+        StaticMethods::populateDropDown(StaticMethods::modelsToArray(Wards::wardsForConstituency($_POST['constituency']), 'id', 'name', false), 'Select Ward', $_POST['ward']);
     }
 
 }

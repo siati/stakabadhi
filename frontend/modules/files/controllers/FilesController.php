@@ -80,7 +80,7 @@ class FilesController extends Controller {
      * populate level stores
      */
     public function actionDynamicStorages() {
-        StaticMethods::populateDropDown(StaticMethods::modelsToArray(StoreLevels::defaultStoragesToLoad($_POST['level'], $_POST['id'], true), 'id', 'name'), empty($_POST['prompt']) ? '' : 'Select', $_POST['value']);
+        StaticMethods::populateDropDown(StaticMethods::modelsToArray(StoreLevels::defaultStoragesToLoad($_POST['level'], $_POST['id'], true), 'id', 'name', false), empty($_POST['prompt']) ? '' : 'Select', $_POST['value']);
     }
 
     /**

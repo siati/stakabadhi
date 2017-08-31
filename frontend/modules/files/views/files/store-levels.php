@@ -18,7 +18,7 @@ $is_admin ? $cursor = null : $cursor = '; cursor: pointer';
         <?php
         $selected = null;
         
-        foreach ($storages = $storeLevel->level == StoreLevels::stores ? StaticMethods::modelsToArray(StoreLevels::defaultStoragesToLoad($storeLevel->level, null, true), 'id', 'name') : [] as $level => $name)
+        foreach ($storages = $storeLevel->level == StoreLevels::stores ? StaticMethods::modelsToArray(StoreLevels::defaultStoragesToLoad($storeLevel->level, null, true), 'id', 'name', false) : [] as $level => $name)
             if (empty($selected))
                 $selected = $level;
         ?>

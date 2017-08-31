@@ -23,7 +23,7 @@ class DefaultController extends Controller {
                     'branding' => $this->renderPartial('../../../../modules/institution/views/sections/document-properties-branding', ['items' => $this->slideImages()]),
                     'storeLevels' => $this->renderPartial('../files/store-levels', ['storeLevels' => $storeLevels = StoreLevels::allLevels()]),
                     'levelDetails' => StoreLevels::defaultLevelsOrder(),
-                    'levels' => StaticMethods::modelsToArray($storeLevels, 'level', 'name')
+                    'levels' => StaticMethods::modelsToArray($storeLevels, 'level', 'name', false)
                         ]
         );
     }

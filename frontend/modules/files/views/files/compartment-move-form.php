@@ -23,7 +23,7 @@ use common\models\Stores;
     
     <input name="mv" type="hidden" />
     
-    <?= $form->field($model, 'store')->dropDownList(StaticMethods::modelsToArray(Stores::allStores(), 'id', 'name'), []) ?>
+    <?= $form->field($model, 'store')->dropDownList(StaticMethods::modelsToArray(Stores::allStores(), 'id', 'name', false), []) ?>
 
     <?php ActiveForm::end(); ?>
 

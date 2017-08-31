@@ -712,10 +712,15 @@ class StaticMethods {
      * @param array $models models
      * @param string $key attribute of each of the [[$models]]
      * @param string $value value of
+     * @param boolean $sort sort array
      * @return array extracted associative array
      */
-    public static function modelsToArray($models, $key, $value) {
-        return ArrayHelper::map($models, $key, $value);
+    public static function modelsToArray($models, $key, $value, $sort) {
+        $array = ArrayHelper::map($models, $key, $value);
+        
+        $sort && asort($array);
+        
+        return $array;
     }
 
     /**
@@ -957,9 +962,9 @@ class StaticMethods {
      */
     public static function terms($level) {
         return $level == self::primary || $level == self::secondary ? [
-            self::term_one => 'One',
-            self::term_two => 'Two',
-            self::term_three => 'Three',
+            self::term_one => 'Term One',
+            self::term_two => 'Term Two',
+            self::term_three => 'Term Three',
                 ] : [
                 ]
         ;
@@ -1055,7 +1060,7 @@ class StaticMethods {
      */
     public static function subjectsForDropDown($level, $toRemoves) {
         if ($level == self::primary || $level == self::secondary)
-            foreach ($subjects = static::subjects() as $key => $subject) {
+            foreach ($subjects = static::subjects($level) as $key => $subject) {
 
                 $removed = false;
 

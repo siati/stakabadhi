@@ -80,5 +80,16 @@ class AuthKey extends \yii\db\ActiveRecord {
         
         return StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/register-school', $post);
     }
+    
+    /**
+     * 
+     * @param array $post registration parameters
+     * @return mixed response from registration service
+     */
+    public static function teacherRegistration($post) {
+        empty($post['Teachers']['id']) ? $post['Teachers']['created_by'] = Yii::$app->user->identity->name : $post['Teachers']['updated_by'] = Yii::$app->user->identity->name;
+        
+        return StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/register-teacher', $post);
+    }
 
 }

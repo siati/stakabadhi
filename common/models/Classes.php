@@ -41,8 +41,8 @@ class Classes extends \yii\db\ActiveRecord {
             [['level', 'class', 'stream', 'symbol', 'name', 'created_by'], 'required'],
             [['level', 'active'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['stream'], 'string', 'max' => 1],
-            [['symbol'], 'string', 'max' => 2],
+            [['stream'], 'string', 'max' => 2],
+            [['symbol'], 'string', 'max' => 5],
             [['name'], 'string', 'max' => 20],
             [['stream', 'symbol', 'name'], 'distinctStream'],
             [['active'], 'newClassMustBeActive'],
@@ -64,7 +64,7 @@ class Classes extends \yii\db\ActiveRecord {
      */
     public function distinctAttribute($attribute) {
         if (is_object(static::find()->distinctAttribute($this->id, $this->school, $this->level, $attribute, $this->$attribute)))
-            $this->addError($attribute, 'This ' . $this->getAttributeLabel($attribute) . 'already exists');
+            $this->addError($attribute, 'This ' . $this->getAttributeLabel($attribute) . ' already exists');
     }
     
     /**

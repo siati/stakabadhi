@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="bd-sctn">
             <?php $form = ActiveForm::begin(['id' => 'login-form', 'enableAjaxValidation' => true]); ?>
 
-            <?= $form->field($model, 'username', ['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-user"></i>']]])->textInput(['autofocus' => true])->label('Username or Email') ?>
+            <?= $form->field($model, 'username', ['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-user"></i>']]])->textInput(['autofocus' => 'autofocus'])->label('Username or Email') ?>
 
             <?= $form->field($model, 'password', ['addon' => ['prepend' => ['content'=>'<i class="glyphicon glyphicon-log-in"></i>']]])->passwordInput()->label('Password') ?>
 

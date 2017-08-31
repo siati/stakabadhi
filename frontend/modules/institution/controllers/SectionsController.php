@@ -35,10 +35,10 @@ class SectionsController extends Controller {
                 'only' => [
                     'upload-files', 'make-directory', 'load-directory', 'reload-navigation', 'document-properties', 'open-file', 'open-file-for-update', 'unlock-file', 'update-file', 'document-versions',
                     'download-document-version', 'drop-document-versions', 'revert-from-history', 'copy-or-move-file', 'zip-and-export', 'document-mailing-modal', 'mailing-contacts', 'mailing-contact',
-                    'delete-contact', 'send-files', 'push-schemes-of-work', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
+                    'delete-contact', 'send-files', 'push-schemes-of-work', 'dynamic-server-teacher-subjects', 'dynamic-server-streams', 'dynamic-server-subjects', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                     'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
                     'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
-                    'school-registration', 'school-classes', 'school-subjects', 'commit-registration', 'commit-class', 'commit-subject',
+                    'school-registration', 'school-classes', 'school-subjects', 'teacher-registration', 'commit-registration', 'commit-class', 'commit-subject',
                     'index', 'create', 'delete'
                 ],
                 'rules' => [
@@ -46,10 +46,10 @@ class SectionsController extends Controller {
                         'actions' => [
                             'upload-files', 'make-directory', 'load-directory', 'reload-navigation', 'document-properties', 'open-file', 'open-file-for-update', 'unlock-file', 'update-file', 'document-versions',
                             'download-document-version', 'drop-document-versions', 'revert-from-history', 'copy-or-move-file', 'zip-and-export', 'document-mailing-modal', 'mailing-contacts', 'mailing-contact',
-                            'delete-contact', 'send-files', 'push-schemes-of-work', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
+                            'delete-contact', 'send-files', 'push-schemes-of-work', 'dynamic-server-teacher-subjects', 'dynamic-server-streams', 'dynamic-server-subjects', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                             'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
                             'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
-                            'school-registration', 'school-classes', 'school-subjects', 'commit-registration', 'commit-class', 'commit-subject'
+                            'school-registration', 'school-classes', 'school-subjects', 'teacher-registration', 'commit-registration', 'commit-class', 'commit-subject'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -329,12 +329,40 @@ class SectionsController extends Controller {
     public function actionPushSchemesOfWork() {
         echo Documents::returnDocument($_POST['SchemesOfWork']['submitted_as'])->sendDocumentAsSchemeOfWork($_POST);
     }
+    
+    /**
+     * return desired subjects from service
+     */
+    public function actionDynamicServerTeacherSubjects() {
+        echo StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/dynamic-teacher-subjects', $_POST);
+    }
+
+    /**
+     * return desired streams from service
+     */
+    public function actionDynamicServerStreams() {
+        echo StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/dynamic-streams', $_POST);
+    }
+
+    /**
+     * return desired subjects from service
+     */
+    public function actionDynamicServerSubjects() {
+        echo StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/dynamic-subjects', $_POST);
+    }
 
     /**
      * update school details through service
      */
     public function actionSchoolRegistration() {
         echo AuthKey::loadKey(null)->sendRegistration($_POST);
+    }
+
+    /**
+     * update teacher details through service
+     */
+    public function actionTeacherRegistration() {
+        echo AuthKey::teacherRegistration($_POST);
     }
     
     /**
