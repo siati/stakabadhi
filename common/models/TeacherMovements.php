@@ -114,7 +114,7 @@ class TeacherMovements extends \yii\db\ActiveRecord {
      * 
      * @param integer $teacher teacher id
      * @param integer $school school id
-     * @return TeacherMovements models
+     * @return TeacherMovements model
      */
     public static function teachersCurrentPosting($teacher) {
         foreach (static::searchMovements($teacher, null, true, null, null, null, null) as $movement)

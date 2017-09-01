@@ -18,6 +18,7 @@ use common\models\User;
 use common\models\AuthKey;
 use common\models\Classes;
 use common\models\Subjects;
+use common\models\SchoolTeachers;
 
 /**
  * SectionsController implements the CRUD actions for Sections model.
@@ -38,7 +39,7 @@ class SectionsController extends Controller {
                     'delete-contact', 'send-files', 'push-schemes-of-work', 'dynamic-server-teacher-subjects', 'dynamic-server-streams', 'dynamic-server-subjects', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                     'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
                     'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
-                    'school-registration', 'school-classes', 'school-subjects', 'teacher-registration', 'commit-registration', 'commit-class', 'commit-subject',
+                    'school-registration', 'school-classes', 'school-subjects', 'teacher-registration', 'commit-registration', 'commit-class', 'commit-subject', 'commit-teacher-registration',
                     'index', 'create', 'delete'
                 ],
                 'rules' => [
@@ -49,7 +50,7 @@ class SectionsController extends Controller {
                             'delete-contact', 'send-files', 'push-schemes-of-work', 'dynamic-server-teacher-subjects', 'dynamic-server-streams', 'dynamic-server-subjects', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                             'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
                             'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
-                            'school-registration', 'school-classes', 'school-subjects', 'teacher-registration', 'commit-registration', 'commit-class', 'commit-subject'
+                            'school-registration', 'school-classes', 'school-subjects', 'teacher-registration', 'commit-registration', 'commit-class', 'commit-subject', 'commit-teacher-registration',
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -401,6 +402,14 @@ class SectionsController extends Controller {
         $model->load(Yii::$app->request->post());
         
         $model->isNewRecord ? $model->created_by = Yii::$app->user->identity->name : $model->updated_by = Yii::$app->user->identity->name;
+        
+        $model->modelSave();
+    }
+    
+    public function actionCommitTeacherRegistration() {
+        $model = SchoolTeachers::teacherToLoad(null, $_POST['SchoolTeachers']['id_no'], $_POST['SchoolTeachers']['tsc_no']);
+        
+        $model->load(Yii::$app->request->post());
         
         $model->modelSave();
     }

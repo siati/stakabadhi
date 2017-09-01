@@ -60,7 +60,7 @@ class TeacherMovementsQuery extends \yii\db\ActiveQuery {
                             (
                                 (empty($since1) ? '' : " && since >= '$since1'") .
                                 (empty($since2) ? '' : " && since <= '$since2'") .
-                                (empty($till1) ? '' : " && (9till >= '$till1' || till = '' || till is null)") .
+                                (empty($till1) ? '' : " && (till >= '$till1' || till = '' || till is null)") .
                                 (empty($till2) ? '' : " && till <= '$till2'")
                             )
                         )

@@ -34,21 +34,21 @@ use Yii;
  * @property string $updated_by
  * @property string $updated_at
  */
-class SchoolTeachers extends \yii\db\ActiveRecord
-{
+class SchoolTeachers extends \yii\db\ActiveRecord {
+
+    const min_age = 25;
+    
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return '{{%school_teachers}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['fname', 'mname', 'lname', 'dob', 'gender', 'id_no', 'tsc_no', 'subject_one', 'postal_no', 'postal_code', 'county', 'constituency', 'ward', 'created_by'], 'required'],
             [['dob', 'since', 'till', 'created_at', 'updated_at'], 'safe'],
@@ -63,19 +63,14 @@ class SchoolTeachers extends \yii\db\ActiveRecord
             [['postal_no'], 'string', 'max' => 6],
             [['postal_code'], 'string', 'max' => 5],
             [['location', 'sub_location', 'village'], 'string', 'max' => 30],
-            [['created_by', 'updated_by'], 'string', 'max' => 25],
-            [['id_no'], 'unique'],
-            [['tsc_no'], 'unique'],
-            [['phone'], 'unique'],
-            [['email'], 'unique'],
+            [['created_by', 'updated_by'], 'string', 'max' => 25]
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'fname' => Yii::t('app', 'First Name'),
@@ -110,8 +105,151 @@ class SchoolTeachers extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return \common\activeQueries\SchoolTeachersQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new \common\activeQueries\SchoolTeachersQuery(get_called_class());
     }
+
+    /**
+     * 
+     * @param integer $pk school teacher id
+     * @return SchoolTeachers model
+     */
+    public static function returnTeacher($pk) {
+        return static::find()->byPk($pk);
+    }
+
+    /**
+     * 
+     * @param boolean $current true - current
+     * @param string $since yyyy-mm-dd
+     * @param string $till yyyy-mm-dd
+     * @return SchoolTeachers models
+     */
+    public static function allTeachers($current, $since, $till) {
+        return static::find()->allTeachers($current, $since, $till);
+    }
+
+    /**
+     * 
+     * @param integer $id_no id no of teacher
+     * @param integer $tsc_no tsc no of teacher
+     * @param string $name name of teacher
+     * @param string $gender m: male, f: female
+     * @param string $subject subject
+     * @param boolean $current true - current posting
+     * @param string $since1 yyyy-mm-dd
+     * @param string $since2 yyyy-mm-dd
+     * @param string $till1 yyyy-mm-dd
+     * @param string $till2 yyyy-mm-dd
+     * @return SchoolTeachers models
+     */
+    public static function searchTeachers($id_no, $tsc_no, $name, $gender, $subject, $current, $since1, $since2, $till1, $till2) {
+        return static::find()->searchTeachers($id_no, $tsc_no, $name, $gender, $subject, $current, $since1, $since2, $till1, $till2);
+    }
+
+    /**
+     * 
+     * @param integer $id_no id no of teacher
+     * @param integer $tsc_no tsc no of teacher
+     * @return SchoolTeachers models
+     */
+    public static function currentPostings($id_no, $tsc_no) {
+        return static::searchTeachers($id_no, $tsc_no, null, null, null, true, null, null, null, null);
+    }
+
+    /**
+     * 
+     * @param integer $id_no id no of teacher
+     * @param integer $tsc_no tsc no of teacher
+     * @return SchoolTeachers model
+     */
+    public static function teachersCurrentPosting($id_no, $tsc_no) {
+        foreach (static::currentPostings($id_no, $tsc_no) as $teacher)
+            return $teacher;
+    }
+
+    /**
+     * 
+     * @param integer $id_no id no
+     * @return SchoolTeachers model
+     */
+    public static function byIDNo($id_no) {
+        return static::find()->byIDNo($id_no);
+    }
+
+    /**
+     * 
+     * @param integer $tsc_no tsc no
+     * @return SchoolTeachers model
+     */
+    public static function byTSCNo($tsc_no) {
+        return static::find()->byTSCNo($tsc_no);
+    }
+
+    /**
+     * 
+     * @param integer $phone phone no
+     * @return SchoolTeachers model
+     */
+    public static function byPhone($phone) {
+        return static::find()->byPhone($phone);
+    }
+
+    /**
+     * 
+     * @param integer $email email address
+     * @return SchoolTeachers model
+     */
+    public static function byEmail($email) {
+        return static::find()->byEmail($email);
+    }
+
+    /**
+     * 
+     * @param integer $id_no id no of teacher
+     * @param integer $tsc_no tsc no of teacher
+     * @return SchoolTeachers model
+     */
+    public static function newTeacher($id_no, $tsc_no) {
+        $model = new SchoolTeachers;
+        
+        $model->id_no = $id_no;
+        
+        $model->tsc_no = $tsc_no;
+
+        $model->dob = date('Y') - self::min_age . '-01-01';
+
+        $model->since = StaticMethods::now();
+
+        $model->created_by = Yii::$app->user->identity->name;
+
+        return $model;
+    }
+
+    /**
+     * 
+     * @param integer $id teacher id
+     * @param integer $id_no id no of teacher
+     * @param integer $tsc_no tsc no of teacher
+     * @return SchoolTeachers model
+     */
+    public static function teacherToLoad($id, $id_no, $tsc_no) {
+        return is_object($model = static::returnTeacher($id)) || is_object($model = static::teachersCurrentPosting($id_no, $tsc_no)) ? $model : static::newTeacher($id_no, $tsc_no);
+    }
+    
+    /**
+     * 
+     * @return boolean true - model saved
+     */
+    public function modelSave() {
+        if ($this->isNewRecord)
+            $this->created_at = StaticMethods::now();
+        else {
+            $this->updated_by = Yii::$app->user->identity->name;
+            $this->updated_at = StaticMethods::now();
+        }
+        
+        return $this->save();
+    }
+
 }

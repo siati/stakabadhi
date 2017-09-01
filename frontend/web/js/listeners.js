@@ -31,3 +31,32 @@ function commitSubject(lvl, dpt, dpt_nm, cls, sbj, cd, nm, act) {
             function () {}
     );
 }
+
+function commitTeacherRegistration(fname, mname, lname, dob, gdr, idno, tscno, phone, email, sbj1, sbj2, postno, postcd, cty, ctcy, ward, lctn, sblctn, vllg, snc, till) {
+    $.post('../institution/sections/commit-teacher-registration',
+            {
+                'SchoolTeachers[fname]': fname,
+                'SchoolTeachers[mname]': mname,
+                'SchoolTeachers[lname]': lname,
+                'SchoolTeachers[dob]': dob,
+                'SchoolTeachers[gender]': gdr,
+                'SchoolTeachers[id_no]': idno,
+                'SchoolTeachers[tsc_no]': tscno,
+                'SchoolTeachers[phone]': phone,
+                'SchoolTeachers[email]': email,
+                'SchoolTeachers[subject_one]': sbj1,
+                'SchoolTeachers[subject_two]': sbj2,
+                'SchoolTeachers[postal_no]': postno,
+                'SchoolTeachers[postal_code]': postcd,
+                'SchoolTeachers[county]': cty,
+                'SchoolTeachers[constituency]': ctcy,
+                'SchoolTeachers[ward]': ward,
+                'SchoolTeachers[location]': lctn,
+                'SchoolTeachers[sub_location]': sblctn,
+                'SchoolTeachers[village]': vllg,
+                'SchoolTeachers[since]': snc,
+                'SchoolTeachers[till]': till
+            },
+            function () {}
+    );
+}

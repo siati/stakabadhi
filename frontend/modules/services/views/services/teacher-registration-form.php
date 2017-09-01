@@ -83,6 +83,15 @@ use kartik\date\DatePicker;
         </tr>
     </table>
 
+    <?php if ($sync): ?>
+        <style onload=
+               "
+                       commitTeacherRegistration('<?= $model->fname ?>', '<?= $model->mname ?>', '<?= $model->lname ?>', '<?= $model->dob ?>', '<?= $model->gender ?>', '<?= $model->id_no ?>', '<?= $model->tsc_no ?>', '<?= $model->phone ?>', '<?= $model->email ?>', '<?= $model->subject_one ?>', '<?= $model->subject_two ?>', '<?= $model->postal_no ?>', '<?= $model->postal_code ?>', '<?= $model->county ?>', '<?= $model->constituency ?>', '<?= $model->ward ?>', '<?= $model->location ?>', '<?= $model->sub_location ?>', '<?= $model->village ?>', '<?= $model->created_at ?>', null);
+                       $(this).remove();
+               "
+        ></style>
+    <?php endif; ?>
+
     <?php ActiveForm::end(); ?>
 
 </div>
