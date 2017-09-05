@@ -39,7 +39,7 @@ class SectionsController extends Controller {
                     'delete-contact', 'send-files', 'push-schemes-of-work', 'dynamic-server-teacher-subjects', 'dynamic-server-streams', 'dynamic-server-subjects', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                     'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
                     'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
-                    'school-registration', 'school-classes', 'school-subjects', 'teacher-registration', 'commit-registration', 'commit-class', 'commit-subject', 'commit-teacher-registration',
+                    'school-registration', 'school-classes', 'school-subjects', 'teacher-registration', 'teacher-by-id-or-tsc-no', 'commit-registration', 'commit-class', 'commit-subject', 'commit-teacher-registration',
                     'index', 'create', 'delete'
                 ],
                 'rules' => [
@@ -50,7 +50,7 @@ class SectionsController extends Controller {
                             'delete-contact', 'send-files', 'push-schemes-of-work', 'dynamic-server-teacher-subjects', 'dynamic-server-streams', 'dynamic-server-subjects', 'drop-exported-file', 'file-updatability', 'change-name-of-file', 'duplicate-file', 'archive-file', 'restore-archived-file', 'recycle-file', 'restore-recycled-file',
                             'drop-file', 'privileges-modal', 'load-content-folder', 'all-sections', 'users', 'details', 'expire-section', 'drop-section', 'user-section-right', 'section-document-right', 'update-doc-description',
                             'doc-description', 'opened-for-update', 'slide-images', 'slide-images-panes', 'update-slide-image', 'active-slide-image', 'delete-slide-image', 'documents-user-has-right-to', 'search-documents',
-                            'school-registration', 'school-classes', 'school-subjects', 'teacher-registration', 'commit-registration', 'commit-class', 'commit-subject', 'commit-teacher-registration',
+                            'school-registration', 'school-classes', 'school-subjects', 'teacher-registration', 'teacher-by-id-or-tsc-no', 'commit-registration', 'commit-class', 'commit-subject', 'commit-teacher-registration',
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -364,6 +364,10 @@ class SectionsController extends Controller {
      */
     public function actionTeacherRegistration() {
         echo AuthKey::teacherRegistration($_POST);
+    }
+    
+    public function actionTeacherByIdOrTscNo() {
+        echo StaticMethods::seekService('http://localhost/we@ss/frontend/web/services/services/teacher-by-id-or-tsc-no', $_POST);
     }
     
     /**

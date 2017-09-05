@@ -53,11 +53,14 @@ class SchoolTeachers extends \yii\db\ActiveRecord {
             [['fname', 'mname', 'lname', 'dob', 'gender', 'id_no', 'tsc_no', 'subject_one', 'postal_no', 'postal_code', 'county', 'constituency', 'ward', 'created_by'], 'required'],
             [['dob', 'since', 'till', 'created_at', 'updated_at'], 'safe'],
             [['gender'], 'string'],
-            [['county', 'constituency', 'ward'], 'integer'],
+            [['id_no', 'tsc_no', 'phone', 'postal_no', 'postal_code', 'county', 'constituency', 'ward'], 'integer'],
             [['fname', 'mname', 'lname'], 'string', 'max' => 15],
-            [['id_no'], 'string', 'max' => 8],
-            [['tsc_no'], 'string', 'max' => 7],
-            [['phone'], 'string', 'max' => 13],
+            [['id_no'], 'string', 'min' => 7, 'max' => 8],
+            [['tsc_no'], 'string', 'min' => 6, 'max' => 7],
+            [['phone'], 'string', 'min' => 9, 'max' => 13],
+            [['phone'], 'kenyaPhoneNumber'],
+            [['email'], 'email'],
+            [['dob'], 'atleastTwentyYears'],
             [['email'], 'string', 'max' => 40],
             [['subject_one', 'subject_two'], 'string', 'max' => 3],
             [['postal_no'], 'string', 'max' => 6],
@@ -65,6 +68,14 @@ class SchoolTeachers extends \yii\db\ActiveRecord {
             [['location', 'sub_location', 'village'], 'string', 'max' => 30],
             [['created_by', 'updated_by'], 'string', 'max' => 25]
         ];
+    }
+
+    /**
+     * set minimum acceptable age
+     */
+    public function atleastTwentyYears() {
+        if (date('Y') - substr($this->dob, 0, 4) < ($age = self::min_age))
+            $this->addError('dob', "Minimum age required age is $age years");
     }
 
     /**
@@ -249,6 +260,8 @@ class SchoolTeachers extends \yii\db\ActiveRecord {
             $this->updated_at = StaticMethods::now();
         }
         
+        $this->till > 0 ? '' : $this->till = null;
+
         return $this->save();
     }
 

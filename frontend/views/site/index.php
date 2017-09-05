@@ -6,11 +6,11 @@ $this->title = 'My Yii Application';
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>Congratulations!</h1>
+        <h1>County Government of Kakamega</h1>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+        <p class="lead">We thank you for being part of this noble course</p>
 
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+        <p><a class="btn btn-lg btn-success" href="https://kakamega.go.ke/" target="_blank">Kakamega County Education Fund</a></p>
     </div>
 
     <div class="body-content">

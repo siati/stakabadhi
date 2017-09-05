@@ -28,11 +28,11 @@ class ServicesController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'register-school', 'school-classes', 'school-subjects', 'register-teacher', 'receive-schemes-of-work', 'dynamic-teacher-subjects', 'dynamic-streams', 'dynamic-subjects', 'dynamic-constituencies', 'dynamic-wards'
+                    'register-school', 'school-classes', 'school-subjects', 'register-teacher', 'teacher-by-id-or-tsc-no', 'receive-schemes-of-work', 'dynamic-teacher-subjects', 'dynamic-streams', 'dynamic-subjects', 'dynamic-constituencies', 'dynamic-wards'
                 ],
                 'rules' => [
                     [
-                        'actions' => ['register-school', 'school-classes', 'school-subjects', 'register-teacher', 'receive-schemes-of-work', 'dynamic-teacher-subjects', 'dynamic-streams', 'dynamic-subjects', 'dynamic-constituencies', 'dynamic-wards'],
+                        'actions' => ['register-school', 'school-classes', 'school-subjects', 'register-teacher', 'teacher-by-id-or-tsc-no', 'receive-schemes-of-work', 'dynamic-teacher-subjects', 'dynamic-streams', 'dynamic-subjects', 'dynamic-constituencies', 'dynamic-wards'],
                         'allow' => (empty($_POST['auth_key']) && $this->isAnOpenAction()) || $this->isAuthenticRequest(),
                         'roles' => ['*'],
                         'verbs' => ['post']
@@ -55,7 +55,7 @@ class ServicesController extends Controller {
      * @return boolean true - action can be run on verifying the requesting user
      */
     public function isASecureAction() {
-        return in_array($this->action->id, ['school-classes', 'school-subjects', 'register-teacher', 'receive-schemes-of-work', 'dynamic-teacher-subjects', 'dynamic-streams', 'dynamic-subjects']);
+        return in_array($this->action->id, ['school-classes', 'school-subjects', 'register-teacher', 'teacher-by-id-or-tsc-no', 'receive-schemes-of-work', 'dynamic-teacher-subjects', 'dynamic-streams', 'dynamic-subjects']);
     }
 
     /**
@@ -156,6 +156,17 @@ class ServicesController extends Controller {
     }
 
     /**
+     * load teacher onto view by ID. No. or TSC No.
+     */
+    public function actionTeacherByIdOrTscNo() {
+        $teacher = $_POST['nm'] == Teachers::byID ? (Teachers::byIDNo($_POST['val'])) : ($_POST['nm'] == Teachers::byTSC ? Teachers::byTSCNo($_POST['val']) : '');
+
+        isset($teacher->id) ? $_POST['Teachers']['id'] = $teacher->id : '';
+
+        return $this->actionRegisterTeacher();
+    }
+
+    /**
      * 
      * load interface to and receive teacher registration details from clients
      */
@@ -169,13 +180,23 @@ class ServicesController extends Controller {
 
             if (!isset($_POST['sbmt']) && (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0))
                 return is_array($ajax) ? $ajax : [];
-            
+
             $model->isNewRecord ? $model->author_school = $school->id : $model->updater_school = $school->id;
 
-            $sync = $model->modelSave();
+            ($sync = $model->modelSave()) && ($clientCreateNew = is_object($posting = $model->teacherIsCurrentlyPostedInThisSchool($school->id)) ? $posting->teacherMovedToAnotherSchool() : false);
         }
 
-        return $this->renderAjax('teacher-registration-form', ['model' => $model, 'level' => $school->level, 'auth_key' => $school->auth_key, 'sync' => !empty($sync)]);
+        return $this->renderAjax('teacher-registration-form', [
+                    'model' => $model,
+                    'teachers' => Teachers::currentTeachersInSchool($school->id),
+                    'level' => $school->level,
+                    'auth_key' => $school->auth_key,
+                    'sync' => !empty($sync),
+                    'clientCreateNew' => empty($clientCreateNew) ? false : $clientCreateNew,
+                    'searchBy' => empty($_POST['nm']) ?  Teachers::byID : $_POST['nm'],
+                    'searchByVal' => empty($_POST['val']) ?  '' : $_POST['val']
+                        ]
+        );
     }
 
     /**
@@ -205,7 +226,7 @@ class ServicesController extends Controller {
 
         return $this->renderAjax('scheme-of-work-form', ['model' => $model, 'auth_key' => $school->auth_key, 'level' => $school->level]);
     }
-    
+
     /**
      * load dynamic subjects
      */
@@ -214,7 +235,7 @@ class ServicesController extends Controller {
 
         StaticMethods::populateDropDown(StaticMethods::subjectsForDropDown($school->level, [$_POST['subject1']]), 'Subject Two', $_POST['subject2']);
     }
-    
+
     /**
      * load dynamic streams
      */
@@ -223,13 +244,13 @@ class ServicesController extends Controller {
 
         StaticMethods::populateDropDown(StaticMethods::modelsToArray(Classes::forSchoolLevelAndClass($school->id, $school->level, $_POST['class'], $_POST['active']), 'id', 'name', false), null, $_POST['stream']);
     }
-    
+
     /**
      * load dynamic subjects
      */
     public function actionDynamicSubjects() {
         $school = SchoolRegistrations::byAuthKey($_POST['auth_key']);
-        
+
         StaticMethods::populateDropDown(StaticMethods::modelsToArray(Subjects::forSchoolLevelDeptAndClass($school->id, $school->level, null, $_POST['class'], $_POST['active']), 'id', 'name', true), null, $_POST['subject']);
     }
 

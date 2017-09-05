@@ -1,5 +1,5 @@
 function registerSchool() {
-    yiiModal('School Registration', '../institution/sections/school-registration', {}, $('.class-of-content').width() * 0.5, $('.class-of-content').height() * 0.775);
+    yiiModal('School Registration', '../institution/sections/school-registration', {}, $('.class-of-content').width() * 0.5, $('.class-of-content').height() * 0.4);
 }
 
 function pushRegistration() {
@@ -24,6 +24,22 @@ function pushTeacherRegistration() {
     post.push({name: 'sbmt', value: ''});
 
     $.post('../institution/sections/teacher-registration', post,
+            function (form) {
+                $('#yii-modal-cnt').html(form);
+            }
+    );
+}
+
+function loadTeacherRegistration(id) {
+    $.post('../institution/sections/teacher-registration', {'Teachers[id]': id},
+            function (form) {
+                $('#yii-modal-cnt').html(form);
+            }
+    );
+}
+
+function loadTeacherByIDorTSCNo(nm, val) {
+     $.post('../institution/sections/teacher-by-id-or-tsc-no', {nm: nm, val: val},
             function (form) {
                 $('#yii-modal-cnt').html(form);
             }
@@ -72,7 +88,7 @@ function pushSubject(btn) {
 }
 
 function pushFile(id) {
-    yiiModal('Schemes of Work', 'sections/push-schemes-of-work', {'SchemesOfWork[submitted_as]': $('#' + id).attr('dcl')}, $('.inst-ctnt').width() * 0.75, $('.institution-default-index').height());
+    yiiModal('Schemes of Work', 'sections/push-schemes-of-work', {'SchemesOfWork[submitted_as]': $('#' + id).attr('dcl')}, $('.inst-ctnt').width() * 0.75, $('.institution-default-index').height() * 0.7125);
 }
 
 function pushSchemeOfWork() {

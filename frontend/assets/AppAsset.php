@@ -20,7 +20,8 @@ class AppAsset extends AssetBundle {
         'css/request-password-reset-form.css',
         'css/reset-password-form.css',
         'css/inst-set-up.css',
-        'css/files.css'
+        'css/files.css',
+        'css/services.css'
     ];
     public $js = [
         'js/jsonJQueryHtml.js',

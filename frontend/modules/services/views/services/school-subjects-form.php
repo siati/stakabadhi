@@ -14,7 +14,7 @@ foreach ($models as $model):
 endforeach;
 ?>
 
-<div class="files-form" style="height: 90%; overflow-x: hidden">
+<div class="files-form" style="height: 95%; overflow-x: hidden">
 
     <?php foreach ($rowsAndColumns as $level => $depts): ?>
 
@@ -50,4 +50,4 @@ endforeach;
 
 </div>
 
-<div style="height: 10%; padding-top: 15px"><div class="btn btn-danger pull-right" onclick="closeDialog()">Close</div></div>
+<div style="height: 5%; padding-top: 5px"><div class="btn btn-danger pull-right" onclick="closeDialog()">Close</div></div>

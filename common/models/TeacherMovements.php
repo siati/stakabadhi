@@ -10,12 +10,14 @@ use Yii;
  * @property integer $id
  * @property integer $teacher
  * @property integer $school
+ * @property integer $request
  * @property string $since
  * @property string $till
  * @property string $created_by
  * @property string $created_at
  * @property string $updated_by
  * @property string $updated_at
+ * @property string $updater_school
  */
 class TeacherMovements extends \yii\db\ActiveRecord {
 
@@ -32,7 +34,7 @@ class TeacherMovements extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['teacher', 'school', 'created_by'], 'required'],
-            [['teacher', 'school'], 'integer'],
+            [['teacher', 'school', 'request', 'updater_school'], 'integer'],
             [['since', 'till', 'created_at', 'updated_at'], 'safe'],
             [['created_by', 'updated_by'], 'string', 'max' => 25],
             [['school'], 'validateSchool']
@@ -55,12 +57,14 @@ class TeacherMovements extends \yii\db\ActiveRecord {
             'id' => Yii::t('app', 'ID'),
             'teacher' => Yii::t('app', 'Teacher'),
             'school' => Yii::t('app', 'School'),
+            'request' => Yii::t('app', 'Request'),
             'since' => Yii::t('app', 'Since'),
             'till' => Yii::t('app', 'Till'),
             'created_by' => Yii::t('app', 'Created By'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_by' => Yii::t('app', 'Updated By'),
             'updated_at' => Yii::t('app', 'Updated At'),
+            'updater_school' => Yii::t('app', 'Updater School')
         ];
     }
 
@@ -89,6 +93,7 @@ class TeacherMovements extends \yii\db\ActiveRecord {
      * 
      * @param integer $teacher teacher id
      * @param integer $school school id
+     * @param integer $request request id
      * @param boolean $current true - current posting
      * @param string $since1 yyyy-mm-dd
      * @param string $since2 yyyy-mm-dd
@@ -96,7 +101,7 @@ class TeacherMovements extends \yii\db\ActiveRecord {
      * @param string $till2 yyyy-mm-dd
      * @return TeacherMovements models
      */
-    public static function searchMovements($teacher, $school, $current, $since1, $since2, $till1, $till2) {
+    public static function searchMovements($teacher, $school, $request, $current, $since1, $since2, $till1, $till2) {
         return static::find()->searchMovements($teacher, $school, $current, $since1, $since2, $till1, $till2);
     }
 
@@ -107,7 +112,20 @@ class TeacherMovements extends \yii\db\ActiveRecord {
      * @return TeacherMovements models
      */
     public static function currentPostings($teacher, $school) {
-        return static::searchMovements($teacher, $school, true, null, null, null, null);
+        return static::searchMovements($teacher, $school, null, true, null, null, null, null);
+    }
+
+    /**
+     * 
+     * @param integer $teacher teacher id
+     * @param integer $school school id
+     * @return TeacherMovements model
+     */
+    public static function teachersCurrentPostingInSchool($teacher, $school) {
+        
+        $movements = static::currentPostings($teacher, $school);
+        
+        return empty($movements) ? false : end($movements);
     }
 
     /**
@@ -117,7 +135,7 @@ class TeacherMovements extends \yii\db\ActiveRecord {
      * @return TeacherMovements model
      */
     public static function teachersCurrentPosting($teacher) {
-        foreach (static::searchMovements($teacher, null, true, null, null, null, null) as $movement)
+        foreach (static::searchMovements($teacher, null, null, true, null, null, null, null) as $movement)
             return $movement;
     }
 
@@ -149,7 +167,7 @@ class TeacherMovements extends \yii\db\ActiveRecord {
     public static function movementToLoad($id, $teacher, $school) {
         return is_object($model = static::returnMovement($id)) || (is_object($model = static::teachersCurrentPosting($teacher)) && $model->school == $school) ? $model : static::newMovement($teacher, $school);
     }
-    
+
     /**
      * 
      * @param integer $id movement id
@@ -160,13 +178,13 @@ class TeacherMovements extends \yii\db\ActiveRecord {
      */
     public static function movementDerivedFromNewTeacher($teacher, $school, $since, $created_by) {
         $posting = static::movementToLoad(null, $teacher, $school);
-        
+
         $posting->since = $since;
-        
+
         $posting->created_by = $created_by;
-        
+
         $posting->modelSave();
-        
+
         return $posting;
     }
 
@@ -174,14 +192,21 @@ class TeacherMovements extends \yii\db\ActiveRecord {
      * 
      * @param string $till closed at yyyy-mm-dd
      * @param string $updated_by updated by
+     * @param integer $updater_school school of `$updated_by`
      * @return boolean true - movement closed
      */
-    public function closeMovement($till, $updated_by) {
-        $this->till = $till;
+    public function closeMovement($till, $updated_by, $updater_school) {
+        if (empty($this->till)) {
+            $this->till = $till;
 
-        $this->updated_by = $updated_by;
+            $this->updated_by = $updated_by;
 
-        return $this->modelSave();
+            $this->updater_school = $updater_school;
+
+            return $this->modelSave();
+        }
+
+        return true;
     }
 
     /**
@@ -193,7 +218,7 @@ class TeacherMovements extends \yii\db\ActiveRecord {
      * @return boolean true - current movement closed
      */
     public static function closeCurrentMovement($teacher, $school, $till, $updated_by) {
-        return !is_object($posting = static::teachersCurrentPosting($teacher)) || ($posting->school != $school && $posting->closeMovement($till, $updated_by));
+        return !is_object($posting = static::teachersCurrentPosting($teacher)) || ($posting->school != $school && $posting->closeMovement($till, $updated_by, $school));
     }
 
     /**
@@ -202,6 +227,8 @@ class TeacherMovements extends \yii\db\ActiveRecord {
      */
     public function modelSave() {
         $this->isNewRecord ? $this->created_at = StaticMethods::now() : $this->updated_at = StaticMethods::now();
+        
+        $this->till > 0 ? '' : $this->till = null;
 
         if ($this->validate()) {
             $this->isNewRecord ? $transaction = Yii::$app->db->beginTransaction() : '';
@@ -217,6 +244,16 @@ class TeacherMovements extends \yii\db\ActiveRecord {
                 empty($transaction) || $transaction->rollBack();
             }
         }
+    }
+
+    /**
+     * 
+     * @return boolean|string true - date teacher moved to another school
+     */
+    public function teacherMovedToAnotherSchool() {
+        ($yes = is_object($latterPosting = static::find()->teacherMovedToAnotherSchool($this->teacher, $this->school, $this->id, $this->since))) && $this->closeMovement($latterPosting->since, $latterPosting->created_by, $latterPosting->school);
+
+        return $yes ? $this->till : false;
     }
 
 }

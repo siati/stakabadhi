@@ -988,7 +988,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function kenyaPhoneNumber($attribute) {
         is_numeric($this->$attribute) &&
                 (
-                (substr($this->$attribute, 0, 2) === '07' && strlen($this->$attribute) == 10) //0712345678
+                (substr($this->$attribute, 0, 1) === '7' && strlen($this->$attribute) == 9) //0712345678
+                || (substr($this->$attribute, 0, 2) === '07' && strlen($this->$attribute) == 10) //0712345678
                 || (substr($this->$attribute, 0, 4) === '2547' && strlen($this->$attribute) == 12) //254712345678
                 || (substr($this->$attribute, 0, 5) === '+2547' && strlen($this->$attribute) == 13) //+254712345678
                 || (strlen($this->$attribute) == 8)

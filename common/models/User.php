@@ -84,7 +84,8 @@ class User extends ActiveRecord implements IdentityInterface {
             ['profile_status', 'in', 'range' => [Profiles::STATUS_ENABLED, Profiles::STATUS_DISABLED]],
             ['pass_okayed', 'in', 'range' => [self::PASSWORD_AUTO_GENERATED, self::PASSWORD_CLIENT_SET, self::PASSWORD_ADMIN_RESET]],
             ['signed_in', 'in', 'range' => [self::CURRENTLY_NOT_LOGGED_IN, self::CURRENTLY_LOGGED_IN]],
-            [['name', 'username'], 'notNumerical']
+            [['name', 'username'], 'notNumerical'],
+            [['phone'], 'kenyaPhoneNumber']
         ];
     }
 

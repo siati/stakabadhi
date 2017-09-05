@@ -58,7 +58,7 @@ use common\models\PostalCodes;
     <style onload="commitRegistration('<?= $model->auth_key ?>'); $(this).remove();"></style>
 <?php endif; ?>
 
-<div style="height: 10%; padding-top: 15px">
+<div style="height: 10%">
     <div class="btn btn-success pull-left" onclick="pushRegistration()">Save</div>
 
     <div class="btn btn-danger pull-right" onclick="closeDialog()">Close</div>

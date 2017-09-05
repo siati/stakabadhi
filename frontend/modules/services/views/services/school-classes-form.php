@@ -12,7 +12,7 @@ use common\models\StaticMethods;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="files-form" style="height: 90%; overflow-x: hidden">
+<div class="files-form" style="height: 95%; overflow-x: hidden">
 
     <?php $form = ActiveForm::begin(['id' => 'form-school-classes', 'enableAjaxValidation' => true, 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
 
@@ -73,7 +73,7 @@ use common\models\StaticMethods;
        "
 ></style>
 
-<div style="height: 10%; padding-top: 15px">
+<div style="height: 5%">
     <div class="btn btn-success pull-left" onclick="pushClasses()">Save</div>
 
     <div class="btn btn-danger pull-right" onclick="closeDialog()">Close</div>

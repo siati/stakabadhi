@@ -3,6 +3,7 @@
 namespace common\activeQueries;
 
 use common\models\Teachers;
+use common\models\TeacherMovements;
 
 /**
  * This is the ActiveQuery class for [[\common\models\Teachers]].
@@ -92,6 +93,21 @@ class TeachersQuery extends \yii\db\ActiveQuery {
                         (empty($subject) ? '' : " && (subject_one = '$subject' || subject_two = '$subject')") .
                         (empty($active) ? '' : "active = '$active'")
                 )->orderBy('fname asc, mname asc, lname asc')->all();
+    }
+    
+    /**
+     * 
+     * @param integer $school school id
+     * @return Teachers ActiveRecords
+     */
+    public function currentTeachersInSchool($school) {
+        $t = Teachers::tableName();
+        
+        $tm = TeacherMovements::tableName();
+        
+        return $this->select('t.id, t.fname, t.mname, t.lname, t.dob, t.gender, t.id_no, t.tsc_no, t.phone, t.email, t.subject_one, t.subject_two, t.postal_no, t.postal_code, t.county, t.constituency, t.ward, t.location, t.sub_location, t.village, t.active, t.created_by, t.created_at, t.author_school, t.updated_by, t.updated_at, t.updater_school')
+                ->from("$t t")->leftJoin("$tm tm", "t.id = tm.teacher && '$school' = tm.school && tm.since <= current_timestamp && (tm.till >= current_timestamp || tm.till = '' || tm.till is null)")
+                ->where('tm.id > 0')->orderBy('t.fname asc, t.mname asc, t.lname asc')->all();
     }
 
 }

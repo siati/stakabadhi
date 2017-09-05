@@ -42,6 +42,8 @@ class Teachers extends \yii\db\ActiveRecord {
     const active = 'yes';
     const not_active = 'no';
     const min_age = 25;
+    const byID = 'ID. No.';
+    const byTSC = 'TSC No.';
 
     /**
      * @inheritdoc
@@ -64,6 +66,7 @@ class Teachers extends \yii\db\ActiveRecord {
             [['tsc_no'], 'string', 'min' => 6, 'max' => 7],
             [['phone'], 'string', 'min' => 9, 'max' => 13],
             [['email'], 'string', 'max' => 40],
+            [['phone'], 'kenyaPhoneNumber'],
             [['dob'], 'atleastTwentyYears'],
             [['subject_one', 'subject_two', 'active'], 'string', 'max' => 3],
             [['postal_no'], 'string', 'max' => 6],
@@ -108,6 +111,12 @@ class Teachers extends \yii\db\ActiveRecord {
             'sub_location' => Yii::t('app', 'Sub Location'),
             'village' => Yii::t('app', 'Village'),
             'active' => Yii::t('app', 'Active'),
+            'created_by' => Yii::t('app', 'Created By'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'author_school' => Yii::t('app', 'Author School'),
+            'updated_by' => Yii::t('app', 'Updated By'),
+            'updated_at' => Yii::t('app', 'Updated At'),
+            'updater_school' => Yii::t('app', 'Updater School')
         ];
     }
 
@@ -134,6 +143,15 @@ class Teachers extends \yii\db\ActiveRecord {
      */
     public static function allTeachers() {
         return static::find()->allTeachers();
+    }
+    
+    /**
+     * 
+     * @param integer $school school id
+     * @return Teachers models
+     */
+    public static function currentTeachersInSchool($school) {
+        return static::find()->currentTeachersInSchool($school);
     }
 
     /**
@@ -217,6 +235,14 @@ class Teachers extends \yii\db\ActiveRecord {
         $wasNew = $this->isNewRecord;
         
         return $this->save() && (!$wasNew || TeacherMovements::movementDerivedFromNewTeacher($this->id, $this->author_school, $this->created_at, $this->created_by) || true);
+    }
+    
+    /**
+     * @param integer $school school
+     * @return TeacherMovements teacher (`$this->id`) is currently posted in `$this->school`
+     */
+    public function teacherIsCurrentlyPostedInThisSchool($school) {
+        return TeacherMovements::teachersCurrentPostingInSchool($this->id, $school);
     }
 
     /**

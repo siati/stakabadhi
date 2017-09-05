@@ -20,7 +20,7 @@ $model->isNewRecord ? $model->class = StaticMethods::form_one : '';
 $active = Classes::active;
     ?>
 
-<div class="files-form" style="height: 90%; overflow-x: hidden">
+<div class="files-form" style="height: 93%; overflow-x: hidden">
 
     <?php $form = ActiveForm::begin(['id' => 'form-sceheme-of-work', 'enableAjaxValidation' => true]); ?>
 
@@ -79,7 +79,7 @@ $active = Classes::active;
 
 </div>
 
-<div style="height: 10%; padding-top: 15px">
+<div style="height: 7%; padding-top: 10px">
     <div class="btn btn-success pull-left" onclick="pushSchemeOfWork()">Save</div>
 
     <div class="btn btn-danger pull-right" onclick="closeDialog()">Close</div>

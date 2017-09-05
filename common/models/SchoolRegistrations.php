@@ -48,6 +48,7 @@ class SchoolRegistrations extends \yii\db\ActiveRecord {
             [['level', 'code', 'name', 'county', 'constituency', 'ward', 'auth_key', 'ip_address', 'created_by'], 'required'],
             [['level', 'active'], 'string'],
             [['code', 'phone', 'postal_no', 'postal_town', 'county', 'constituency', 'ward'], 'integer'],
+            [['phone'], 'kenyaPhoneNumber'],
             [['created_at', 'updated_at'], 'safe'],
             [['code', 'phone'], 'string', 'min' => 9, 'max' => 15],
             [['postal_no'], 'string', 'min' => 1, 'max' => 6],

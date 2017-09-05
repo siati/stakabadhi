@@ -6,7 +6,6 @@ use yii\helpers\Html;
 use yii\bootstrap\Modal;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
 use common\models\User;
@@ -157,7 +156,7 @@ $searhField = DatePicker::widget([
             <div class="container">
                 <p class="pull-left">&copy; we@ss <?= date('Y') ?></p>
 
-                <p class="pull-right"><?= Yii::powered() ?></p>
+                <p class="pull-right">Powered By <a href="https://kakamega.go.ke/" target="_blank">County Government of Kakamega</a></p>
             </div>
         </footer>
 
