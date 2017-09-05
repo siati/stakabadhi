@@ -1,0 +1,27 @@
+.rgstr-tchr-lst {
+    width: 30%;
+    height: 100%;
+    overflow-x: hidden;
+    float: left;
+    border-right: 1px solid #ddd;
+    padding: 0 5px
+}
+
+.rgstr-tchr-srch-fm {
+    width: 70%;
+    height: 100%;
+    overflow: hidden;
+    float: right;
+    padding: 0 5px
+}
+
+.rgstr-tchr-srch {
+    width: 100%;
+    height: 8%
+}
+
+.rgstr-tchr-fm {
+    width: 100%;
+    height: 86%;
+    overflow-x: hidden
+}
